@@ -473,7 +473,7 @@ $count = 0;
                 </div><br>
                 <div class="move_box">
                     <a class="prev_page" name="prev_station" href="set_station.php">開始・終了駅選択に戻る</a>
-                    <a class="next_page" name="next_keiro" href="sightseeing_spots_selection.php">観光スポット選択へ</a><br>
+                    <a class="next_page" name="next_keiro" href="sightseeing_spots_selection_map.php">観光スポット選択へ</a><br>
                 </div>
 
                 <?php foreach ($stmt as $row) : ?>
@@ -481,7 +481,7 @@ $count = 0;
                     <div id="infobox" value=<?php echo $row["id"]; ?>>
                         <table>
                             <tr>
-                                <th><div id="imgbox"><img src=<?php if($area == "minatomirai") {echo "images/minatomirai/restaurants/". $row["id"] .".jpg" ;} else if($area == "hasune"){echo "images/hasune/restaurants/". $row["id"] .".jpg" ;} else if($area == "chofu"){echo "images/chofu/restaurants/". $row["id"] .".jpg" ;}?> alt=""></div></th>
+                                <th><div id="imgbox"><img src=<?php if($area == 1) {echo "images/minatomirai/restaurants/". $row["id"] .".jpg" ;} else if($area == 2){echo "images/hasune/restaurants/". $row["id"] .".jpg" ;} else if($area == 3){echo "images/chofu/restaurants/". $row["id"] .".jpg" ;}?> alt=""></div></th>
                                 <td></td>
                             </tr>
                             <tr>

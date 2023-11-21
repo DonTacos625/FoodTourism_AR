@@ -6,9 +6,10 @@ $post_data_1 = $_POST['post_data_1'];
 $post_data_2 = json_decode($_POST['post_data_2'], true);
 $post_data_3 = $_POST['post_data_3'];
 
+$database_name = "minatomirai_restaurants";
 try{
 
-    $stmt1 = $pdo->prepare("SELECT * FROM minatomirai_restaurants where id = :id");
+    $stmt1 = $pdo->prepare("SELECT * FROM $database_name where id = :id");
     $stmt1 -> bindParam(":id", $post_data_1, PDO::PARAM_INT);
     $stmt1 -> execute();
     $result1 = $stmt1->fetch(PDO::FETCH_ASSOC);

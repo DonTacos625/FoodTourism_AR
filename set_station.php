@@ -97,7 +97,7 @@ $keikaku[] = $lunch_info;
 $keikaku[] = $dinner_info;
 
 $keikaku[] = $goal_info;
-var_dump($keikaku);
+//var_dump($keikaku);
 ?>
 
 <html>
@@ -362,10 +362,12 @@ var_dump($keikaku);
                 layers: [foodLayer, stationsLayer, planLayer]
             });
 
+            //frameの変数
+            var center = <?php echo json_encode($center); ?>;
             const view = new MapView({
                 container: "viewDiv", // Reference to the scene div created in step 5
                 map: map, // Reference to the map object created before the scene
-                center: [139.635, 35.453],
+                center: center,
                 zoom: 14,
                 popup: {
                     dockEnabled: true,

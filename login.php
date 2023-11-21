@@ -31,7 +31,7 @@ if (!empty($_POST["login"])) {
 
             $pass = $_POST["pass"];
 
-            $stmt1 = $pdo->prepare("SELECT * FROM userinfo WHERE user_name = :user_name OR email = :user_name");
+            $stmt1 = $pdo->prepare("SELECT * FROM userinfo WHERE user_name = :user_name");
             $stmt1->bindParam(":user_name", $user_name);
             $stmt1->execute();
 
@@ -141,9 +141,9 @@ if (!empty($_POST["login"])) {
                 <form id="loginform" name="loginform" action="" method="POST" autocomplete="off">
                     <table>
                         <tr>
-                            <th><label for="user_name">ネームかemail</label></th>
+                            <th><label for="user_name">ユーザーネーム</label></th>
                             <td>
-                                <input type="text" id="user_name" name="user_name" placeholder="ネームかemailを入力" value="" required>
+                                <input type="text" id="user_name" name="user_name" placeholder="ユーザーネームを入力" value="" required>
                             </td>
                         </tr>
 

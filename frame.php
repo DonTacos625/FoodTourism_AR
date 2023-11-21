@@ -105,7 +105,8 @@ var_dump($plan_s_l_spots);
 require "connect_database.php";
 
 //利用するデータベースを選択
-$area = "minatomirai";
+$area = 1;
+$center = [139.635, 35.453];
 $database_stations = "minatomirai_stations";
 $database_restaurants = "minatomirai_restaurants";
 $database_sightseeing_spots = "minatomirai_sightseeing_spots";
@@ -113,6 +114,16 @@ $map_stations = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/servi
 $map_restaurants = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_minatomirai_restaurants/FeatureServer";
 $map_sightseeing_spots = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_minatomirai_sightseeing_spots/FeatureServer";
 
+
+/*
+$area = 2;
+$database_stations = "hasune_stations";
+$database_restaurants = "hasune_restaurants";
+$database_sightseeing_spots = "hasune_sightseeing_spots";
+$map_stations = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_stations/FeatureServer";
+$map_restaurants = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_restaurants/FeatureServer";
+$map_sightseeing_spots = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_minatomirai_sightseeing_spots/FeatureServer";
+*/
 //$database_restaurants ="hasune_restaurants";
 //$map_stations = "";
 //$map_restaurants = "";
@@ -152,7 +163,7 @@ try {
         $s_l_spots_name = [["設定されていません", 0]];
     } else {
         foreach ($_SESSION["s_l_sightseeing_spots_id"] as $s_l) {
-            $framestmt5 = $pdo->prepare("SELECT * FROM minatomirai_sightseeing_spots WHERE id = :id");
+            $framestmt5 = $pdo->prepare("SELECT * FROM $database_sightseeing_spots WHERE id = :id");
             $framestmt5->bindParam(":id", $s_l);
             $framestmt5->execute();
             $frameresult5 = $framestmt5->fetch(PDO::FETCH_ASSOC);
@@ -165,7 +176,7 @@ try {
         $l_d_spots_name = [["設定されていません", 0]];
     } else {
         foreach ($_SESSION["l_d_sightseeing_spots_id"] as $l_d) {
-            $framestmt6 = $pdo->prepare("SELECT * FROM minatomirai_sightseeing_spots WHERE id = :id");
+            $framestmt6 = $pdo->prepare("SELECT * FROM $database_sightseeing_spots WHERE id = :id");
             $framestmt6->bindParam(":id", $l_d);
             $framestmt6->execute();
             $frameresult6 = $framestmt6->fetch(PDO::FETCH_ASSOC);
@@ -178,7 +189,7 @@ try {
         $d_g_spots_name = [["設定されていません", 0]];
     } else {
         foreach ($_SESSION["d_g_sightseeing_spots_id"] as $d_g) {
-            $framestmt7 = $pdo->prepare("SELECT * FROM minatomirai_sightseeing_spots WHERE id = :id");
+            $framestmt7 = $pdo->prepare("SELECT * FROM $database_sightseeing_spots WHERE id = :id");
             $framestmt7->bindParam(":id", $d_g);
             $framestmt7->execute();
             $frameresult7 = $framestmt7->fetch(PDO::FETCH_ASSOC);
@@ -233,6 +244,10 @@ function display_frame($name_row, $time)
     };
 };
 
+
+function up_frame(){
+
+}
 ?>
 
 <!doctype html>
@@ -472,7 +487,7 @@ function display_frame($name_row, $time)
         }
 
         .hidden {
-          display: none;
+            background: #808080;
         }
     </style>
 </head>
@@ -620,7 +635,14 @@ function display_frame($name_row, $time)
         //観光計画からスポットを削除
         function hidden_spot(name) {
             var name_tag = document.getElementById(name);
-            name_tag.className = "hidden";
+            if(name_tag.className != "hidden"){
+                name_tag.className = "hidden";
+                name_tag.querySelector(".btn").textContent = "戻す";
+            } else {
+                name_tag.className = "";
+                name_tag.querySelector(".btn").textContent = "削除";
+            }
+            
         };
 
         //観光計画の情報を更新
@@ -678,14 +700,14 @@ function display_frame($name_row, $time)
             <ul>
                 <li><a href="set_station.php">開始・終了駅の設定</a></li>
                 <li><a href="search.php">飲食店の検索・決定</a></li>
-                <li><a id="keiro" name="keiro" href="keiro.php">観光スポット選択</a></li>
+                <li><a id="keiro" name="keiro" href="sightseeing_spots_selection_map.php">観光スポット選択</a></li>
             </ul>
         </li>
 
         <li><a>観光支援</a>
             <ul>
-                <li><a href="set_station.php">周辺スポットの検索</a></li>
-                <li><a href="search.php">ナビゲーション</a></li>
+                <li><a href="search_nearby_restaurants_map.php">周辺スポットの検索</a></li>
+                <li><a href="navigation_map.php">ナビゲーション</a></li>
             </ul>
         </li>
 
@@ -719,24 +741,13 @@ function display_frame($name_row, $time)
             <b>性別:</b> <?php echo htmlspecialchars($frameresult["gender"], ENT_QUOTES); ?><br>
 
         <h2>現在の観光計画</h2>
-        <div id="making_plan_box">
-        <form action="" method="post">
-            <div class="sortable">
-                <ul>
-                    <?php foreach($making_plan as $date) { ?>
-                        <li id="<?php echo $date[0]; ?>" class="drag_drop" draggable="true">
-                            <?php echo $date[0]?>
-                        </li>
-                    <?php } ?>
-                </ul>
-                <input type="hidden" id="list-ids" name="list-ids" />
-                <button id="submit">更新</button>
-            </div>
-        </form>
 
+        <button type="button" value="" onclick="update_plan()">更新する</button>
+        <div id="making_plan_box">
             <div class="sortable">
                 <ul>
                         <li id="<?php echo $making_plan[0][0]; ?>">
+                            <img id="pin" width="20" height="20" src="./icons/pop_start.png" alt="開始駅のアイコン" title="開始駅">
                             <?php echo $start_station_name?><br>
                             <input type="time" value="<?php echo $making_plan[0][2]; ?>" id="plan_start_time" name="plan_start_time">分
                         </li>
@@ -744,12 +755,16 @@ function display_frame($name_row, $time)
             </div>
 
             <div class="sortable">
-                <ul>
+                <ul id="sort">
+                    <?php $count_s_l = 0; ?>
                     <?php foreach($plan_s_l_spots as $date) { ?>
-                        <li id="<?php echo $date[0]; ?>" class="drag_drop" draggable="true">
+                        <?php $count_s_l += 1; ?>
+                        <li id=<?php echo "plan_s_l_". $count_s_l ."_box"; ?> draggable="true">
+                            <input type="text" value=<?php echo $count_s_l; ?> size="3" class="no_s_l" /><br>
+                            <img class="pin_s_l" width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $count_s_l . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
                             <?php echo $date[2]?><br>
                             <input type="number" value="<?php echo $date[1]; ?>" id=<?php echo "plan_s_l_". $date[1] ."_time"; ?> name=<?php echo "plan_s_l_". $date[1] ."_time"; ?>>分
-                            <button type="button" value="" onclick="hidden_spot('plan_lunch_box')">×</button>
+                            <button type="button" class="btn" value=<?php echo "plan_s_l_". $count_s_l ."_box"; ?> onclick="hidden_spot(value)">削除</button>
                         </li>
                     <?php } ?>
                 </ul>
@@ -759,20 +774,25 @@ function display_frame($name_row, $time)
             <div class="sortable">
                 <ul>
                         <li id="plan_lunch_box">
+                            <img id="pin" width="20" height="20" src="./icons/pop_lunch.png" alt="昼食予定地のアイコン" title="昼食予定地">
                             <?php echo $lunch_name?><br>
                             <input type="number" value="<?php echo $making_plan[2][2]; ?>" id="plan_lunch_time" name="plan_lunch_time">分
-                            <button type="button" value="" onclick="hidden_spot('plan_lunch_box')">×</button>
+                            <button type="button" value="" onclick="hidden_spot('plan_lunch_box')">削除</button>
                         </li>
                 </ul>
             </div>
 
             <div class="sortable">
-                <ul>
+                <ul id="sort2">
+                    <?php $count_l_d = 0; ?>
                     <?php foreach($plan_l_d_spots as $date) { ?>
-                        <li id="<?php echo $date[0]; ?>" class="drag_drop" draggable="true">
+                        <?php $count_l_d += 1; ?>
+                        <li id="<?php echo $date[0]; ?>" draggable="true">
+                            <input type="text" name="no[1]" value=<?php echo $count_l_d; ?> size="3" class="no_l_d" /><br>
+                            <img class="pin_l_d" width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $count_l_d . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
                             <?php echo $date[2]?><br>
                             <input type="number" value="<?php echo $date[1]; ?>" id=<?php echo "plan_l_d_". $date[1] ."_time"; ?> name=<?php echo "plan_l_d_". $date[1] ."_time"; ?>>分
-                            <button type="button" value="" onclick="post_restaurant(value)">×</button>
+                            <button type="button" value="" onclick="post_restaurant(value)">削除</button>
                         </li>
                     <?php } ?>
                 </ul>
@@ -782,20 +802,25 @@ function display_frame($name_row, $time)
             <div class="sortable">
                 <ul>
                         <li id="plan_dinner_box">
+                            <img id="pin" width="20" height="20" src="./icons/pop_dinner.png" alt="夕食予定地のアイコン" title="夕食予定地">
                             <?php echo $dinner_name?><br>
                             <input type="number" value="<?php echo $making_plan[4][2]; ?>" id="plan_dinner_time" name="plan_dinner_time">分
-                            <button type="button" value="" onclick="hidden_spot('plan_dinner_box')">×</button>
+                            <button type="button" value="" onclick="hidden_spot('plan_dinner_box')">削除</button>
                         </li>
                 </ul>
             </div>
 
             <div class="sortable">
-            <ul>
+            <ul id="sort3">
+                <?php $count_d_g = 0; ?>
                 <?php foreach($plan_d_g_spots as $date) { ?>
-                    <li id="<?php echo $date[0]; ?>" class="drag_drop" draggable="true">
+                    <?php $count_d_g += 1; ?>
+                    <li id="<?php echo $date[0]; ?>" draggable="true">
+                    <input type="text" name="no[1]" value=<?php echo $count_d_g; ?> size="3" class="no_d_g" /><br>
+                        <img class="pin_d_g" width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $count_d_g . ".png"; ?> alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
                         <?php echo $date[2]?><br>
                         <input type="number" value="<?php echo $date[1]; ?>" id=<?php echo "plan_d_g_". $date[1] ."_time"; ?> name=<?php echo "plan_d_g_". $date[1] ."_time"; ?>>分
-                        <button type="button" value="" onclick="post_restaurant(value)">×</button>
+                        <button type="button" value="" onclick="post_restaurant(value)">削除</button>
                     </li>
                 <?php } ?>
             </ul>
@@ -805,12 +830,12 @@ function display_frame($name_row, $time)
             <div class="sortable">
                 <ul>
                         <li id="<?php echo $making_plan[6][0]; ?>">
+                            <img id="pin" width="20" height="20" src="./icons/pop_goal.png" alt="終了駅のアイコン" title="終了駅">
                             <?php echo $goal_station_name?><br>
                             <input type="time" value="<?php echo $making_plan[6][2]; ?>" id="plan_goal_time" name="plan_goal_time">分
                         </li>
                 </ul>
             </div>
-        <button type="button" value="" onclick="update_plan()">更新する</button>
         </div>
 
         <div id="sightseeing_plan">
@@ -894,7 +919,7 @@ function display_frame($name_row, $time)
                     <ul>
                         <li><a href="set_station.php">開始・終了駅の設定</a></li>
                         <li><a href="search.php">飲食店の検索・決定</a></li>
-                        <li><a id="toggle_keiro" name="toggle_keiro" href="keiro.php">観光スポット選択</a></li>
+                        <li><a id="toggle_keiro" name="toggle_keiro" href="sightseeing_spots_selection_map.php">観光スポット選択</a></li>
                     </ul>
                 </li>
 
@@ -1010,7 +1035,61 @@ function display_frame($name_row, $time)
 </body>
 
 <!-- ドラッグアンドドロップを実装する用 -->
-<script src="script/drag_and_drop.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+<script src="Sortable.min.js"></script>
 <!-- -->
+<script>
+/*
+var el = document.getElementById('sort');
+var sortable = Sortable.create(el);
+
+var el2 = document.getElementById('sort2');
+var sortable2 = Sortable.create(el2);
+
+var el3 = document.getElementById('sort3');
+var sortable3 = Sortable.create(el3);
+*/
+
+var el = document.getElementById('sort');
+var sortable = Sortable.create(el, {
+    onSort: function(evt) {
+        var items = el.querySelectorAll('li');
+        for (var i = 0; i < items.length; i++) {
+            items[i].querySelector('.no_s_l').value = i + 1;
+            var src = `./icons/pop_icon_s_l${i + 1}.png`;
+            items[i].querySelector('.pin_s_l').src = src;
+        }
+    }
+});
+
+var el2 = document.getElementById('sort2');
+var sortable2 = Sortable.create(el2, {
+    onSort: function(evt) {
+        var items = el2.querySelectorAll('li');
+        for (var i = 0; i < items.length; i++) {
+            items[i].querySelector('.no_l_d').value = i + 1;
+            var src = `./icons/pop_icon_l_d${i + 1}.png`;
+            items[i].querySelector('.pin_l_d').src = src;
+        }
+    }
+});
+
+var el3 = document.getElementById('sort3');
+var sortable3 = Sortable.create(el3, {
+    onSort: function(evt) {
+        var items = el3.querySelectorAll('li');
+        for (var i = 0; i < items.length; i++) {
+            items[i].querySelector('.no_d_g').value = i + 1;
+            var src = `./icons/pop_icon_d_g${i + 1}.png`;
+            items[i].querySelector('.pin_d_g').src = src;
+        }
+    }
+});
+
+
+
+
+</script>
 
 </html>

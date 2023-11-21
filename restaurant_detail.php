@@ -508,7 +508,7 @@ try {
                     <div id="infobox">
                         <table>
                             <tr>
-                                <th><div id="imgbox"><img src=<?php if($area == "minatomirai") {echo "images/minatomirai/restaurants/". $result1["id"] .".jpg" ;} else if($area == "hasune"){echo "images/hasune/restaurants/". $result1["id"] .".jpg" ;} else if($area == "chofu"){echo "images/chofu/restaurants/". $result1["id"] .".jpg" ;}?> alt=""></div></th>
+                                <th><div id="imgbox"><img src=<?php if($area == 1) {echo "images/minatomirai/restaurants/". $result1["id"] .".jpg" ;} else if($area == 2){echo "images/hasune/restaurants/". $result1["id"] .".jpg" ;} else if($area == 3){echo "images/chofu/restaurants/". $result1["id"] .".jpg" ;}?> alt=""></div></th>
                                 <td></td>
                             </tr>
                             <tr>

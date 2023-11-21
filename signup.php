@@ -51,31 +51,6 @@ if (isset($_POST["pass2"])) {
     $pass2_f = $_SESSION["pass2"];
 }
 
-if (!isset($_SESSION["email"])) {
-    $_SESSION["email"] = "";
-    $email_f = "";
-} else {
-    $email_f = $_SESSION["email"];
-}
-if (isset($_POST["email"])) {
-    $email_f = $_POST["email"];
-    $_SESSION["email"] = $_POST["email"];
-} else {
-    $email_f = $_SESSION["email"];
-}
-if (!isset($_SESSION["email2"])) {
-    $_SESSION["email2"] = "";
-    $email2_f = "";
-} else {
-    $email2_f = $_SESSION["email2"];
-}
-if (isset($_POST["email2"])) {
-    $email2_f = $_POST["email2"];
-    $_SESSION["email2"] = $_POST["email2"];
-} else {
-    $email2_f = $_SESSION["email2"];
-}
-
 if (!isset($_SESSION["user_weight"])) {
     $_SESSION["user_weight"] = "";
     $user_weight_f = "";
@@ -99,10 +74,6 @@ if (!empty($_POST["signup"])) {
     if (!preg_match('/\A(?=.*?[a-z])(?=.*?\d)[a-z\d]{6,15}+\z/i', $_POST["pass"])) {
         $errormessage = 'パスワードが不適切です';
     }
-    //メールアドレス構文チェック
-    if(!preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $_POST["email"])){
-	    $errormessage = "メールアドレスの形式が正しくありません。";
-    }
     //ID・Pass空チェック
     if (empty($_POST["user_name"])) {
         $errormessage = "ユーザーIDが未入力です";
@@ -110,13 +81,9 @@ if (!empty($_POST["signup"])) {
         $errormessage = 'パスワードが未入力です';
     } else if (empty($_POST["pass2"])) {
         $errormessage = 'パスワードを再入力してください';
-    } else if (empty($_POST["email"])) {
-        $errormessage = 'メールアドレスが未入力です';
-    } else if (empty($_POST["email2"])) {
-        $errormessage = 'メールアドレスを再入力してください';
     }
 
-    if (!empty($_POST["user_name"]) && !empty($_POST["pass"]) && !empty($_POST["pass2"]) && $_POST["pass"] === $_POST["pass2"] && !empty($_POST["email"]) && !empty($_POST["email2"]) && $_POST["email"] === $_POST["email2"] && preg_match('/\A[a-z\d]{4,10}+\z/i', $_POST["user_name"]) && preg_match('/\A(?=.*?[a-z])(?=.*?\d)[a-z\d]{6,15}+\z/i', $_POST["pass"]) && preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $_POST["email"])) {
+    if (!empty($_POST["user_name"]) && !empty($_POST["pass"]) && !empty($_POST["pass2"]) && $_POST["pass"] === $_POST["pass2"] && preg_match('/\A[a-z\d]{4,10}+\z/i', $_POST["user_name"]) && preg_match('/\A(?=.*?[a-z])(?=.*?\d)[a-z\d]{6,15}+\z/i', $_POST["pass"]) ) {
         $user_name = $_POST["user_name"];
         $user_name = strtr($user_name, [
             '\\' => '\\\\',
@@ -125,7 +92,6 @@ if (!empty($_POST["signup"])) {
         ]);
 
         $pass = $_POST["pass"];
-        $email= $_POST["email"];
 
         $age = $_POST["age"];
         $gender = $_POST["gender"];
@@ -151,27 +117,21 @@ if (!empty($_POST["signup"])) {
             $stmt1->execute();
             $result1 = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
-            $stmt2 = $pdo->prepare("SELECT * FROM userinfo WHERE email = :email");
-            $stmt2->bindParam(":email", $email);
-            $stmt2->execute();
-            $result2 = $stmt2->fetchAll(PDO::FETCH_ASSOC);
-
             //データベースに観光計画情報を保存
 
             //名前重複チェック
-            if (empty($result1) && empty($result2)) {
+            if (empty($result1)) {
                 //パスワードのハッシュ化
                 $passhash = password_hash($pass, PASSWORD_DEFAULT);
 
                 //ID,Pass書き込み
                 //ユーザー情報書き込み
-                $stmt3 = $pdo->prepare("INSERT INTO userinfo(user_name, pass, gender, age, user_weight, email, survey) VALUES(:user_name, :pass, :gender, :age, :user_weight, :email, :survey)");
+                $stmt3 = $pdo->prepare("INSERT INTO userinfo(user_name, pass, gender, age, user_weight, survey) VALUES(:user_name, :pass, :gender, :age, :user_weight, :survey)");
                 $stmt3->bindParam(":user_name", $user_name, PDO::PARAM_STR);
                 $stmt3->bindParam(":pass", $passhash, PDO::PARAM_STR);
                 $stmt3->bindParam(":age", $age, PDO::PARAM_INT);
                 $stmt3->bindParam(":gender", $gender, PDO::PARAM_STR);
                 $stmt3->bindParam(":user_weight", $user_weight, PDO::PARAM_INT);
-                $stmt3->bindParam(":email", $email, PDO::PARAM_STR);
                 $stmt3->bindParam(":survey", $survey, PDO::PARAM_INT);
                 $stmt3->execute();
 
@@ -190,8 +150,6 @@ if (!empty($_POST["signup"])) {
         }
     } else if ($_POST["pass"] != $_POST["pass2"]) {
         $errormessage = "パスワードに誤りがあります";
-    } else if ($_POST["email"] != $_POST["email2"]) {
-        $errormessage = "メールアドレスに誤りがあります";
     }
 }
 //var_dump($result1);
@@ -293,20 +251,6 @@ if (!empty($_POST["signup"])) {
                             <td scope="row"><input type="password" id="pass2" name="pass2" placeholder="パスワードを再入力" value="<?php echo $pass2_f; ?>" required></td>
                         </tr>
 
-                        <tr>
-                            <th rowspan="2" scope="rowgroup"><label for="email">メールアドレス</label></th>
-                            <td scope="row"><small>半角英数字をそれぞれ1種類以上含む6~15文字</small></td>
-                        </tr>
-                        <tr>
-                            <td scope="row"><input type="text" id="email" name="email" placeholder="メールアドレスを入力" value="<?php echo $email_f; ?>" required></td>
-                        </tr>
-                        <tr>
-                            <th rowspan="2" scope="rowgroup"><label for="email2">メールアドレス再入力</label></th>
-                            <td scope="row"><small>メールアドレスを再入力して下さい</small></td>
-                        </tr>
-                        <tr>
-                            <td scope="row"><input type="text" id="email2" name="email2" placeholder="メールアドレスを再入力" value="<?php echo $email2_f; ?>" required></td>
-                        </tr>
                     </table>
 
                     <h3>任意登録</h3>

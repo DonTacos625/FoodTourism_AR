@@ -675,10 +675,12 @@ $keikaku[] = $goal_info;
                 layers: [stationLayer, foodLayer, spotsLayer, routeLayer]
             });
 
+            //frameの変数
+            var center = <?php echo json_encode($center); ?>;
             const view = new MapView({
                 container: "viewDiv", // Reference to the scene div created in step 5
                 map: map, // Reference to the map object created before the scene
-                center: [139.635, 35.453],
+                center: center,
                 zoom: 14,
                 popup: {
                     dockEnabled: true,
@@ -892,7 +894,7 @@ $keikaku[] = $goal_info;
             </div>
 
             <div class="move_box">
-                <a class="prev_page" name="prev_keiro" href="keiro.php">観光スポット選択に戻る</a>
+                <a class="prev_page" name="prev_keiro" href="sightseeing_spots_selection_map.php">観光スポット選択に戻る</a>
             </div><br>
             <div class="icon_explain">
                 <img class="pin_list1" src="./markers/icon_explain_s_f.png" alt="昼食予定地のアイコン" title="アイコン説明１">

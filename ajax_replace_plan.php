@@ -4,6 +4,7 @@ require_once("connect_database.php");
 
 $post_data_1 = $_POST['post_data_1'];
 
+$database_name = "minatomirai_sightseeing_spots";
 try {
     $id = $post_data_1;
 
@@ -27,7 +28,7 @@ try {
         $array3 = [];
         foreach($array1 as $array_id){
             //不本意
-            $stmt = $pdo->prepare("SELECT * FROM minatomirai_sightseeing_spots WHERE id = :id");
+            $stmt = $pdo->prepare("SELECT * FROM $database_name WHERE id = :id");
             $stmt->bindParam(":id", $array_id);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -44,7 +45,7 @@ try {
         $array3 = [];
         foreach($array1 as $array_id){
             //不本意
-            $stmt = $pdo->prepare("SELECT * FROM minatomirai_sightseeing_spots WHERE id = :id");
+            $stmt = $pdo->prepare("SELECT * FROM $database_name WHERE id = :id");
             $stmt->bindParam(":id", $array_id);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -61,7 +62,7 @@ try {
         $array3 = [];
         foreach($array1 as $array_id){
             //不本意
-            $stmt = $pdo->prepare("SELECT * FROM minatomirai_sightseeing_spots WHERE id = :id");
+            $stmt = $pdo->prepare("SELECT * FROM $database_name WHERE id = :id");
             $stmt->bindParam(":id", $array_id);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);

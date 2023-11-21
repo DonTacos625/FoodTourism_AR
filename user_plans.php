@@ -145,7 +145,7 @@ $count = 0
                 <h3 id="search_start">飲食店の検索・決定</h3>
                 <div class="move_box">
                     <a class="prev_page" name="prev_station" href="set_station.php">開始・終了駅選択に戻る</a>
-                    <a class="next_page" name="next_keiro" href="sightseeing_spots_selection.php">観光スポット選択へ</a><br>
+                    <a class="next_page" name="next_keiro" href="sightseeing_spots_selection_map.php">観光スポット選択へ</a><br>
                 </div>
 
                 <div class="flex_test-box">

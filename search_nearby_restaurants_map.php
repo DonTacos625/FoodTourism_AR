@@ -2,6 +2,7 @@
 
 require "frame.php";
 
+/*
 //stations_id設定
 if (isset($_SESSION["start_station_id"])) {
     $start_station_id = $_SESSION["start_station_id"];
@@ -27,8 +28,10 @@ if (isset($_SESSION["dinner_id"])) {
     $dinner_shop_id = -1;
 }
 $food_shop_id = [$lunch_shop_id, $dinner_shop_id];
+*/
 
 try {
+    /*
     if (!isset($_SESSION["start_station_id"])) {
         $start_info = [0, 0, "start"];
 
@@ -76,6 +79,7 @@ try {
 
         $goal_keep_name = [$goal_station_id, $result4["name"]];
     }
+    */
 
     //SESSION変数初期値設定
     if (!isset($_SESSION["wifi"])) {
@@ -240,7 +244,7 @@ try {
 
     // これをANDでつなげて、文字列にする
     $keywordCondition = implode(' AND ', $keywordCondition);
-    $keywordCondition = $keywordCondition . " OR (id = $lunch_shop_id OR id = $dinner_shop_id) ";
+    //$keywordCondition = $keywordCondition . " OR (id = $lunch_shop_id OR id = $dinner_shop_id) ";
     //var_dump($keywordCondition);
 
     //sql文にする
@@ -253,6 +257,7 @@ try {
     exit();
 }
 
+/*
 //keikakuは目的地の配列
 //keikakuの配列作成
 $keikaku[] = $start_info;
@@ -263,6 +268,7 @@ $keikaku[] = $dinner_info;
 
 $keikaku[] = $goal_info;
 //var_dump($keikaku);
+*/
 //検索結果を配列に格納
 $count = 0;
 foreach ($stmt as $shop_id) {
@@ -270,6 +276,7 @@ foreach ($stmt as $shop_id) {
     $count += 1;
 }
 //var_dump($food_shop_id);
+
 
 //検索条件の保存のため
 function set_checked($session_name, $value)
@@ -456,11 +463,29 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
     
     <script>
         var pointpic = "";
+
+        var current_latitude = 0;
+        var current_longitude = 0;
+        function test() {
+            navigator.geolocation.getCurrentPosition(test2);
+        }
+
+        function test2(position) {
+            current_latitude = position.coords.latitude;
+            current_longitude = position.coords.longitude;
+            //alert(current_longitude);
+
+        }
+        test();
+        //alert(current_longitude);
+
         require([
             "esri/Map",
             "esri/views/MapView",
             "esri/layers/WebTileLayer",
             "esri/layers/FeatureLayer",
+            "esri/widgets/Locate",
+            "esri/widgets/Track", 
             "esri/Graphic",
             "esri/layers/GraphicsLayer",
             "esri/rest/support/Query",
@@ -474,6 +499,8 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             MapView,
             WebTileLayer,
             FeatureLayer,
+            Locate,
+            Track, 
             Graphic,
             GraphicsLayer,
             Query,
@@ -600,7 +627,8 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             };
             */
             //スタートとゴールの駅を決める
-            var station_id = <?php echo json_encode($station_id); ?>;
+            /*
+            var station_id = <?php //echo json_encode($station_id); ?>;
             var station_feature_sql = "";
 
             for (var i = 0; i < station_id.length; i++) {
@@ -613,10 +641,12 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                     station_feature_sql += station_id[i];
                 }
             }
+            */
 
             //飲食店のIDから表示するスポットを決める
             var food_feature_sql = "";
             food_feature_sql = <?php echo json_encode($keywordCondition); ?>;
+
 
             // スポット名を表示するラベルを定義
             var labelClass = {
@@ -653,23 +683,23 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                 labelingInfo: [labelClass]
             });
 
+            /*
             var stationLayer = new FeatureLayer({
-                url: <?php echo json_encode($map_stations); ?>,
+                url: <?php //echo json_encode($map_stations); ?>,
                 id: "stationLayer",
                 popupTemplate: station_template,
                 definitionExpression: station_feature_sql
             });
 
-            /*
             var sightseeing_spotsLayer = new FeatureLayer({
-                url: <?php echo json_encode($map_sightseeing_spots); ?>,
+                url: <?php //echo json_encode($map_sightseeing_spots); ?>,
                 id: "sightseeing_spotsLayer",
                 popupTemplate: sightseeing_spots_template
             });
             */
 
             //選択したスポットの表示レイヤー
-            const planLayer = new GraphicsLayer();
+            const resultsLayer = new GraphicsLayer();
 
             //飲食店全体を表示するか検索結果を表示するか
             var foodLayer_Flag = <?php echo json_encode($all_foodLayer_Flag); ?>;
@@ -681,12 +711,11 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
 
             const map = new Map({
                 basemap: "streets",
-                layers: [$food, stationLayer, planLayer]
+                layers: [$food, resultsLayer]
                 //layers: [$food]
             });
 
-            //frameの変数
-            var center = <?php echo json_encode($center); ?>;
+            var center = [current_longitude, current_latitude];
             const view = new MapView({
                 container: "viewDiv", // Reference to the scene div created in step 5
                 map: map, // Reference to the map object created before the scene
@@ -700,8 +729,9 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                 }
             });
 
+            /*
             //phpの経路情報をjavascript用に変換           
-            var keikaku = <?php echo json_encode($keikaku); ?>;
+            var keikaku = <?php //echo json_encode($keikaku); ?>;
             //最初に経路表示する処理
             function start_map(plan, Layer) {
                 //開始駅と終了駅が同じの場合のフラグを設定
@@ -754,6 +784,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             }
 
             start_map(keikaku, planLayer);
+            */
 
 
             function add_point(pic, Layer) {
@@ -794,6 +825,117 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                 document.body.appendChild(form);
                 form.submit();
             };
+
+            //Locate関数
+            const locate = new Locate({
+            view: view,
+            graphic: new Graphic({
+                symbol: {
+                type: "simple-marker",
+                size: "12px",
+                color: "green",
+                outline: {
+                    color: "#efefef",
+                    width: "1.5px"
+                }
+                }
+            }),
+            useHeadingEnabled: false
+            });
+            view.ui.add(locate, "top-left");
+
+            var featureLayer = new FeatureLayer({
+                url: "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_restaurants/FeatureServer",
+                id: "featureLayer",
+                popupTemplate: food_template,
+                definitionExpression: food_feature_sql
+            });
+
+            /*
+                // 地図上の任意地点をクリックした時のイベント
+                view.on("click", function (evt) {
+                //クリックした位置のグラフィックを作成
+                let graphic = new Graphic({
+                    geometry: {
+                        type: "point",
+                        
+                        latitude: evt.mapPoint.latitude,
+                        longitude: evt.mapPoint.longitude,
+                        
+                        latitude: current_latitude,
+                        longitude: current_longitude,
+                        spatialReference: view.spatialReference
+                    },
+                    symbol: {
+                        type: "simple-marker",
+                        style: "diamond",
+                        size: 20,
+                        color: [226, 119, 40]
+                    }
+                })
+                resultsLayer.add(graphic);
+            });
+            */
+
+            var current_Symbol = new PictureMarkerSymbol({
+                url: "./markers/d_g_spot3.png",
+                width: "30px",
+                height: "46.5px"
+            });
+            nearby_restaurants = (geom) => {
+                let graphic = new Graphic({
+                    geometry: {
+                        type: "point",
+                        /*
+                        latitude: evt.mapPoint.latitude,
+                        longitude: evt.mapPoint.longitude,
+                        */
+                        latitude: current_latitude,
+                        longitude: current_longitude,
+                        spatialReference: view.spatialReference
+                    },
+                    symbol: current_Symbol
+                });
+
+                //クリックした位置から 500m のバッファ内のスポット（避難所）を検索するための query式を作成
+                let query = featureLayer.createQuery();
+                query.geometry = graphic.geometry;
+                query.outFields = ["*"];
+                query.orderByFields = ["id DESC"];
+                query.distance = 500;
+                query.units = "meters";
+                //スポット（避難所）に対する検索の実行
+                featureLayer.queryFeatures(query).then(function (featureSet) {
+                    var result_fs = featureSet.features;
+
+                    //検索結果が0件だったら、何もしない
+                    if (result_fs.length === 0) { return }
+
+                    //前回の検索結果を、グラフィックスレイヤーから削除
+                    resultsLayer.removeAll();
+
+                    //検索結果に対する設定
+                    var features = result_fs.map(function (graphic) {
+                        //シンボル設定
+                        graphic.symbol = {
+                            type: "simple-marker",
+                            style: "diamond",
+                            size: 10.5,
+                            color: "darkorange"
+                        };
+                        graphic.popupTemplate = food_template;
+                        return graphic;
+                    });
+
+                    //検索結果と現在地を、グラフィックスレイヤーに登録（マップに表示）
+                    resultsLayer.add(graphic);
+                    resultsLayer.addMany(features);
+
+                });
+                //alert(current_longitude);
+            };
+
+            nearby_restaurants();
 
         });
 
@@ -840,9 +982,9 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
         <main>
         <div id="detailbox">
                 <h3 id="search_start">飲食店の検索・決定</h3>
-                <a id="view_result" name="view_result" href="search.php">一覧で結果を表示</a><br>
+                <a id="view_result" name="view_result" href="search_nearby_restaurants_ar.php">ARで結果を表示</a><br>
                 <div class="search_form">
-                    <form action="search_map.php" method="post">
+                    <form action="search_nearby_restaurants_map.php" method="post">
                         WIFI：
                         <input type="radio" id="wifi" name="wifi" value="0" <?php set_checked("wifi", "0"); ?>>指定なし
                         <input type="radio" id="wifi" name="wifi" value="あり" <?php set_checked("wifi", "あり"); ?>>あり
@@ -959,10 +1101,6 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                         <input type="submit" name="submit" value="検索する">
                     </form>
                 </div><br>
-                <div class="move_box">
-                    <a class="prev_page" name="prev_station" href="set_station.php">開始・終了駅選択に戻る</a>
-                    <a class="next_page" name="next_keiro" href="sightseeing_spots_selection_map.php">観光スポット選択へ</a><br>
-                </div>
                 <?php
                 if (!$count) {
                     echo "検索条件に該当する飲食店はありませんでした";
