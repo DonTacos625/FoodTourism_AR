@@ -99,38 +99,24 @@ $making_plan = [["start", $plan_start_station_id, $plan_start_time],
                 ["d_g", $plan_d_g_spots], 
                 ["goal", $plan_goal_station_id, $plan_goal_time]
                ];
-var_dump($plan_s_l_spots);
+//var_dump($plan_s_l_spots);
 
-$area = 1;
 //DB接続
 require "connect_database.php";
 
 //利用するデータベースを選択
-if($area == 1){
-    //$area = 1;
-    $area_name = "minatomirai";
-    $center = [139.635, 35.453];
-    $database_stations = "minatomirai_stations";
-    $database_restaurants = "minatomirai_restaurants";
-    $database_sightseeing_spots = "minatomirai_sightseeing_spots";
-    $map_stations = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_minatomirai_stations/FeatureServer";
-    $map_restaurants = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_minatomirai_restaurants/FeatureServer";
-    $map_sightseeing_spots = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_minatomirai_sightseeing_spots/FeatureServer";
-} else if($area == 2){
-    //$area = 2;
-    $area_name = "hasune";
-    $center = [139.6790835, 35.78443256];
-    $database_stations = "hasune_stations";
-    $database_restaurants = "hasune_restaurants";
-    $database_sightseeing_spots = "hasune_sightseeing_spots";
-    $map_stations = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_stations/FeatureServer";
-    $map_restaurants = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_restaurants/FeatureServer";
-    $map_sightseeing_spots = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_sightseeing_spots/FeatureServer";
-}
+$area = 1;
+$center = [139.635, 35.453];
+$database_stations = "minatomirai_stations";
+$database_restaurants = "minatomirai_restaurants";
+$database_sightseeing_spots = "minatomirai_sightseeing_spots";
+$map_stations = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_minatomirai_stations/FeatureServer";
+$map_restaurants = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_minatomirai_restaurants/FeatureServer";
+$map_sightseeing_spots = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_minatomirai_sightseeing_spots/FeatureServer";
+
 
 /*
 $area = 2;
-$center = [139.635, 35.453];
 $database_stations = "hasune_stations";
 $database_restaurants = "hasune_restaurants";
 $database_sightseeing_spots = "hasune_sightseeing_spots";
@@ -243,8 +229,7 @@ if (!isset($_SESSION["goal_station_id"])) {
 }
 
 
-function display_frame($name_row, $time)
-{
+function display_frame($name_row, $time){
     $count = 0;
     foreach ($name_row as $spot_name) {
         $count += 1;
@@ -259,9 +244,6 @@ function display_frame($name_row, $time)
 };
 
 
-function up_frame(){
-
-}
 ?>
 
 <!doctype html>
@@ -286,7 +268,7 @@ function up_frame(){
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     -->
     <link rel="stylesheet" type="text/css" href="css/copyright.css">
-    <link rel="stylesheet" type="text/css" href="css/viewbox.css">
+
     <style>
         h1 {
             margin: 0px;
@@ -704,349 +686,6 @@ function up_frame(){
     </script>
 
 
-    <h1>横浜みなとみらいフードツーリズム計画作成支援システム</h1>
-
-    <ul id="dropmenu">
-        <li><a href="home.php">ホーム</a></li>
-
-        <li><a href="explain.php">使い方</a></li>
-
-        <li><a>観光計画作成</a>
-            <ul>
-                <li><a href="set_station.php">開始・終了駅の設定</a></li>
-                <li><a href="search.php">飲食店の検索・決定</a></li>
-                <li><a id="keiro" name="keiro" href="sightseeing_spots_selection_map.php">観光スポット選択</a></li>
-            </ul>
-        </li>
-
-        <li><a>観光支援</a>
-            <ul>
-                <li><a href="search_nearby_restaurants_map.php">周辺スポットの検索</a></li>
-                <li><a href="navigation_map.php">ナビゲーション</a></li>
-            </ul>
-        </li>
-
-        <li><a>一覧</a>
-            <ul>
-                <li><a href="view.php">スポット一覧</a></li>
-                <li><a href="users_plans.php">他のユーザーが作成した観光計画</a></li>
-            </ul>
-        </li>
-
-        <li><a>マイページ</a>
-            <ul>
-                <li><a id="see_myroute" name="see_myroute" href="plan_edit.php">作成中の観光計画を見る</a></li>
-                <li><a id="see_myroute" name="see_myroute" href="user_plans.php">保存した観光計画を見る</a></li>
-                <li><a href="my_page.php">登録情報変更</a></li>
-                <li><a href="logout.php">ログアウト</a></li>
-            </ul>
-        </li>
-
-    </ul>
-
-    <div id="leftbox">
-        <h2>会員情報</h2>
-
-            <b>名前:</b> <?php echo htmlspecialchars($_SESSION["user_name"], ENT_QUOTES); ?><br>
-
-            <b>年代:</b> <?php if (!$frameresult["age"]) { ?>
-            未回答
-            <?php } else { echo htmlspecialchars($frameresult["age"], ENT_QUOTES); ?>代 <?php } ?><br>
-
-            <b>性別:</b> <?php echo htmlspecialchars($frameresult["gender"], ENT_QUOTES); ?><br>
-
-        <h2>現在の観光計画</h2>
-
-        <button type="button" value="" onclick="update_plan()">更新する</button>
-        <div id="making_plan_box">
-            <div class="sortable">
-                <ul>
-                        <li id="<?php echo $making_plan[0][0]; ?>">
-                            <img id="pin" width="20" height="20" src="./icons/pop_start.png" alt="開始駅のアイコン" title="開始駅">
-                            <?php echo $start_station_name?><br>
-                            <input type="time" value="<?php echo $making_plan[0][2]; ?>" id="plan_start_time" name="plan_start_time">分
-                        </li>
-                </ul>
-            </div>
-
-            <div class="sortable">
-                <ul id="sort">
-                    <?php $count_s_l = 0; ?>
-                    <?php foreach($plan_s_l_spots as $date) { ?>
-                        <?php $count_s_l += 1; ?>
-                        <li id=<?php echo "plan_s_l_". $count_s_l ."_box"; ?> draggable="true">
-                            <input type="text" value=<?php echo $count_s_l; ?> size="3" class="no_s_l" /><br>
-                            <img class="pin_s_l" width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $count_s_l . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
-                            <?php echo $date[2]?><br>
-                            <input type="number" value="<?php echo $date[1]; ?>" id=<?php echo "plan_s_l_". $date[1] ."_time"; ?> name=<?php echo "plan_s_l_". $date[1] ."_time"; ?>>分
-                            <button type="button" class="btn" value=<?php echo "plan_s_l_". $count_s_l ."_box"; ?> onclick="hidden_spot(value)">削除</button>
-                        </li>
-                    <?php } ?>
-                </ul>
-                <input type="hidden" id="list-ids" name="list-ids" />
-            </div>
-
-            <div class="sortable">
-                <ul>
-                        <li id="plan_lunch_box">
-                            <img id="pin" width="20" height="20" src="./icons/pop_lunch.png" alt="昼食予定地のアイコン" title="昼食予定地">
-                            <?php echo $lunch_name?><br>
-                            <input type="number" value="<?php echo $making_plan[2][2]; ?>" id="plan_lunch_time" name="plan_lunch_time">分
-                            <button type="button" value="" onclick="hidden_spot('plan_lunch_box')">削除</button>
-                        </li>
-                </ul>
-            </div>
-
-            <div class="sortable">
-                <ul id="sort2">
-                    <?php $count_l_d = 0; ?>
-                    <?php foreach($plan_l_d_spots as $date) { ?>
-                        <?php $count_l_d += 1; ?>
-                        <li id="<?php echo $date[0]; ?>" draggable="true">
-                            <input type="text" name="no[1]" value=<?php echo $count_l_d; ?> size="3" class="no_l_d" /><br>
-                            <img class="pin_l_d" width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $count_l_d . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
-                            <?php echo $date[2]?><br>
-                            <input type="number" value="<?php echo $date[1]; ?>" id=<?php echo "plan_l_d_". $date[1] ."_time"; ?> name=<?php echo "plan_l_d_". $date[1] ."_time"; ?>>分
-                            <button type="button" value="" onclick="post_restaurant(value)">削除</button>
-                        </li>
-                    <?php } ?>
-                </ul>
-                <input type="hidden" id="list-ids" name="list-ids" />
-            </div>
-
-            <div class="sortable">
-                <ul>
-                        <li id="plan_dinner_box">
-                            <img id="pin" width="20" height="20" src="./icons/pop_dinner.png" alt="夕食予定地のアイコン" title="夕食予定地">
-                            <?php echo $dinner_name?><br>
-                            <input type="number" value="<?php echo $making_plan[4][2]; ?>" id="plan_dinner_time" name="plan_dinner_time">分
-                            <button type="button" value="" onclick="hidden_spot('plan_dinner_box')">削除</button>
-                        </li>
-                </ul>
-            </div>
-
-            <div class="sortable">
-            <ul id="sort3">
-                <?php $count_d_g = 0; ?>
-                <?php foreach($plan_d_g_spots as $date) { ?>
-                    <?php $count_d_g += 1; ?>
-                    <li id="<?php echo $date[0]; ?>" draggable="true">
-                    <input type="text" name="no[1]" value=<?php echo $count_d_g; ?> size="3" class="no_d_g" /><br>
-                        <img class="pin_d_g" width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $count_d_g . ".png"; ?> alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
-                        <?php echo $date[2]?><br>
-                        <input type="number" value="<?php echo $date[1]; ?>" id=<?php echo "plan_d_g_". $date[1] ."_time"; ?> name=<?php echo "plan_d_g_". $date[1] ."_time"; ?>>分
-                        <button type="button" value="" onclick="post_restaurant(value)">削除</button>
-                    </li>
-                <?php } ?>
-            </ul>
-            <input type="hidden" id="list-ids" name="list-ids" />
-            </div>
-
-            <div class="sortable">
-                <ul>
-                        <li id="<?php echo $making_plan[6][0]; ?>">
-                            <img id="pin" width="20" height="20" src="./icons/pop_goal.png" alt="終了駅のアイコン" title="終了駅">
-                            <?php echo $goal_station_name?><br>
-                            <input type="time" value="<?php echo $making_plan[6][2]; ?>" id="plan_goal_time" name="plan_goal_time">分
-                        </li>
-                </ul>
-            </div>
-        </div>
-
-        <div id="sightseeing_plan">
-            <b>開始駅:</b>
-            <img id="pin" width="20" height="30" src="./markers/start.png" alt="開始駅のアイコン" title="開始駅">
-            <div id="start_name">
-                <?php echo htmlspecialchars($start_station_name, ENT_QUOTES); ?>
-            </div><br>
-
-            <b>昼食前に訪れる観光スポット:</b>
-            <img id="pin" width="20" height="30" src="./markers/s_l_icon_explain.png" alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
-            <div id="s_l_spots_line">
-                <?php display_frame($s_l_spots_name, 1) ?>
-            </div>
-            <br>
-
-            <b>昼食予定地:</b>
-            <img id="pin" width="20" height="30" src="./markers/lunch.png" alt="昼食予定地のアイコン" title="昼食予定地">
-            <div id="lunch_name">
-                <?php echo htmlspecialchars($lunch_name, ENT_QUOTES); ?>
-            </div><br>
-
-            <b>昼食後に訪れる観光スポット:</b>
-            <img id="pin" width="20" height="30" src="./markers/l_d_icon_explain.png" alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
-            <div id="l_d_spots_line">
-                <?php display_frame($l_d_spots_name, 2) ?>
-            </div>
-            <br>
-
-            <b>夕食予定地:</b>
-            <img id="pin" width="20" height="30" src="./markers/dinner.png" alt="夕食予定地のアイコン" title="夕食予定地">
-            <div id="dinner_name">
-                <?php echo htmlspecialchars($dinner_name, ENT_QUOTES); ?>
-            </div><br>
-
-            <b>夕食前に訪れる観光スポット:</b>
-            <img id="pin" width="20" height="30" src="./markers/d_g_icon_explain.png" alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
-            <div id="d_g_spots_line">
-                <?php display_frame($d_g_spots_name, 3) ?>
-            </div>
-            <br>
-
-            <b>終了駅:</b>
-            <img id="pin" width="20" height="30" src="./markers/goal.png" alt="終了駅のアイコン" title="終了駅">
-            <div id="goal_name">
-                <?php echo htmlspecialchars($goal_station_name, ENT_QUOTES); ?>
-            </div>
-        </div>
-
-        <h2>アンケート</h2>
-        <p>
-            <?php
-            print "アンケートの回答を締め切りました。ご回答くださった方々、誠にありがとうございました。";
-            /*
-            if ($frameresult["survey"]) {
-                print "<form action=\"\" method=\"POST\">";
-                print "<input type=\"submit\" id=\"survey\" name=\"survey\" value=\"回答する\" onClick=\"window.open('https://forms.gle/amw8j1wJDPcAn29h7?openExternalBrowser=1','_blank')\"><br>";
-                print "</form>";
-                print "回答は<font color=\"red\">1回</font>のみです<br>";
-                print "<b>システムを1度以上利用してからご回答ください</b>";
-            } else {
-                print "ご回答ありがとうございました";
-            }
-            */
-            ?>
-        </p>
-
-    </div>
-
-    <div id="toggle_menu">
-        <label for="menu_label">≡メニュー</label>
-        <input type="checkbox" id="menu_label" />
-
-        <div id="menu">
-            <ul>
-                <li><a href="home.php">ホーム</a></li>
-
-                <li><a href="explain.php">使い方</a></li>
-
-                <li><a>観光計画作成</a>
-                    <ul>
-                        <li><a href="set_station.php">開始・終了駅の設定</a></li>
-                        <li><a href="search.php">飲食店の検索・決定</a></li>
-                        <li><a id="toggle_keiro" name="toggle_keiro" href="sightseeing_spots_selection_map.php">観光スポット選択</a></li>
-                    </ul>
-                </li>
-
-                <li><a>観光支援</a>
-                    <ul>
-                        <li><a href="set_station.php">周辺スポットの検索</a></li>
-                        <li><a href="search.php">ナビゲーション</a></li>
-                    </ul>
-                </li>
-
-                <li><a href="view.php">スポット一覧</a></li>
-
-                <li><a>マイページ</a>
-                    <ul>
-                        <li><a id="toggle_see_myroute" name="toggle_see_myroute" href="see_myroute.php">作成した観光計画を見る</a></li>
-                        <li><a href="my_page.php">登録情報変更</a></li>
-                        <li><a href="logout.php">ログアウト</a></li>
-                    </ul>
-                </li>
-
-            </ul>
-        </div>
-    </div>
-
-    <div id="toggle_menu">
-        <label for="menu_label2">≡設定情報</label>
-        <input type="checkbox" id="menu_label2" />
-
-        <div id="menu">
-            <ul>
-                <li>
-                    <h2>会員情報</h2>
-                    <ul>
-                        <li><b>名前:</b> <?php echo htmlspecialchars($_SESSION["user_name"], ENT_QUOTES); ?></li>
-
-                        <li><b>年代:</b> <?php if (!$frameresult["age"]) { ?>未回答
-                            <?php } else { echo htmlspecialchars($frameresult["age"], ENT_QUOTES); ?>代 <?php } ?></li>
-                        
-                        <li><b>性別:</b> <?php echo htmlspecialchars($frameresult["gender"], ENT_QUOTES); ?></li>
-                    </ul>
-                </li>
-
-                <li>
-                    <h2>現在の観光計画</h2>
-                    <ul>
-                        <li><b>開始駅:</b>
-                            <img id="pin" width="20" height="20" src="./icons/pop_start.png" alt="開始駅のアイコン" title="開始駅">
-                            <div id="start_name"><?php echo htmlspecialchars($start_station_name, ENT_QUOTES); ?></div>
-                        </li><br>
-
-                        <li>
-                            <b>昼食前に訪れる観光スポット:</b>
-                            <img id="pin" width="20" height="20" src="./markers/pop_icon1_f.png" alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
-                            <div id="toggle_s_l_spots_line">
-                                <?php display_frame($s_l_spots_name, 1) ?>
-                            </div>
-                        </li><br>
-
-                        <li><b>昼食予定地:</b>
-                            <img id="pin" width="20" height="20" src="./icons/pop_lunch.png" alt="昼食予定地のアイコン" title="昼食予定地">
-                            <div id="lunch_name"><?php echo htmlspecialchars($lunch_name, ENT_QUOTES); ?></div>
-                        </li><br>
-
-                        <li>
-                            <b>昼食後に訪れる観光スポット:</b>
-                            <img id="pin" width="20" height="20" src="./markers/pop_icon2_f.png" alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
-                            <div id="toggle_l_d_spots_line">
-                                <?php display_frame($l_d_spots_name, 2) ?>
-                            </div>
-                        </li><br>
-
-                        <li><b>夕食予定地:</b>
-                            <img id="pin" width="20" height="20" src="./icons/pop_dinner.png" alt="夕食予定地のアイコン" title="夕食予定地">
-                            <div id="dinner_name"><?php echo htmlspecialchars($dinner_name, ENT_QUOTES); ?></div>
-                        </li><br>
-
-                        <li>
-                            <b>夕食前に訪れる観光スポット:</b>
-                            <img id="pin" width="20" height="20" src="./markers/pop_icon3_f.png" alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
-                            <div id="toggle_d_g_spots_line">
-                                <?php display_frame($d_g_spots_name, 3) ?>
-                            </div>
-                        </li><br>
-
-                        <li><b>終了駅:</b>
-                            <img id="pin" width="20" height="20" src="./icons/pop_goal.png" alt="終了駅のアイコン" title="終了駅">
-                            <div id="goal_name"><?php echo htmlspecialchars($goal_station_name, ENT_QUOTES); ?></div>
-                        </li>
-                    </ul>
-                </li>
-
-                <li>
-                    <h2>アンケート</h2>
-                    <?php
-                    print "アンケートの回答を締め切りました。ご回答くださった方々、誠にありがとうございました。";
-                    /*
-                    if ($frameresult["survey"]) {
-                        print "<form action=\"\" method=\"POST\">";
-                        print "<input type=\"submit\" id=\"survey\" name=\"survey\" value=\"回答する\" onClick=\"window.open('https://forms.gle/amw8j1wJDPcAn29h7?openExternalBrowser=1','_blank')\"><br>";
-                        print "</form>";
-                        print "回答は<font color=\"red\">1回</font>のみです<br>";
-                        print "<b>システムを1度以上利用してからご回答ください</b>";
-                    } else {
-                        print "ご回答ありがとうございました";
-                    }
-                    */
-                    ?>
-                </li>
-
-            </ul>
-        </div>
-    </div>
 </body>
 
 <!-- ドラッグアンドドロップを実装する用 -->

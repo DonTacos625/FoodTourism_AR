@@ -121,6 +121,7 @@ try {
     if (!isset($_SESSION["search_name"])) {
         $_SESSION["search_name"] = "";
     }
+
     //提出されたデータ
     if (isset($_POST["wifi"])) {
         $wifi = $_POST["wifi"];
@@ -235,6 +236,7 @@ try {
         $keywordCondition[] = " $column1 LIKE '%" . $search_word . "%' ";
     }
     $keywordCondition[] =  " show >= 1 ";
+;
 
     // ここで、 
     // [ 'product_name LIKE "%hoge%"', 
@@ -244,12 +246,13 @@ try {
 
     // これをANDでつなげて、文字列にする
     $keywordCondition = implode(' AND ', $keywordCondition);
+    //$keywordCondition = $keywordCondition . " ORDER BY id DESC LIMIT 3";
     //$keywordCondition = $keywordCondition . " OR (id = $lunch_shop_id OR id = $dinner_shop_id) ";
     //var_dump($keywordCondition);
 
     //sql文にする
     $sql = 'SELECT * FROM ' . $database_restaurants .' WHERE ' . $keywordCondition . ' ';
-
+    var_dump($sql);
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
 } catch (PDOException $e) {
@@ -474,7 +477,6 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             current_latitude = position.coords.latitude;
             current_longitude = position.coords.longitude;
             //alert(current_longitude);
-
         }
         test();
         //alert(current_longitude);
@@ -489,6 +491,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             "esri/Graphic",
             "esri/layers/GraphicsLayer",
             "esri/rest/support/Query",
+            "esri/rest/support/TopFeaturesQuery",
             "esri/rest/support/RouteParameters",
             "esri/rest/support/FeatureSet",
             "esri/symbols/PictureMarkerSymbol",
@@ -504,6 +507,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             Graphic,
             GraphicsLayer,
             Query,
+            TopFeaturesQuery,
             RouteParameters,
             FeatureSet,
             PictureMarkerSymbol,
@@ -858,7 +862,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                 let graphic = new Graphic({
                     geometry: {
                         type: "point",
-                        
+                        /*
                         latitude: evt.mapPoint.latitude,
                         longitude: evt.mapPoint.longitude,
                         
@@ -901,30 +905,37 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                 let query = featureLayer.createQuery();
                 query.geometry = graphic.geometry;
                 query.outFields = ["*"];
-                query.orderByFields = ["id DESC"];
+                query.orderByFields = ["lunch_min DESC"];
+                //query.topCount = 3,
+                //query.maxRecordCount = 3;
                 query.distance = 500;
                 query.units = "meters";
-                //スポット（避難所）に対する検索の実行
+
+                var query_count = 5;
+                var s_count = 0;
                 featureLayer.queryFeatures(query).then(function (featureSet) {
                     var result_fs = featureSet.features;
-
                     //検索結果が0件だったら、何もしない
-                    if (result_fs.length === 0) { return }
+                    //if (result_fs.length === 0) { return }
 
                     //前回の検索結果を、グラフィックスレイヤーから削除
                     resultsLayer.removeAll();
 
                     //検索結果に対する設定
                     var features = result_fs.map(function (graphic) {
-                        //シンボル設定
-                        graphic.symbol = {
-                            type: "simple-marker",
-                            style: "diamond",
-                            size: 10.5,
-                            color: "darkorange"
-                        };
-                        graphic.popupTemplate = food_template;
-                        return graphic;
+                        s_count += 1;
+                        if(s_count <= query_count){
+                            //シンボル設定
+                            graphic.symbol = {
+                                type: "simple-marker",
+                                style: "diamond",
+                                size: 10.5,
+                                color: "darkorange"
+                            };
+                            graphic.popupTemplate = food_template;
+                            //alert(s_count);
+                            return graphic;
+                        }
                     });
 
                     //検索結果と現在地を、グラフィックスレイヤーに登録（マップに表示）
