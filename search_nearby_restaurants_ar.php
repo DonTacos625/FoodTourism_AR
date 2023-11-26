@@ -301,6 +301,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             padding: 20px;
             z-index: 1000;
         }
+
         .overlay {
             display: none;
             position: fixed;
@@ -330,16 +331,20 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             top: 600px; /* Y coordinate, idem */
             z-index: 10; /* This should be needed only if the #webgl container has already some z-index value*/
         }
+        #result_list_btn {
+            position: absolute;
+            left: 600px; /* X coordinate, adjust as needed */
+            top: 600px; /* Y coordinate, idem */
+            z-index: 10; /* This should be needed only if the #webgl container has already some z-index value*/
+        }
     </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
     <script src="https://js.arcgis.com/4.21/"></script>
-    <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
     
     <script>
         var pointpic = "";
         var spot_array = [];
-        //spot_array.shift();
 
         var current_latitude = 0;
         var current_longitude = 0;
@@ -354,7 +359,6 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
 
         }
         test();
-        //alert(current_longitude);
 
         require([
             "esri/Map",
@@ -707,6 +711,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
 </head>
 
 <script type="text/javascript">
+var area_name = <?php echo json_encode($area_name); ?>;
 
 //画像の読み込みのためにリロード
 function reload() {
@@ -748,7 +753,7 @@ function reload() {
         //ポップアウトを編集
         var modal = document.querySelector(".modal");
         modal.style.display = "block";
-        modal.querySelector(".modal_img").setAttribute('src', `images/minatomirai/restaurants/${id}.jpg`);
+        modal.querySelector(".modal_img").setAttribute('src', `images/${area_name}/restaurants/${id}.jpg`);
         modal.querySelector(".modal_name").textContent = name;
         modal.querySelector(".modal_a").href = `restaurant_detail.php?restaurant_id=${id}`;
 
@@ -761,12 +766,20 @@ function reload() {
         document.querySelector(".overlay").style.display = "none";
         document.querySelector(".modal").style.display = "none";
         document.querySelector(".search_form").style.display = "none";
+        document.getElementById("result_table").style.display = "none";
     }
 
     function open_search_form() {
         var overlay = document.querySelector(".overlay");
         overlay.style.display = "block";
         var modal = document.querySelector(".search_form");
+        modal.style.display = "block";
+    }
+
+    function open_result_list() {
+        var overlay = document.querySelector(".overlay");
+        overlay.style.display = "block";
+        var modal = document.getElementById("result_table");
         modal.style.display = "block";
     }
 
@@ -823,7 +836,7 @@ function reload() {
                 newImgDiv.id = 'ar_imgbox';
                 const newImg = document.createElement("img");
                 newImg.id = 'ar_img';
-                const src = `images/minatomirai/restaurants/${a_id}.jpg`;
+                const src = `images/${area_name}/restaurants/${a_id}.jpg`;
                 newImg.setAttribute('src', src);
                 newImgDiv.appendChild(newImg);
                 newDiv.appendChild(newImgDiv);
@@ -855,13 +868,13 @@ function reload() {
                 const a_name = array[i][3];
                //表示するhtmlの作成
                 const newDiv = document.createElement("div");
-                newDiv.className = 'target';
+                newDiv.className = 'target_name';
                 newDiv.id = `info_name_box${i+1}`;
                 newDiv.textContent = a_name;
                 $results_name_form.appendChild(newDiv);
             }
         }
-        //検索結果の名前を表示する
+        //検索結果の写真を表示する
         function make_image_table(array) {
             $results_image_form = document.getElementById("result_image_table");
             $results_image_form.innerHTML = "";
@@ -871,17 +884,16 @@ function reload() {
                 //表示する画像の作成
                 const newImgDiv = document.createElement("div");
                 const newImg = document.createElement("img");
-                const src = `images/minatomirai/restaurants/${a_id}.jpg`;
+                const src = `images/${area_name}/restaurants/${a_id}.jpg`;
                 newImg.setAttribute('src', src);
                 newImgDiv.appendChild(newImg);
 
-                newImgDiv.className = 'target';
+                newImgDiv.className = 'target_image';
                 newImgDiv.id = `info_image_box${i+1}`;
                 $results_image_form.appendChild(newImgDiv);
             }
         }
 
-        var flag = 0;
         function change_display(value){
             var array = spot_array;
             if(value == "small"){
@@ -889,10 +901,9 @@ function reload() {
                     const target = document.getElementById(`planebox${i+1}`);
                     const material = `shader:html;target: #info_name_box${i+1};`
                     target.setAttribute('material', material);
-                    target.setAttribute('width', "6");
-                    target.setAttribute('height', "4");
+                    target.setAttribute('width', "5");
+                    target.setAttribute('height', "3");
                 }
-                flag = 1;
             } else if(value == "default"){
                 for (var i = 0; i < array.length; i++) {
                     const target = document.getElementById(`planebox${i+1}`);
@@ -901,13 +912,14 @@ function reload() {
                     target.setAttribute('width', "16");
                     target.setAttribute('height', "10");
                 }
-                flag = 0;
             } else if(value == "image"){
-                const target = document.getElementById(`planebox${i+1}`);
-                const material = `shader:html;target: #info_image_box${i+1};`
-                target.setAttribute('material', material);
-                target.setAttribute('width', "8");
-                target.setAttribute('height', "5");
+                for (var i = 0; i < array.length; i++) {
+                    const target = document.getElementById(`planebox${i+1}`);
+                    const material = `shader:html;target: #info_image_box${i+1};`
+                    target.setAttribute('material', material);
+                    target.setAttribute('width', "8");
+                    target.setAttribute('height', "5");
+                }
             } else {
                 
             }
@@ -946,7 +958,14 @@ function reload() {
                 const newPlane = document.createElement("a-plane");
                 newPlane.id = `planebox${i+1}`;
                 newPlane.setAttribute('look-at', "[gps-new-camera]");
-                newPlane.setAttribute('position', "0 0 0");
+                if(i%2 == 0){
+                    newPlane.setAttribute('position', "0 -5 0");
+                } else if(i%3 == 0){
+                    newPlane.setAttribute('position', "0 5 0");
+                } else {
+                    newPlane.setAttribute('position', "0 0 0");
+                }
+                //newPlane.setAttribute('position', "0 0 0");
                 newPlane.setAttribute('width', "16");
                 newPlane.setAttribute('height', "10");
                 const material = `shader:html;target: #infobox${i+1};`
@@ -980,6 +999,7 @@ function reload() {
 
     <div id="result_name_table">
     </div>
+
     <div id="result_image_table">
     </div>
 
@@ -1019,6 +1039,7 @@ function reload() {
         <option value="small"> 店名だけ表示 </option>
         <option value="image"> 写真だけ表示 </option>
     </select>
+    <button id="result_list_btn" type=button onclick="open_result_list()">ボタン</button>
 
     <div class="container">
     <main>

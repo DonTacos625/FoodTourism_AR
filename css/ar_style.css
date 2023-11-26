@@ -38,7 +38,17 @@
               /*z-index: 1;*/
           }
 
-          .target_name {
+        .target_name {
+            position: absolute;
+            width: 3200px;
+            height: 2000px;
+            font-size: 3000%;
+            background-color: #FFF;
+            display: hidden;
+            border: solid;
+            border-color: #111101;
+        }
+        .target_image {
             position: absolute;
             width: 3200px;
             height: 2000px;
@@ -47,8 +57,13 @@
             display: hidden;
             border: solid;
             border-color: #111101;
-            /*z-index: 1;*/
         }
+        .target_image img {
+            width:100%;
+            height:auto;
+            max-width:100%;
+            max-height:100%;
+          }
 
           .target #ar_imgbox{
             position: left;

@@ -101,33 +101,42 @@ $making_plan = [["start", $plan_start_station_id, $plan_start_time],
                ];
 //var_dump($plan_s_l_spots);
 
+$area = 1;
 //DB接続
 require "connect_database.php";
 
 //利用するデータベースを選択
-$area = 1;
-$center = [139.635, 35.453];
-$database_stations = "minatomirai_stations";
-$database_restaurants = "minatomirai_restaurants";
-$database_sightseeing_spots = "minatomirai_sightseeing_spots";
-$map_stations = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_minatomirai_stations/FeatureServer";
-$map_restaurants = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_minatomirai_restaurants/FeatureServer";
-$map_sightseeing_spots = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_minatomirai_sightseeing_spots/FeatureServer";
-
-
-/*
-$area = 2;
-$database_stations = "hasune_stations";
-$database_restaurants = "hasune_restaurants";
-$database_sightseeing_spots = "hasune_sightseeing_spots";
-$map_stations = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_stations/FeatureServer";
-$map_restaurants = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_restaurants/FeatureServer";
-$map_sightseeing_spots = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_minatomirai_sightseeing_spots/FeatureServer";
-*/
-//$database_restaurants ="hasune_restaurants";
-//$map_stations = "";
-//$map_restaurants = "";
-//$map_sightseeing_spots = "";
+if($area == 1){
+    //$area = 1;
+    $area_name = "minatomirai";
+    $center = [139.635, 35.453];
+    $database_stations = "minatomirai_stations";
+    $database_restaurants = "minatomirai_restaurants";
+    $database_sightseeing_spots = "minatomirai_sightseeing_spots";
+    $map_stations = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_minatomirai_stations/FeatureServer";
+    $map_restaurants = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_minatomirai_restaurants/FeatureServer";
+    $map_sightseeing_spots = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_minatomirai_sightseeing_spots/FeatureServer";
+} else if($area == 2){
+    //$area = 2;
+    $area_name = "hasune";
+    $center = [139.6790835, 35.78443256];
+    $database_stations = "hasune_stations";
+    $database_restaurants = "hasune_restaurants";
+    $database_sightseeing_spots = "hasune_sightseeing_spots";
+    $map_stations = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_stations/FeatureServer";
+    $map_restaurants = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_restaurants/FeatureServer";
+    $map_sightseeing_spots = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_sightseeing_spots/FeatureServer";
+} else if($area == 3){
+    //$area = 3;
+    $area_name = "chofu";
+    $center = [139.5436966, 35.65780459];
+    $database_stations = "chofu_stations";
+    $database_restaurants = "chofu_restaurants";
+    $database_sightseeing_spots = "chofu_sightseeing_spots";
+    $map_stations = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_chofu_stations/FeatureServer";
+    $map_restaurants = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_chofu_restaurants/FeatureServer";
+    $map_sightseeing_spots = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_sightseeing_spots/FeatureServer";
+}
 
 try {
 

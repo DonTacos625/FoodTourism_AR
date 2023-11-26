@@ -2,84 +2,7 @@
 
 require "frame.php";
 
-/*
-//stations_id設定
-if (isset($_SESSION["start_station_id"])) {
-    $start_station_id = $_SESSION["start_station_id"];
-} else {
-    $start_station_id = 0;
-}
-if (isset($_SESSION["goal_station_id"])) {
-    $goal_station_id = $_SESSION["goal_station_id"];
-} else {
-    $goal_station_id = 0;
-}
-$station_id = [$start_station_id, $goal_station_id];
-
-//food_shops_id設定
-if (isset($_SESSION["lunch_id"])) {
-    $lunch_shop_id = $_SESSION["lunch_id"];
-} else {
-    $lunch_shop_id = -1;
-}
-if (isset($_SESSION["dinner_id"])) {
-    $dinner_shop_id = $_SESSION["dinner_id"];
-} else {
-    $dinner_shop_id = -1;
-}
-$food_shop_id = [$lunch_shop_id, $dinner_shop_id];
-*/
-
 try {
-    /*
-    if (!isset($_SESSION["start_station_id"])) {
-        $start_info = [0, 0, "start"];
-
-        $start_keep_name = [0, "開始駅を選択してください"];
-    } else {
-        $stmt1 = $pdo->prepare("SELECT * FROM $database_stations WHERE id = :id");
-        $stmt1->bindParam(":id", $start_station_id);
-        $stmt1->execute();
-        $result1 = $stmt1->fetch(PDO::FETCH_ASSOC);
-        $start_info = [$result1["x"], $result1["y"], "start"];
-
-        $start_keep_name = [$start_station_id, $result1["name"]];
-    }
-
-    if (!isset($_SESSION["lunch_id"])) {
-        $lunch_info = [0, 0, "lunch"];
-    } else {
-        $stmt2 = $pdo->prepare("SELECT * FROM $database_restaurants WHERE id = :id");
-        $stmt2->bindParam(":id", $lunch_shop_id);
-        $stmt2->execute();
-        $result2 = $stmt2->fetch(PDO::FETCH_ASSOC);
-        $lunch_info = [$result2["x"], $result2["y"], "lunch"];
-    }
-
-    if (!isset($_SESSION["dinner_id"])) {
-        $dinner_info = [0, 0, "dinner"];
-    } else {
-        $stmt3 = $pdo->prepare("SELECT * FROM $database_restaurants WHERE id = :id");
-        $stmt3->bindParam(":id", $dinner_shop_id);
-        $stmt3->execute();
-        $result3 = $stmt3->fetch(PDO::FETCH_ASSOC);
-        $dinner_info = [$result3["x"], $result3["y"], "dinner"];
-    }
-
-    if (!isset($_SESSION["goal_station_id"])) {
-        $goal_info = [0, 0, "goal"];
-
-        $goal_keep_name = [0, "終了駅を選択してください"];
-    } else {
-        $stmt4 = $pdo->prepare("SELECT * FROM $database_stations WHERE id = :id");
-        $stmt4->bindParam(":id", $goal_station_id);
-        $stmt4->execute();
-        $result4 = $stmt4->fetch(PDO::FETCH_ASSOC);
-        $goal_info = [$result4["x"], $result4["y"], "goal"];
-
-        $goal_keep_name = [$goal_station_id, $result4["name"]];
-    }
-    */
 
     //SESSION変数初期値設定
     if (!isset($_SESSION["wifi"])) {
@@ -429,7 +352,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
 
         }
 
-        /*
+        
         .move_box {
             position: relative;
             width: 76vw;
@@ -457,7 +380,6 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             }
 
         }
-        */
     </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
@@ -630,22 +552,6 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                 }]
             };
             */
-            //スタートとゴールの駅を決める
-            /*
-            var station_id = <?php //echo json_encode($station_id); ?>;
-            var station_feature_sql = "";
-
-            for (var i = 0; i < station_id.length; i++) {
-                if (i != station_id.length - 1) {
-                    station_feature_sql += "ID = "
-                    station_feature_sql += station_id[i];
-                    station_feature_sql += " OR "
-                } else if (i == station_id.length - 1) {
-                    station_feature_sql += "ID = "
-                    station_feature_sql += station_id[i];
-                }
-            }
-            */
 
             //飲食店のIDから表示するスポットを決める
             var food_feature_sql = "";
@@ -733,64 +639,6 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                 }
             });
 
-            /*
-            //phpの経路情報をjavascript用に変換           
-            var keikaku = <?php //echo json_encode($keikaku); ?>;
-            //最初に経路表示する処理
-            function start_map(plan, Layer) {
-                //開始駅と終了駅が同じの場合のフラグを設定
-                var start_point = plan[0];
-                var goal_point = plan.slice(-1)[0];
-                var mode_change = 0;
-                if (start_point[0] == goal_point[0] && start_point[1] == goal_point[1]) {
-                    mode_change = 1;
-                }
-                for (var j = 0; j < plan.length; j++) {
-                    if (!(plan[j][0] == 0)) {
-                        var point = {
-                            type: "point",
-                            x: plan[j][0],
-                            y: plan[j][1]
-                        };
-                        if (plan[j].length > 2) {
-                            if (plan[j][2] == "start") {
-                                if (mode_change == 1) {
-                                    pointpic = "./markers/start_and_goal.png";
-                                } else {
-                                    pointpic = "./markers/start.png";
-                                }
-                            } else if (plan[j][2] == "lunch") {
-                                pointpic = "./markers/lunch.png";
-                            } else if (plan[j][2] == "dinner") {
-                                pointpic = "./markers/dinner.png";
-                            } else if (plan[j][2] == "goal") {
-                                if (mode_change == 1) {
-                                    pointpic = "./markers/start_and_goal.png";
-                                } else {
-                                    pointpic = "./markers/goal.png";
-                                }
-                            } else {
-                                pointpic = "./markers/ltblue.png";
-                            }
-                        }
-                        var stopSymbol = new PictureMarkerSymbol({
-                            url: pointpic,
-                            width: "30px",
-                            height: "46.5px"
-                        });
-                        var stop = new Graphic({
-                            geometry: point,
-                            symbol: stopSymbol
-                        });
-                        Layer.add(stop);
-                    }
-                }
-            }
-
-            start_map(keikaku, planLayer);
-            */
-
-
             function add_point(pic, Layer) {
                 const point = {
                     type: "point",
@@ -854,32 +702,6 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                 popupTemplate: food_template,
                 definitionExpression: food_feature_sql
             });
-
-            /*
-                // 地図上の任意地点をクリックした時のイベント
-                view.on("click", function (evt) {
-                //クリックした位置のグラフィックを作成
-                let graphic = new Graphic({
-                    geometry: {
-                        type: "point",
-                        /*
-                        latitude: evt.mapPoint.latitude,
-                        longitude: evt.mapPoint.longitude,
-                        
-                        latitude: current_latitude,
-                        longitude: current_longitude,
-                        spatialReference: view.spatialReference
-                    },
-                    symbol: {
-                        type: "simple-marker",
-                        style: "diamond",
-                        size: 20,
-                        color: [226, 119, 40]
-                    }
-                })
-                resultsLayer.add(graphic);
-            });
-            */
 
             var current_Symbol = new PictureMarkerSymbol({
                 url: "./markers/d_g_spot3.png",
@@ -994,6 +816,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
         <div id="detailbox">
                 <h3 id="search_start">飲食店の検索・決定</h3>
                 <a id="view_result" name="view_result" href="search_nearby_restaurants_ar.php">ARで結果を表示</a><br>
+                <a id="view_result2" name="view_result2" href="search_nearby_sightseeing_spots_map.php">観光スポット</a><br>
                 <div class="search_form">
                     <form action="search_nearby_restaurants_map.php" method="post">
                         WIFI：

@@ -779,29 +779,6 @@ $keikaku[] = $goal_info;
             }
             display_route(keikaku);
 
-            /*
-            //読み込みせずに経路を更新したかった
-            function remake_route() {
-                jQuery(function($) {
-                    const dummy = 1;
-                    $.ajax({
-                        url: "./ajax_remake_route.php",
-                        type: "POST",
-                        dataType: "json",
-                        data: {
-                            post_data_1: dummy
-                        },
-                        error: function(XMLHttpRequest, textStatus, errorThrown) {
-                            alert("ajax通信に失敗しました");
-                        },
-                        success: function(response) {
-                            display_route(response);
-                        }
-                    });
-                });
-            };
-            */
-
             // ルート表示用のレイヤーにデータを追加
             function showRoute(data) {
                 const routeResult = data.routeResults[0].route;
@@ -850,12 +827,8 @@ $keikaku[] = $goal_info;
             <div>
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
-            <h3>作成した観光計画</h3>
+            <h3>目的地までの経路</h3>
             <div class="icon_explain">
-                <b>
-                    <div id="calo_km">正味カロリー：1312.00 kcal<br>
-                                      （摂取カロリー 1400 kcal - 消費カロリー 88 kcal）</div>
-                </b>
                 <b>
                     <div id="length_km">総歩行距離：0.00 km</div>
                 </b>
@@ -873,14 +846,6 @@ $keikaku[] = $goal_info;
             </div>
             <div id="viewbox">
                 <div id="viewDiv"></div>
-                <p>プラン名：<br>
-	            <input type="text" id="plan_name" size="15" value="<?php echo $input_plan_name; ?>"></p>
-                <p>メモ：<br>
-	            <textarea id="plan_comment"><?php echo $input_plan_memo; ?></textarea><br>
-                <p>観光計画を公開しますか？：<br>
-                <input type="radio" id="plan_show" name="plan_show" value="1" <?php set_checked("plan_show", "1"); ?>>公開する
-                <input type="radio" id="plan_show" name="plan_show" value="0" <?php set_checked("plan_show", "0"); ?>>公開しない<br>
-                <button type="button" id="btn" onclick="upload_plan()" title="観光経路を保存します"><b>観光計画を保存する</b></button>
             </div>
         </main>
         <footer>

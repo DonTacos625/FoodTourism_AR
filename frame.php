@@ -126,6 +126,16 @@ if($area == 1){
     $map_stations = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_stations/FeatureServer";
     $map_restaurants = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_restaurants/FeatureServer";
     $map_sightseeing_spots = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_sightseeing_spots/FeatureServer";
+} else if($area == 3){
+    //$area = 3;
+    $area_name = "chofu";
+    $center = [139.5436966, 35.65780459];
+    $database_stations = "chofu_stations";
+    $database_restaurants = "chofu_restaurants";
+    $database_sightseeing_spots = "chofu_sightseeing_spots";
+    $map_stations = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_chofu_stations/FeatureServer";
+    $map_restaurants = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_chofu_restaurants/FeatureServer";
+    $map_sightseeing_spots = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_sightseeing_spots/FeatureServer";
 }
 
 /*
@@ -940,8 +950,8 @@ function up_frame(){
 
                 <li><a>観光支援</a>
                     <ul>
-                        <li><a href="set_station.php">周辺スポットの検索</a></li>
-                        <li><a href="search.php">ナビゲーション</a></li>
+                        <li><a href="search_nearby_restaurants_map.php">周辺スポットの検索</a></li>
+                        <li><a href="navigation_map.php">ナビゲーション</a></li>
                     </ul>
                 </li>
 

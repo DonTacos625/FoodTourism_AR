@@ -197,10 +197,12 @@ if (!empty($_POST["signup"])) {
             color: #fff;
             white-space: nowrap;
             border-left: 5px solid #000080;
+            width: 12vw;
         }
 
         #signupbox table td {
             text-align: left;
+            width: 12vw;
         }
 
         @media screen and (max-width: 768px) {
@@ -253,11 +255,11 @@ if (!empty($_POST["signup"])) {
 
                     </table>
 
-                    <h3>任意登録</h3>
+                <h3>任意登録</h3>
                     <table>
                         <tr>
-                            <th rowspan="2" scope="rowgroup"><label for="user_weight">　　　　体重　　　　</label></th>
-                            <td scope="row"><small>体重を入力してください　　　　　　　　　　　</small></td>
+                            <th rowspan="2" scope="rowgroup"><label for="user_weight">体重</label></th>
+                            <td scope="row"><small>体重を入力してください</small></td>
                         </tr>
                         <tr>
                             <td scope="row"><input type="number" id="user_weight" name="user_weight" placeholder="体重を入力" value="<?php echo $user_weight_f; ?>">kg</td>
