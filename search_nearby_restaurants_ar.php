@@ -621,8 +621,8 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             view.ui.add(locate, "top-left");
 
             var featureLayer = new FeatureLayer({
-                //url: "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_restaurants/FeatureServer",
-                url :"https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_chofu_restaurants/FeatureServer",
+                url: "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_restaurants/FeatureServer",
+                //url :"https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_chofu_restaurants/FeatureServer",
                 id: "featureLayer",
                 popupTemplate: food_template,
                 definitionExpression: food_feature_sql
@@ -694,7 +694,8 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
 
                     var test_row = spot_array;
                     var table_column = ["ID", "緯度", "経度", "店舗名", "営業時間", "定休日", "予算"];
-                    make_table(test_row, table_column);
+                    //make_table(test_row, table_column);
+                    make_little_table(test_row, table_column);
                     make_name_table(test_row);
                     make_image_table(test_row);
                     make_ar_object(test_row);
@@ -841,6 +842,54 @@ function reload() {
                 newImg.setAttribute('src', src);
                 newImgDiv.appendChild(newImg);
                 newDiv.appendChild(newImgDiv);
+                //テーブルの作成
+                const newTableBox = document.createElement("div");
+                newTableBox.id = 'ar_tablebox';
+                const newTable = document.createElement("table");
+                for (var j = 3; j < columns.length; j++) {
+                    const newtablecell = make_tablecell(array, columns[j], i, j);
+                    newTable.appendChild(newtablecell);
+                }
+                newTableBox.appendChild(newTable);
+                newDiv.appendChild(newTableBox);
+                $results_form.appendChild(newDiv);
+               
+                count += 1;
+            }
+            if (count == 0) {
+                alert("検索条件に該当する観光スポットはありませんでした");
+            }
+        }
+
+        //検索結果を表示する
+        function make_little_table(array, columns) {
+            var count = 0;
+            
+            $results_form = document.getElementById("result_table");
+            $results_form.innerHTML = "";
+            $results_form.className = 'tables';
+
+            for (var i = 0; i < array.length; i++) {
+                const a_id = array[i][0];
+                const a_lattitude = array[i][1];
+                const a_longitude = array[i][2];
+                const a_name = array[i][3];
+
+               //表示するhtmlの作成
+                const newDiv = document.createElement("div");
+                newDiv.id = `infobox${i+1}`;
+                newDiv.className = 'target';
+                /*
+                //表示する画像の作成
+                const newImgDiv = document.createElement("div");
+                newImgDiv.id = 'ar_imgbox';
+                const newImg = document.createElement("img");
+                newImg.id = 'ar_img';
+                const src = `images/${area_name}/restaurants/${a_id}.jpg`;
+                newImg.setAttribute('src', src);
+                newImgDiv.appendChild(newImg);
+                newDiv.appendChild(newImgDiv);
+                */
                 //テーブルの作成
                 const newTableBox = document.createElement("div");
                 newTableBox.id = 'ar_tablebox';
