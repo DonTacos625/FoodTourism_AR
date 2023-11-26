@@ -700,7 +700,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                     make_image_table(test_row);
                     make_ar_object(test_row);
 
-                    reload()
+                    //reload()
                 });
             };
 
