@@ -266,7 +266,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             text-align: left;
             white-space: nowrap;
             background: #EEEEEE;
-            width: 30vw;
+            width: 5vw;
         }
         .target #ar_tablebox table td {
             background: #EEEEEE;
@@ -274,9 +274,9 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
         }
 
         #target1 {
-            width: 3200px;
-            height: 2000px;
-            font-size: 1000%;
+            width: 640px;
+            height: 500px;
+            font-size: 200%;
         }
 
         .modal {
@@ -327,14 +327,14 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
         }
         #change_display_btn {
             position: absolute;
-            left: 400px; /* X coordinate, adjust as needed */
-            top: 600px; /* Y coordinate, idem */
+            left: 200px; /* X coordinate, adjust as needed */
+            top: 400px; /* Y coordinate, idem */
             z-index: 10; /* This should be needed only if the #webgl container has already some z-index value*/
         }
         #result_list_btn {
             position: absolute;
-            left: 600px; /* X coordinate, adjust as needed */
-            top: 600px; /* Y coordinate, idem */
+            left: 100px; /* X coordinate, adjust as needed */
+            top: 400px; /* Y coordinate, idem */
             z-index: 10; /* This should be needed only if the #webgl container has already some z-index value*/
         }
     </style>
