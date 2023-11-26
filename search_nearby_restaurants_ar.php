@@ -621,7 +621,8 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             view.ui.add(locate, "top-left");
 
             var featureLayer = new FeatureLayer({
-                url: "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_restaurants/FeatureServer",
+                //url: "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_restaurants/FeatureServer",
+                url :"https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_chofu_restaurants/FeatureServer",
                 id: "featureLayer",
                 popupTemplate: food_template,
                 definitionExpression: food_feature_sql
