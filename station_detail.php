@@ -181,7 +181,7 @@ try {
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
     <script src="https://js.arcgis.com/4.21/"></script>
-    <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
     <script>
         require([
@@ -533,7 +533,7 @@ try {
                                 <td>
                                     <input type="radio" id="start_or_goal" name="start_or_goal" value="1">開始駅
                                     <input type="radio" id="start_or_goal" name="start_or_goal" value="2">終了駅<br>
-                                    <input type="time" id="station_time" name="station_time" value="10:00" required>
+                                    <input type="time" id="station_time" name="station_time" value="10:00" required hidden>
                                     <button type="button" value=<?php echo $result1["id"]; ?> onclick="post_station(value)">設定する</button>
                                 </td>
                             </tr>

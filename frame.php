@@ -774,7 +774,6 @@ function up_frame(){
                         <li id="<?php echo $making_plan[0][0]; ?>">
                             <img id="pin" width="20" height="20" src="./icons/pop_start.png" alt="開始駅のアイコン" title="開始駅">
                             <?php echo $start_station_name?><br>
-                            <input type="time" value="<?php echo $making_plan[0][2]; ?>" id="plan_start_time" name="plan_start_time">分
                         </li>
                 </ul>
             </div>
@@ -857,7 +856,6 @@ function up_frame(){
                         <li id="<?php echo $making_plan[6][0]; ?>">
                             <img id="pin" width="20" height="20" src="./icons/pop_goal.png" alt="終了駅のアイコン" title="終了駅">
                             <?php echo $goal_station_name?><br>
-                            <input type="time" value="<?php echo $making_plan[6][2]; ?>" id="plan_goal_time" name="plan_goal_time">分
                         </li>
                 </ul>
             </div>

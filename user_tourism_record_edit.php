@@ -19,12 +19,12 @@ $station_id = [$start_station_id, $goal_station_id];
 
 //food_shops_id設定
 if (!isset($_SESSION["lunch_id"])) {
-    $lunch_shop_id = 0;
+    $lunch_shop_id = -1;
 } else {
     $lunch_shop_id = $_SESSION["lunch_id"];
 }
 if (!isset($_SESSION["dinner_id"])) {
-    $dinner_shop_id = 0;
+    $dinner_shop_id = -1;
 } else {
     $dinner_shop_id = $_SESSION["dinner_id"];
 }
