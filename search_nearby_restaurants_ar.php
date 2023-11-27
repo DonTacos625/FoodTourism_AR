@@ -290,6 +290,17 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             padding: 20px;
             z-index: 1000;
         }
+        .modal table th {
+            text-align: left;
+            white-space: nowrap;
+            background: #EEEEEE;
+            width: 5vw;
+        }
+        .modal table td {
+            background: #EEEEEE;
+            padding: 3px;
+        }
+
         .search_form {
             display: none;
             position: fixed;
@@ -337,6 +348,18 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             top: 400px; /* Y coordinate, idem */
             z-index: 10; /* This should be needed only if the #webgl container has already some z-index value*/
         }
+        @media screen and (min-width:769px) and (max-width:1366px) {
+
+        }
+
+        @media screen and (max-width:768px) {
+            .modal {
+                font-size: 2vw;
+            }
+            .search_form {
+                font-size: 2vw;
+            }
+        }
     </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
@@ -349,7 +372,26 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
         var current_latitude = 0;
         var current_longitude = 0;
         function test() {
-            navigator.geolocation.getCurrentPosition(test2);
+            navigator.geolocation.getCurrentPosition(
+                    test2,
+                    // 取得失敗した場合
+                    function (error) {
+                    switch (error.code) {
+                        case 1: //PERMISSION_DENIED
+                        alert("位置情報の利用が許可されていません");
+                        break;
+                        case 2: //POSITION_UNAVAILABLE
+                        alert("現在位置が取得できませんでした");
+                        break;
+                        case 3: //TIMEOUT
+                        alert("タイムアウトになりました");
+                        break;
+                        default:
+                        alert("その他のエラー(エラーコード:" + error.code + ")");
+                        break;
+                    }
+                }
+            );
         }
 
         function test2(position) {
@@ -1037,12 +1079,6 @@ function reload() {
 </script>
 
 <body>
-    <div id="target1" class="target">
-        <img src="images/minatomirai/restaurants/0.jpg" alt="A-Frame">
-        <div class="cf"><h4><?php echo $station_name ?></h4>
-        <p>A-Frameは簡単にWeb VRが実現できるフレームワークです。</p></div>
-        <p class="detail">320px × 200px</p>
-    </div>
 
     <div id="result_table">
     </div>
@@ -1093,9 +1129,7 @@ function reload() {
 
     <div class="container">
     <main>
-        <div id="viewbox">
-            <div id="viewDiv"></div>
-        </div>
+
         
         <div class="search_form">
             <form action="search_nearby_restaurants_ar.php" method="post">

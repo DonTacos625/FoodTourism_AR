@@ -8,6 +8,9 @@ try {
     if (!isset($_SESSION["search_spots_category"])) {
         $_SESSION["search_spots_category"] = "0";
     }
+    if (!isset($_SESSION["spots_around_distance"])) {
+        $_SESSION["spots_around_distance"] = "500";
+    }
 
     //提出されたデータ
     if (isset($_POST["category"])) {
@@ -15,6 +18,12 @@ try {
         $_SESSION["search_spots_category"] = $categoryName;
     } else {
         $categoryName = $_SESSION["search_spots_category"];
+    }
+    if (isset($_POST["spots_around_distance"])) {
+        $spots_around_distance = $_POST["spots_around_distance"];
+        $_SESSION["spots_around_distance"] = $spots_around_distance;
+    } else {
+        $spots_around_distance = $_SESSION["spots_around_distance"];
     }
 
     $keywordCondition = [];
@@ -264,7 +273,26 @@ if ($categoryName == "0") {
         var current_latitude = 0;
         var current_longitude = 0;
         function test() {
-            navigator.geolocation.getCurrentPosition(test2);
+            navigator.geolocation.getCurrentPosition(
+                    test2,
+                    // 取得失敗した場合
+                    function (error) {
+                    switch (error.code) {
+                        case 1: //PERMISSION_DENIED
+                        alert("位置情報の利用が許可されていません");
+                        break;
+                        case 2: //POSITION_UNAVAILABLE
+                        alert("現在位置が取得できませんでした");
+                        break;
+                        case 3: //TIMEOUT
+                        alert("タイムアウトになりました");
+                        break;
+                        default:
+                        alert("その他のエラー(エラーコード:" + error.code + ")");
+                        break;
+                    }
+                }
+            );
         }
 
         function test2(position) {
@@ -574,6 +602,8 @@ if ($categoryName == "0") {
                 width: "30px",
                 height: "46.5px"
             });
+
+            const distance = <?php echo json_encode($spots_around_distance); ?>;
             nearby_spots = (geom) => {
                 let graphic = new Graphic({
                     geometry: {
@@ -596,7 +626,7 @@ if ($categoryName == "0") {
                 query.orderByFields = ["id DESC"];
                 //query.topCount = 3,
                 //query.maxRecordCount = 3;
-                query.distance = 500;
+                query.distance = distance;
                 query.units = "meters";
 
                 var query_count = 5;
@@ -684,6 +714,12 @@ if ($categoryName == "0") {
                 <a id="view_result" name="view_result" href="search_nearby_sightseeing_spots_ar.php">ARで結果を表示</a><br>
                 <div class="search_form">
                     <form action="search_nearby_sightseeing_spots_map.php" method="post">
+                        観光スポットの検索範囲：<br>
+                        <input type="radio" id="spots_around_distance" name="spots_around_distance" value="300" <?php set_checked("spots_around_distance", "300"); ?>>周囲300m
+                        <input type="radio" id="spots_around_distance" name="spots_around_distance" value="400" <?php set_checked("spots_around_distance", "400"); ?>>周囲400m
+                        <input type="radio" id="spots_around_distance" name="spots_around_distance" value="500" <?php set_checked("spots_around_distance", "500"); ?>>周囲500m
+                        <input type="radio" id="spots_around_distance" name="spots_around_distance" value="600" <?php set_checked("spots_around_distance", "600"); ?>>周囲600m<br>
+
                         観光スポットのカテゴリー：<br>
                         <input type="radio" id="category" name="category" value="0" <?php set_checked("search_spots_category", "0"); ?>>指定なし
                         <input type="radio" id="category" name="category" value="名所・史跡"  <?php set_checked("search_spots_category", "名所・史跡"); ?>>名所・史跡

@@ -5,6 +5,9 @@ require "frame.php";
 try {
 
     //SESSION変数初期値設定
+    if (!isset($_SESSION["restaurants_around_distance"])) {
+        $_SESSION["restaurants_around_distance"] = "500";
+    }
     if (!isset($_SESSION["wifi"])) {
         $_SESSION["wifi"] = "0";
     }
@@ -46,6 +49,12 @@ try {
     }
 
     //提出されたデータ
+    if (isset($_POST["restaurants_around_distance"])) {
+        $restaurants_around_distance = $_POST["restaurants_around_distance"];
+        $_SESSION["restaurants_around_distance"] = $restaurants_around_distance;
+    } else {
+        $restaurants_around_distance = $_SESSION["restaurants_around_distance"];
+    }
     if (isset($_POST["wifi"])) {
         $wifi = $_POST["wifi"];
         $_SESSION["wifi"] = $wifi;
@@ -708,6 +717,8 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                 width: "30px",
                 height: "46.5px"
             });
+            
+            const distance = <?php echo json_encode($restaurants_around_distance); ?>;
             nearby_restaurants = (geom) => {
                 let graphic = new Graphic({
                     geometry: {
@@ -730,7 +741,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                 query.orderByFields = ["lunch_min DESC"];
                 //query.topCount = 3,
                 //query.maxRecordCount = 3;
-                query.distance = 500;
+                query.distance = distance;
                 query.units = "meters";
 
                 var query_count = 5;
@@ -819,6 +830,12 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                 <a id="view_result2" name="view_result2" href="search_nearby_sightseeing_spots_map.php">観光スポット</a><br>
                 <div class="search_form">
                     <form action="search_nearby_restaurants_map.php" method="post">
+                        飲食店の検索範囲：<br>
+                        <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="300" <?php set_checked("restaurants_around_distance", "300"); ?>>周囲300m
+                        <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="400" <?php set_checked("restaurants_around_distance", "400"); ?>>周囲400m
+                        <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="500" <?php set_checked("restaurants_around_distance", "500"); ?>>周囲500m
+                        <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="600" <?php set_checked("restaurants_around_distance", "600"); ?>>周囲600m<br>
+
                         WIFI：
                         <input type="radio" id="wifi" name="wifi" value="0" <?php set_checked("wifi", "0"); ?>>指定なし
                         <input type="radio" id="wifi" name="wifi" value="あり" <?php set_checked("wifi", "あり"); ?>>あり
