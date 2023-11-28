@@ -5,6 +5,9 @@ require "frame_ar.php";
 try {
 
     //SESSION変数初期値設定
+    if (!isset($_SESSION["restaurants_around_distance"])) {
+        $_SESSION["restaurants_around_distance"] = "500";
+    }
     if (!isset($_SESSION["wifi"])) {
         $_SESSION["wifi"] = "0";
     }
@@ -45,6 +48,12 @@ try {
         $_SESSION["search_name"] = "";
     }
     //提出されたデータ
+    if (isset($_POST["restaurants_around_distance"])) {
+        $restaurants_around_distance = $_POST["restaurants_around_distance"];
+        $_SESSION["restaurants_around_distance"] = $restaurants_around_distance;
+    } else {
+        $restaurants_around_distance = $_SESSION["restaurants_around_distance"];
+    }
     if (isset($_POST["wifi"])) {
         $wifi = $_POST["wifi"];
         $_SESSION["wifi"] = $wifi;
@@ -146,8 +155,24 @@ try {
         }
     }
     //予算範囲
-    $keywordCondition[] =  " lunch_min >= $lunch_min AND lunch_max <= $lunch_max ";
-    $keywordCondition[] =  " dinner_min >= $dinner_min AND dinner_max <= $dinner_max ";
+        if($lunch_min != 0){
+        $keywordCondition[] =  " lunch_min >= $lunch_min";
+        $keywordCondition[] =  " lunch_min <> 999999";
+    }
+    if($lunch_max != 999999){
+        $keywordCondition[] =  " lunch_max <= $lunch_max";
+        $keywordCondition[] =  " lunch_max <> 0";
+    }
+    if($dinner_min != 0){
+        $keywordCondition[] =  " dinner_min >= $dinner_min";
+        $keywordCondition[] =  " dinner_min <> 999999";
+    }
+    if($dinner_max != 999999){
+        $keywordCondition[] =  " dinner_max <= $dinner_max";
+        $keywordCondition[] =  " dinner_max <> 0";
+    }
+    //$keywordCondition[] =  " lunch_min >= $lunch_min AND lunch_max <= $lunch_max ";
+    //$keywordCondition[] =  " dinner_min >= $dinner_min AND dinner_max <= $dinner_max ";
     //名前検索かジャンル検索か判定
     if ($search_genre == "0") {
         $column1 = "genre";
@@ -278,6 +303,16 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             height: 500px;
             font-size: 200%;
         }
+        .result_modals {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 1px solid black;
+            padding: 20px;
+            z-index: 1000;
+        }
 
         .modal {
             display: none;
@@ -302,7 +337,6 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
         }
 
         .search_form {
-            display: none;
             position: fixed;
             top: 50%;
             left: 50%;
@@ -675,7 +709,10 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                 width: "30px",
                 height: "46.5px"
             });
+
+            const distance = <?php echo json_encode($restaurants_around_distance); ?>;
             nearby_restaurants = (geom) => {
+                test();
                 let graphic = new Graphic({
                     geometry: {
                         type: "point",
@@ -697,7 +734,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                 query.orderByFields = ["lunch_min DESC"];
                 //query.topCount = 3,
                 //query.maxRecordCount = 3;
-                query.distance = 500;
+                query.distance = distance;
                 query.units = "meters";
 
                 var query_count = 5;
@@ -722,7 +759,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                                 color: "darkorange"
                             };
                             graphic.popupTemplate = food_template;
-                            $say = [graphic.attributes.id, graphic.attributes.Y, graphic.attributes.X, graphic.attributes.name, graphic.attributes.open_time, graphic.attributes.close_time, graphic.attributes.lunch_budget, graphic.attributes.dinner_budget];
+                            $say = [graphic.attributes.id, graphic.attributes.Y, graphic.attributes.X, graphic.attributes.name, [graphic.attributes.genre, graphic.attributes.genre_sub], graphic.attributes.open_time, graphic.attributes.close_time, graphic.attributes.lunch_budget, graphic.attributes.dinner_budget];
                             spot_array.push($say);
                             //alert(graphic.attributes.lunch_budget);
                             //alert(spot_array[0]);
@@ -735,9 +772,10 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                     resultsLayer.addMany(features);
 
                     var test_row = spot_array;
-                    var table_column = ["ID", "緯度", "経度", "店舗名", "営業時間", "定休日", "予算"];
+                    var table_column = ["ID", "緯度", "経度", "店舗名", "ジャンル", "営業時間", "定休日", "予算"];
                     //make_table(test_row, table_column);
                     make_little_table(test_row, table_column);
+                    make_modal_table(test_row, table_column);
                     make_name_table(test_row);
                     make_image_table(test_row);
                     make_ar_object(test_row);
@@ -791,7 +829,7 @@ function reload() {
         }
     };
 
-    function showModal(id, name, open_time, close_time, lunch_budget, dinner_budget) {
+    function showModal(id, name, genre, genre_sub, open_time, close_time, lunch_budget, dinner_budget) {
         var overlay = document.querySelector(".overlay");
         overlay.style.display = "block";
         //ポップアウトを編集
@@ -802,6 +840,7 @@ function reload() {
         modal.querySelector(".modal_a").href = `restaurant_detail.php?restaurant_id=${id}`;
 
         document.getElementById("modal_table_name").querySelector(".modal_change").textContent = name;
+        document.getElementById("modal_table_genre").querySelector(".modal_change").textContent = `${genre}、${genre_sub}`;
         document.getElementById("modal_open_time").querySelector(".modal_change").textContent = open_time;
         document.getElementById("modal_close_time").querySelector(".modal_change").textContent = close_time;
         document.getElementById("modal_budget").querySelector(".modal_change").textContent = `昼：${lunch_budget}　　夜：${dinner_budget}`;
@@ -847,7 +886,21 @@ function reload() {
                 } else {
                     word2 = array[s_num][c_num+1];
                 }
-                newtd.innerHTML = `昼：${word} 夜：${word2}`
+                newtd.innerHTML = `昼：${word} 夜：${word2}`;
+            } else if(column == "ジャンル"){
+                var word3 = "";
+                var word4 = "";
+                if(!array[s_num][c_num][0]){
+                    word3 = "";
+                } else {
+                    word3 = `${array[s_num][c_num][0]}`;
+                }
+                if(!array[s_num][c_num+1][1]){
+                    word4 = "";
+                } else {
+                    word4 = `、${array[s_num][c_num][1]}`;
+                }
+                newtd.innerHTML = `${word3}${word4}`;
             } else {
                 newtd.innerHTML = word;
             }
@@ -903,6 +956,47 @@ function reload() {
             }
         }
 
+        function make_modal_table(array, columns) {
+            
+            $results_form = document.getElementById("result_modal_table");
+            $results_form.innerHTML = "";
+            $results_form.className = 'tables';
+
+            for (var i = 0; i < array.length; i++) {
+                const a_id = array[i][0];
+                const a_lattitude = array[i][1];
+                const a_longitude = array[i][2];
+                const a_name = array[i][3];
+
+               //表示するhtmlの作成
+                const newDiv = document.createElement("div");
+                newDiv.id = `modalbox${i+1}`;
+                newDiv.className = 'result_modals';
+                newDiv.setAttribute('popover', "auto");
+                //表示する画像の作成
+                const newImgDiv = document.createElement("div");
+                newImgDiv.id = 'ar_imgbox';
+                const newImg = document.createElement("img");
+                newImg.id = 'ar_img';
+                const src = `images/${area_name}/restaurants/${a_id}.jpg`;
+                newImg.setAttribute('src', src);
+                newImgDiv.appendChild(newImg);
+                newDiv.appendChild(newImgDiv);
+                //テーブルの作成
+                const newTableBox = document.createElement("div");
+                newTableBox.id = 'ar_tablebox';
+                const newTable = document.createElement("table");
+                for (var j = 3; j < columns.length; j++) {
+                    const newtablecell = make_tablecell(array, columns[j], i, j);
+                    newTable.appendChild(newtablecell);
+                }
+                newTableBox.appendChild(newTable);
+                newDiv.appendChild(newTableBox);
+                $results_form.appendChild(newDiv);
+               
+            }
+        }
+
         //検索結果を表示する
         function make_little_table(array, columns) {
             var count = 0;
@@ -921,17 +1015,14 @@ function reload() {
                 const newDiv = document.createElement("div");
                 newDiv.id = `infobox${i+1}`;
                 newDiv.className = 'target';
-                /*
-                //表示する画像の作成
-                const newImgDiv = document.createElement("div");
-                newImgDiv.id = 'ar_imgbox';
-                const newImg = document.createElement("img");
-                newImg.id = 'ar_img';
-                const src = `images/${area_name}/restaurants/${a_id}.jpg`;
-                newImg.setAttribute('src', src);
-                newImgDiv.appendChild(newImg);
-                newDiv.appendChild(newImgDiv);
-                */
+
+                const newNameDiv = document.createElement("div");
+                newNameDiv.className = 'ar_namebox';
+                newNameDiv.id = `namebox${i+1}`;
+                const newH2 = document.createElement("h2");
+                newH2.textContent = a_name;
+                newNameDiv.appendChild(newH2);
+                newDiv.appendChild(newNameDiv);
                 //テーブルの作成
                 const newTableBox = document.createElement("div");
                 newTableBox.id = 'ar_tablebox';
@@ -991,7 +1082,7 @@ function reload() {
             if(value == "small"){
                 for (var i = 0; i < array.length; i++) {
                     const target = document.getElementById(`planebox${i+1}`);
-                    const material = `shader:html;target: #info_name_box${i+1};`
+                    const material = `shader:html;target: #namebox${i+1};`
                     target.setAttribute('material', material);
                     target.setAttribute('width', "5");
                     target.setAttribute('height', "3");
@@ -1027,10 +1118,12 @@ function reload() {
                 const a_lattitude = array[i][1];
                 const a_longitude = array[i][2];
                 const a_name = array[i][3];
-                const a_open_time = array[i][4];
-                const a_close_time = array[i][5];
-                const a_lunch_budget = array[i][6];
-                const a_dinner_budget = array[i][7];
+                const a_genre = array[i][4][0];
+                const a_genre_sub = array[i][4][1];
+                const a_open_time = array[i][5];
+                const a_close_time = array[i][6];
+                const a_lunch_budget = array[i][7];
+                const a_dinner_budget = array[i][8];
 
                //entityの作成
                 const newEntity = document.createElement("a-entity");
@@ -1042,9 +1135,12 @@ function reload() {
                 });
                 newEntity.setAttribute('data-text', a_name);
                 newEntity.setAttribute('scale', "10 10 10");
+                newEntity.setAttribute('popovertarget', `modalbox${i+1}`);
+                /*
                 newEntity.onclick = () => {
-                    showModal(a_id, a_name, a_open_time, a_close_time, a_lunch_budget, a_dinner_budget);
+                    showModal(a_id, a_name, a_genre, a_genre_sub, a_open_time, a_close_time, a_lunch_budget, a_dinner_budget);
                 }
+                */
 
                 //planeの作成
                 const newPlane = document.createElement("a-plane");
@@ -1098,6 +1194,10 @@ function reload() {
                     <th>店舗名</th>
                     <td class="modal_change">name</td>
                 </tr>
+                <tr id="modal_table_genre">
+                    <th>ジャンル</th>
+                    <td class="modal_change">genre,genre_sub</td>
+                </tr>
                 <tr id="modal_open_time">
                     <th>営業時間</th>
                     <td class="modal_change">open_time</td>
@@ -1125,14 +1225,19 @@ function reload() {
         <option value="small"> 店名だけ表示 </option>
         <option value="image"> 写真だけ表示 </option>
     </select>
-    <button id="result_list_btn" type=button onclick="open_result_list()">ボタン</button>
+    <button id="result_list_btn" popovertarget="mypopover" type=button >ボタン</button>
 
     <div class="container">
     <main>
 
-        
-        <div class="search_form">
+        <div class="search_form" id="mypopover" popover>
             <form action="search_nearby_restaurants_ar.php" method="post">
+                飲食店の検索範囲：<br>
+                <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="300" <?php set_checked("restaurants_around_distance", "300"); ?>>周囲300m
+                <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="400" <?php set_checked("restaurants_around_distance", "400"); ?>>周囲400m
+                <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="500" <?php set_checked("restaurants_around_distance", "500"); ?>>周囲500m
+                <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="600" <?php set_checked("restaurants_around_distance", "600"); ?>>周囲600m<br>
+
                 WIFI：
                 <input type="radio" id="wifi" name="wifi" value="0" <?php set_checked("wifi", "0"); ?>>指定なし
                 <input type="radio" id="wifi" name="wifi" value="あり" <?php set_checked("wifi", "あり"); ?>>あり
@@ -1241,6 +1346,8 @@ function reload() {
             </form>
         </div><br>
 
+        <div id="result_modal_table">
+        </div>
         </main>
         <footer>
             <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>

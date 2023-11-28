@@ -116,7 +116,7 @@ $keikaku[] = $goal_info;
 
         gtag('config', 'UA-214561408-1');
     </script>
-    <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <title>開始・終了駅の設定</title>
 
     <style>
@@ -174,7 +174,7 @@ $keikaku[] = $goal_info;
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
     <script src="https://js.arcgis.com/4.21/"></script>
-    <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
     <script type="text/javascript">
         var pointpic = "";

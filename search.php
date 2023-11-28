@@ -146,8 +146,24 @@ try {
         }
     }
     //予算範囲
-    $keywordCondition[] =  " lunch_min >= $lunch_min AND lunch_max <= $lunch_max ";
-    $keywordCondition[] =  " dinner_min >= $dinner_min AND dinner_max <= $dinner_max ";
+    if($lunch_min != 0){
+        $keywordCondition[] =  " lunch_min >= $lunch_min";
+        $keywordCondition[] =  " lunch_min <> 999999";
+    }
+    if($lunch_max != 999999){
+        $keywordCondition[] =  " lunch_max <= $lunch_max";
+        $keywordCondition[] =  " lunch_max <> 0";
+    }
+    if($dinner_min != 0){
+        $keywordCondition[] =  " dinner_min >= $dinner_min";
+        $keywordCondition[] =  " dinner_min <> 999999";
+    }
+    if($dinner_max != 999999){
+        $keywordCondition[] =  " dinner_max <= $dinner_max";
+        $keywordCondition[] =  " dinner_max <> 0";
+    }
+    //$keywordCondition[] =  " lunch_min >= $lunch_min AND lunch_max <= $lunch_max ";
+    //$keywordCondition[] =  " dinner_min >= $dinner_min AND dinner_max <= $dinner_max ";
     //名前検索かジャンル検索か判定
     if ($search_genre == "0") {
         $column1 = "genre";
@@ -220,7 +236,7 @@ $count = 0;
 
         gtag('config', 'UA-214561408-1');
     </script>
-    <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <title>飲食店の検索・決定（一覧表示）</title>
     <style>
         h3 {

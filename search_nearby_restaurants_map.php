@@ -156,8 +156,24 @@ try {
         }
     }
     //予算範囲
-    $keywordCondition[] =  " lunch_min >= $lunch_min AND lunch_max <= $lunch_max ";
-    $keywordCondition[] =  " dinner_min >= $dinner_min AND dinner_max <= $dinner_max ";
+    if($lunch_min != 0){
+        $keywordCondition[] =  " lunch_min >= $lunch_min";
+        $keywordCondition[] =  " lunch_min <> 999999";
+    }
+    if($lunch_max != 999999){
+        $keywordCondition[] =  " lunch_max <= $lunch_max";
+        $keywordCondition[] =  " lunch_max <> 0";
+    }
+    if($dinner_min != 0){
+        $keywordCondition[] =  " dinner_min >= $dinner_min";
+        $keywordCondition[] =  " dinner_min <> 999999";
+    }
+    if($dinner_max != 999999){
+        $keywordCondition[] =  " dinner_max <= $dinner_max";
+        $keywordCondition[] =  " dinner_max <> 0";
+    }
+    //$keywordCondition[] =  " lunch_min >= $lunch_min AND lunch_max <= $lunch_max ";
+    //$keywordCondition[] =  " dinner_min >= $dinner_min AND dinner_max <= $dinner_max ";
     //名前検索かジャンル検索か判定
     if ($search_genre == "0") {
         $column1 = "genre";
@@ -393,7 +409,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
     <script src="https://js.arcgis.com/4.21/"></script>
-    <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     
     <script>
         var pointpic = "";
@@ -401,13 +417,32 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
         var current_latitude = 0;
         var current_longitude = 0;
         function test() {
-            navigator.geolocation.getCurrentPosition(test2);
+            navigator.geolocation.getCurrentPosition(
+                    test2,
+                    // 取得失敗した場合
+                    function (error) {
+                    switch (error.code) {
+                        case 1: //PERMISSION_DENIED
+                        alert("位置情報の利用が許可されていません");
+                        break;
+                        case 2: //POSITION_UNAVAILABLE
+                        alert("現在位置が取得できませんでした");
+                        break;
+                        case 3: //TIMEOUT
+                        alert("タイムアウトになりました");
+                        break;
+                        default:
+                        alert("その他のエラー(エラーコード:" + error.code + ")");
+                        break;
+                    }
+                }
+            );
         }
 
         function test2(position) {
             current_latitude = position.coords.latitude;
             current_longitude = position.coords.longitude;
-            //alert(current_longitude);
+            alert(current_longitude);
         }
         test();
         //alert(current_longitude);
@@ -717,9 +752,10 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                 width: "30px",
                 height: "46.5px"
             });
-            
+
             const distance = <?php echo json_encode($restaurants_around_distance); ?>;
             nearby_restaurants = (geom) => {
+                test();
                 let graphic = new Graphic({
                     geometry: {
                         type: "point",
@@ -819,6 +855,11 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             }
         }
     };
+
+    function display_results() {
+            nearby_restaurants();
+            alert("s");
+        }
 </script>
 
 <body>
@@ -952,6 +993,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                         <input type="submit" name="submit" value="検索する">
                     </form>
                 </div><br>
+                <button type="button" onclick="display_results()">絞り込む</button>
                 <?php
                 if (!$count) {
                     echo "検索条件に該当する飲食店はありませんでした";

@@ -33,7 +33,7 @@ $count = 0
 
         gtag('config', 'UA-214561408-1');
     </script>
-    <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <title>飲食店の検索・決定（一覧表示）</title>
     <style>
         h3 {

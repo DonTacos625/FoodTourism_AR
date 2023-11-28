@@ -9,7 +9,8 @@ if (!isset($_SESSION["input_plan_name"])) {
 $input_plan_name = $_SESSION["input_plan_name"];
 if (!isset($_SESSION["input_plan_memo"])) {
     $_SESSION["input_plan_memo"] = "";
-} else {}
+} else {
+}
 $input_plan_memo = $_SESSION["input_plan_memo"];
 
 if (!isset($_SESSION["plan_show"])) {
@@ -292,62 +293,75 @@ $keikaku[] = $goal_info;
         }
 
         .flex_test-box {
-                background-color: #eee;     /* 背景色指定 */
-                padding:  10px;             /* 余白指定 */
-                display: flex;              /* フレックスボックスにする */
-                align-items:stretch;        /* 縦の位置指定 */
-            }
+            background-color: #eee;
+            /* 背景色指定 */
+            padding: 10px;
+            /* 余白指定 */
+            display: flex;
+            /* フレックスボックスにする */
+            align-items: stretch;
+            /* 縦の位置指定 */
+        }
 
-            .flex_test-item {
-                padding: 10px;
-                color:  #0a0000;               /* 文字色 */
-                margin:  10px;              /* 外側の余白 */
-                border-radius:  5px;        /* 角丸指定 */
-                width: 15%;                 /* 幅指定 */
-            }
+        .flex_test-item {
+            padding: 10px;
+            color: #0a0000;
+            /* 文字色 */
+            margin: 10px;
+            /* 外側の余白 */
+            border-radius: 5px;
+            /* 角丸指定 */
+            width: 15%;
+            /* 幅指定 */
+        }
 
-            .flex_test-item #imgbox{
-                float: left;
-                display: flex;
-                width: 15vw;
-                height: 15vw;
-                margin-bottom: 15px;
-                justify-content: center;
-                align-items: center;
-            }
+        .flex_test-item #imgbox {
+            float: left;
+            display: flex;
+            width: 15vw;
+            height: 15vw;
+            margin-bottom: 15px;
+            justify-content: center;
+            align-items: center;
+        }
 
-            .flex_test-item #imgbox img{
-                width:auto;
-                height:auto;
-                max-width:100%;
-                max-height:100%;
-            }
+        .flex_test-item #imgbox img {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
+        }
 
-            .flex_test-item:nth-child(1) {
-                background-color:  #fff; /* 背景色指定 */
-            }
+        .flex_test-item:nth-child(1) {
+            background-color: #fff;
+            /* 背景色指定 */
+        }
 
-            .flex_test-item:nth-child(2) {
-                background-color:  #fff; /* 背景色指定 */
-            }
+        .flex_test-item:nth-child(2) {
+            background-color: #fff;
+            /* 背景色指定 */
+        }
 
-            .flex_test-item:nth-child(3) {
-                background-color: #fff; /* 背景色指定 */
-            }
+        .flex_test-item:nth-child(3) {
+            background-color: #fff;
+            /* 背景色指定 */
+        }
 
-            .flex_test-item:nth-child(4) {
-                background-color:  #fff; /* 背景色指定 */
-            }
+        .flex_test-item:nth-child(4) {
+            background-color: #fff;
+            /* 背景色指定 */
+        }
     </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
     <script src="https://js.arcgis.com/4.21/"></script>
-    <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
     <script>
         var pointpic = "";
         var current_latitude = 0;
         var current_longitude = 0;
+
         function test() {
             navigator.geolocation.getCurrentPosition(test2);
         }
@@ -365,7 +379,7 @@ $keikaku[] = $goal_info;
             "esri/layers/WebTileLayer",
             "esri/layers/FeatureLayer",
             "esri/widgets/Locate",
-            "esri/widgets/Track", 
+            "esri/widgets/Track",
             "esri/Graphic",
             "esri/layers/GraphicsLayer",
             "esri/rest/support/Query",
@@ -380,7 +394,7 @@ $keikaku[] = $goal_info;
             WebTileLayer,
             FeatureLayer,
             Locate,
-            Track, 
+            Track,
             Graphic,
             GraphicsLayer,
             Query,
@@ -451,7 +465,7 @@ $keikaku[] = $goal_info;
                 }]
             };
 
-            
+
             const station_template = {
                 title: "{Name}",
                 content: [{
@@ -674,11 +688,11 @@ $keikaku[] = $goal_info;
             });
 
             var spot_type = "restaurant";
-            if(spot_type == "restaurant"){
+            if (spot_type == "restaurant") {
                 $goalLayer = foodLayer;
-            } else if(spot_type == "sightseeing"){
+            } else if (spot_type == "sightseeing") {
                 $goalLayer = spotsLayer;
-            } else if(spot_type == "station"){
+            } else if (spot_type == "station") {
                 $goalLayer = stationLayer;
             }
             const map = new Map({
@@ -702,11 +716,14 @@ $keikaku[] = $goal_info;
             });
 
             //phpの経路情報をjavascript用に変換           
-            var keikaku = [[current_longitude, current_latitude, "start"], [139.6787332, 35.78268538, "goal"]]
+            var keikaku = [
+                [current_longitude, current_latitude, "start"],
+                [139.6787332, 35.78268538, "goal"]
+            ]
 
             function display_route(plan) {
                 //前回の経路を、グラフィックスレイヤーから削除
-                //routeLayer.removeAll();
+                routeLayer.removeAll();
                 //開始駅と終了駅が同じの場合のフラグを設定
                 var start_point = plan[0];
                 var goal_point = plan.slice(-1)[0];
@@ -777,7 +794,7 @@ $keikaku[] = $goal_info;
                     route.solve(routeUrl, routeParams).then(showRoute);
                 }
             }
-            display_route(keikaku);
+            //display_route(keikaku);
 
             // ルート表示用のレイヤーにデータを追加
             function showRoute(data) {
@@ -788,7 +805,74 @@ $keikaku[] = $goal_info;
                 //総距離
                 $totalLength = data.routeResults[0].directions.totalLength;
                 doc();
+                //alert($totalLength);
             }
+
+            const track = new Track({
+                view: view
+            });
+            track.on("track", ({
+                position
+            }) => {
+                const {
+                    longitude,
+                    latitude
+                } = position.coords;
+                //alert(`${longitude.toFixed(4)}, ${latitude.toFixed(4)}`);
+                var new_keikaku = [
+                    [longitude.toFixed(4), latitude.toFixed(4), "start"],
+                    [139.6787332, 35.78268538, "goal"]
+                ]
+                display_route(new_keikaku);
+            });
+            view.ui.add(track, "top-left");
+            view.when(() => {
+                track.start();
+            });
+
+            function distanceBetweenPoints(x1, y1, x2, y2) {
+                return Math.sqrt(Math.pow(x2 - x1, 2) + (Math.pow(y2 - y1, 2)));
+            }
+
+            function getPointAlongLine(polyline, distance, pathIndex) {
+                if (!pathIndex)
+                    pathIndex = 0;
+                if (!distance)
+                    distance = 0;
+                alert("d");
+                if ((pathIndex >= 0) && (pathIndex < polyline.paths.length)) {
+                    var path = polyline.paths[pathIndex];
+                    var x1, x2, x3, y1, y2, y3;
+                    var travelledDistance = 0;
+                    var pathDistance;
+                    var distanceDiff;
+                    var angle;
+                    if (distance === 0)
+                        return polyline.getPoint(pathIndex, 0);
+                    else if (distance > 0) {
+                        for (var i = 1; i < path.length; i++) {
+                            x1 = path[i - 1][0];
+                            y1 = path[i - 1][1];
+                            x2 = path[0];
+                            y2 = path[1];
+                            pathDistance = this._distanceBetweenPoints(x1, y1, x2, y2);
+                            travelledDistance += pathDistance;
+                            if (travelledDistance === distance)
+                                return polyline.getPoint(pathIndex, i);
+                            else if (travelledDistance > distance) {
+                                distanceDiff = pathDistance - (travelledDistance - distance);
+                                angle = Math.atan2(y2 - y1, x2 - x1);
+                                x3 = distanceDiff * Math.cos(angle);
+                                y3 = distanceDiff * Math.sin(angle);
+                                return new Point(x1 + x3, y1 + y3, polyline.spatialReference);
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
+            getPointAlongLine(resultLayer, 10, 1);
+
 
         });
 
@@ -815,8 +899,6 @@ $keikaku[] = $goal_info;
             update_frame($length, "length_km");
             update_frame($time, "time_h_m");
         }
-
-
     </script>
 
 </head>
