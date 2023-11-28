@@ -304,6 +304,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             font-size: 200%;
         }
         .result_modals {
+            display: none;
             position: fixed;
             top: 50%;
             left: 50%;
