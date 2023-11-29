@@ -360,27 +360,15 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
         }
 
         #change {
-            position: absolute;
-            left: 100px; /* X coordinate, adjust as needed */
-            top: 600px; /* Y coordinate, idem */
             z-index: 10; /* This should be needed only if the #webgl container has already some z-index value*/
         }
         #searchform_btn {
-            position: absolute;
-            left: 200px; /* X coordinate, adjust as needed */
-            top: 600px; /* Y coordinate, idem */
             z-index: 10; /* This should be needed only if the #webgl container has already some z-index value*/
         }
         #change_display_btn {
-            position: absolute;
-            left: 200px; /* X coordinate, adjust as needed */
-            top: 400px; /* Y coordinate, idem */
             z-index: 10; /* This should be needed only if the #webgl container has already some z-index value*/
         }
         #result_list_btn {
-            position: absolute;
-            left: 100px; /* X coordinate, adjust as needed */
-            top: 400px; /* Y coordinate, idem */
             z-index: 10; /* This should be needed only if the #webgl container has already some z-index value*/
         }
         @media screen and (min-width:769px) and (max-width:1366px) {
@@ -776,7 +764,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                     var table_column = ["ID", "緯度", "経度", "店舗名", "ジャンル", "営業時間", "定休日", "予算"];
                     //make_table(test_row, table_column);
                     make_little_table(test_row, table_column);
-                    make_modal_table(test_row, table_column);
+                    //make_modal_table(test_row, table_column);
                     make_name_table(test_row);
                     make_image_table(test_row);
                     make_ar_object(test_row);
@@ -1137,11 +1125,11 @@ function reload() {
                 newEntity.setAttribute('data-text', a_name);
                 newEntity.setAttribute('scale', "10 10 10");
                 newEntity.setAttribute('popovertarget', `modalbox${i+1}`);
-                /*
+                
                 newEntity.onclick = () => {
                     showModal(a_id, a_name, a_genre, a_genre_sub, a_open_time, a_close_time, a_lunch_budget, a_dinner_budget);
                 }
-                */
+                
 
                 //planeの作成
                 const newPlane = document.createElement("a-plane");
@@ -1219,14 +1207,16 @@ function reload() {
     <a-scene id="ar_scene" vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true' cursor='rayOrigin: mouse'>
         <a-camera gps-new-camera='gpsMinDistance: 5'></a-camera>            
     </a-scene>
-    <button id="change" type=button onclick="location.href='search_nearby_restaurants_map.php'">Change</button>
-    <button id="searchform_btn" type=button onclick="open_search_form()">検索フォームを開く</button>
-    <select id="change_display_btn" size="1" onchange="change_display(value)">
-        <option value="default"> 通常表示 </option>
-        <option value="small"> 店名だけ表示 </option>
-        <option value="image"> 写真だけ表示 </option>
-    </select>
-    <button id="result_list_btn" popovertarget="mypopover" type=button >ボタン</button>
+    <div id="bottom_bar">
+        <button id="change" type=button onclick="location.href='search_nearby_restaurants_map.php'">Change</button>
+        <button id="searchform_btn" type=button onclick="open_search_form()">検索フォームを開く</button>
+        <select id="change_display_btn" size="1" onchange="change_display(value)">
+            <option value="default"> 通常表示 </option>
+            <option value="small"> 店名だけ表示 </option>
+            <option value="image"> 写真だけ表示 </option>
+        </select>
+        <button id="result_list_btn" popovertarget="mypopover" type=button >ボタン</button>
+    </div>
 
     <div class="container">
     <main>

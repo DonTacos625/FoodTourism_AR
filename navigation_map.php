@@ -2,201 +2,29 @@
 
 require "frame.php";
 
-//入力情報保存用のSESSION変数初期値設定
-if (!isset($_SESSION["input_plan_name"])) {
-    $_SESSION["input_plan_name"] = "";
-}
-$input_plan_name = $_SESSION["input_plan_name"];
-if (!isset($_SESSION["input_plan_memo"])) {
-    $_SESSION["input_plan_memo"] = "";
-} else {
-}
-$input_plan_memo = $_SESSION["input_plan_memo"];
-
-if (!isset($_SESSION["plan_show"])) {
-    $_SESSION["plan_show"] = 1;
-}
-
-function set_checked($session_name, $value)
-{
-    if ($value == $_SESSION[$session_name]) {
-        //値がセッション変数と等しいとチェックされてる判定として返す
-        print "checked=\"checked\"";
-    } else {
-        print "";
-    }
-}
-
+$navi_spot_id = $_GET["navi_spot_id"];
+$navi_spot_type = $_GET["navi_spot_type"];
 
 $message = "";
-$set_stations = 0;
-$set_foods = 0;
-if (!isset($_SESSION["start_station_id"]) || !isset($_SESSION["goal_station_id"])) {
-    $message = "開始・終了駅が設定されていません";
-} else if (!isset($_SESSION["lunch_id"]) && !isset($_SESSION["dinner_id"])) {
-    $message = "昼食または夕食予定地が設定されていません";
-}
-
-//stations_id設定
-if (!isset($_SESSION["start_station_id"])) {
-    $start_station_id = 0;
-} else {
-    $start_station_id = $_SESSION["start_station_id"];
-}
-if (!isset($_SESSION["goal_station_id"])) {
-    $goal_station_id = 0;
-} else {
-    $goal_station_id = $_SESSION["goal_station_id"];
-}
-$station_id = [$start_station_id, $goal_station_id];
-
-//food_shops_id設定
-if (!isset($_SESSION["lunch_id"])) {
-    $lunch_shop_id = -1;
-} else {
-    $lunch_shop_id = $_SESSION["lunch_id"];
-}
-if (!isset($_SESSION["dinner_id"])) {
-    $dinner_shop_id = -1;
-} else {
-    $dinner_shop_id = $_SESSION["dinner_id"];
-}
-$food_shop_id = [$lunch_shop_id, $dinner_shop_id];
-
-//spots設定
-if (!isset($_SESSION["s_l_spots"])) {
-    $s_l_ids = [0];
-} else {
-    foreach ($_SESSION["s_l_spots"] as $s_l) {
-        $s_l_ids[] = $s_l[0];
-    }
-}
-if (!isset($_SESSION["l_d_spots"])) {
-    $l_d_ids = [0];
-} else {
-    foreach ($_SESSION["l_d_spots"] as $l_d) {
-        $l_d_ids[] = $l_d[0];
-    }
-}
-if (!isset($_SESSION["d_g_spots"])) {
-    $d_g_ids = [0];
-} else {
-    foreach ($_SESSION["d_g_spots"] as $d_g) {
-        $d_g_ids[] = $d_g[0];
-    }
-}
-$spots_id = array_merge($s_l_ids, $l_d_ids, $d_g_ids);
-
-//デバッグ用
-//$_SESSION["s_l_spots"] = [1,2];
-//$_SESSION["l_d_spots"] = [3,4];
-//$_SESSION["d_g_spots"] = [5,6];
-
 //DB接続
 try {
-    if (!isset($_SESSION["start_station_id"])) {
-        $start_info = [0, 0, "start"];
+    if ($navi_spot_type == 1) {
+        $database = $database_stations;
+    } else if($navi_spot_type == 2){
+        $database = $database_restaurants;
+        //$database = "hasune_restaurants";
     } else {
-        $stmt1 = $pdo->prepare("SELECT * FROM $database_stations WHERE id = :id");
-        $stmt1->bindParam(":id", $start_station_id);
-        $stmt1->execute();
-        $result1 = $stmt1->fetch(PDO::FETCH_ASSOC);
-        $start_info = [$result1["x"], $result1["y"], "start"];
+        $database = $database_sightseeing_spots;
     }
+    $stmt1 = $pdo->prepare("SELECT * FROM $database WHERE id = :id");
+    $stmt1->bindParam(":id", $navi_spot_id);
+    $stmt1->execute();
+    $result1 = $stmt1->fetch(PDO::FETCH_ASSOC);
+    $navi_goal_info = [$result1["x"], $result1["y"], "goal"];
 
-    if (!isset($_SESSION["lunch_id"])) {
-        $lunch_info = [0, 0, "lunch"];
-    } else {
-        $stmt2 = $pdo->prepare("SELECT * FROM $database_restaurants WHERE id = :id");
-        $stmt2->bindParam(":id", $lunch_shop_id);
-        $stmt2->execute();
-        $result2 = $stmt2->fetch(PDO::FETCH_ASSOC);
-        $lunch_info = [$result2["x"], $result2["y"], "lunch"];
-    }
-
-    if (!isset($_SESSION["dinner_id"])) {
-        $dinner_info = [0, 0, "dinner"];
-    } else {
-        $stmt3 = $pdo->prepare("SELECT * FROM $database_restaurants WHERE id = :id");
-        $stmt3->bindParam(":id", $dinner_shop_id);
-        $stmt3->execute();
-        $result3 = $stmt3->fetch(PDO::FETCH_ASSOC);
-        $dinner_info = [$result3["x"], $result3["y"], "dinner"];
-    }
-
-    if (!isset($_SESSION["goal_station_id"])) {
-        $goal_info = [0, 0, "goal"];
-    } else {
-        $stmt4 = $pdo->prepare("SELECT * FROM $database_stations WHERE id = :id");
-        $stmt4->bindParam(":id", $goal_station_id);
-        $stmt4->execute();
-        $result4 = $stmt4->fetch(PDO::FETCH_ASSOC);
-        $goal_info = [$result4["x"], $result4["y"], "goal"];
-    }
-
-    $spot_count = 10;
-    if (!isset($_SESSION["s_l_spots"])) {
-        $s_l_spots = [[0, 0, 0]];
-    } else {
-        foreach ($_SESSION["s_l_spots"] as $s_l) {
-            $stmt5 = $pdo->prepare("SELECT * FROM $database_sightseeing_spots WHERE id = :id");
-            $stmt5->bindParam(":id", $s_l[0]);
-            $stmt5->execute();
-            $result5 = $stmt5->fetch(PDO::FETCH_ASSOC);
-            $spot_count += 1;
-            $s_l_spots[] = [$result5["x"], $result5["y"], $spot_count];
-        }
-    }
-    $spot_count = 20;
-    if (!isset($_SESSION["l_d_spots"])) {
-        $l_d_spots = [[0, 0, 0]];
-    } else {
-        foreach ($_SESSION["l_d_spots"] as $l_d) {
-            $stmt6 = $pdo->prepare("SELECT * FROM $database_sightseeing_spots WHERE id = :id");
-            $stmt6->bindParam(":id", $l_d[0]);
-            $stmt6->execute();
-            $result6 = $stmt6->fetch(PDO::FETCH_ASSOC);
-            $spot_count += 1;
-            $l_d_spots[] = [$result6["x"], $result6["y"], $spot_count];
-        }
-    }
-    $spot_count = 30;
-    if (!isset($_SESSION["d_g_spots"])) {
-        $d_g_spots = [[0, 0, 0]];
-    } else {
-        foreach ($_SESSION["d_g_spots"] as $d_g) {
-            $stmt7 = $pdo->prepare("SELECT * FROM $database_sightseeing_spots WHERE id = :id");
-            $stmt7->bindParam(":id", $d_g[0]);
-            $stmt7->execute();
-            $result7 = $stmt7->fetch(PDO::FETCH_ASSOC);
-            $spot_count += 1;
-            $d_g_spots[] = [$result7["x"], $result7["y"], $spot_count];
-        }
-    }
 } catch (PDOException $e) {
 }
 
-//keikakuは目的地の配列
-//keikakuの配列作成
-$keikaku[] = $start_info;
-foreach ($s_l_spots as $s_l_add) {
-    $keikaku[] = $s_l_add;
-}
-$keikaku[] = $lunch_info;
-foreach ($l_d_spots as $l_d_add) {
-    $keikaku[] = $l_d_add;
-}
-$keikaku[] = $dinner_info;
-foreach ($d_g_spots as $d_g_add) {
-    $keikaku[] = $d_g_add;
-}
-$keikaku[] = $goal_info;
-
-//var_dump($start_info);
-//var_dump($_SESSION["s_l_spots"]);
-//var_dump($s_l_ids);
-//var_dump($keikaku);
-//var_dump($_SESSION["plan_show"]);
 ?>
 
 <html>
@@ -353,8 +181,8 @@ $keikaku[] = $goal_info;
         }
     </style>
 
-    <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
-    <script src="https://js.arcgis.com/4.21/"></script>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.25/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.25/"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
     <script>
@@ -532,7 +360,7 @@ $keikaku[] = $goal_info;
                 }
             };
 
-            var spot_id = 37;
+            var spot_id = <?php echo json_encode($navi_spot_id); ?>;
             //観光スポットのIDから表示するスポットを決める
             var feature_sql = "";
             feature_sql += "ID = "
@@ -687,13 +515,13 @@ $keikaku[] = $goal_info;
                 }
             });
 
-            var spot_type = "restaurant";
-            if (spot_type == "restaurant") {
-                $goalLayer = foodLayer;
-            } else if (spot_type == "sightseeing") {
-                $goalLayer = spotsLayer;
-            } else if (spot_type == "station") {
+            var spot_type = <?php echo json_encode($navi_spot_type); ?>;;
+            if (spot_type == 1) {
                 $goalLayer = stationLayer;
+            } else if (spot_type == 2) {
+                $goalLayer = foodLayer;
+            } else if (spot_type == 3) {
+                $goalLayer = spotsLayer;
             }
             const map = new Map({
                 basemap: "streets",
@@ -715,15 +543,10 @@ $keikaku[] = $goal_info;
                 }
             });
 
-            //phpの経路情報をjavascript用に変換           
-            var keikaku = [
-                [current_longitude, current_latitude, "start"],
-                [139.6787332, 35.78268538, "goal"]
-            ]
-
             function display_route(plan) {
                 //前回の経路を、グラフィックスレイヤーから削除
                 routeLayer.removeAll();
+                routeParams.stops.features.splice(0);
                 //開始駅と終了駅が同じの場合のフラグを設定
                 var start_point = plan[0];
                 var goal_point = plan.slice(-1)[0];
@@ -790,6 +613,7 @@ $keikaku[] = $goal_info;
                         routeParams.stops.features.push(stop);
                     }
                 }
+                //alert(routeParams.stops.features.length);
                 if (routeParams.stops.features.length >= 2) {
                     route.solve(routeUrl, routeParams).then(showRoute);
                 }
@@ -808,6 +632,8 @@ $keikaku[] = $goal_info;
                 //alert($totalLength);
             }
 
+            //var goal_point = <?php echo json_encode($navi_goal_info); ?>;
+            var goal_point = [35.78268538, 139.6787332, "goal"];
             const track = new Track({
                 view: view
             });
@@ -830,6 +656,7 @@ $keikaku[] = $goal_info;
                 track.start();
             });
 
+            /*
             function distanceBetweenPoints(x1, y1, x2, y2) {
                 return Math.sqrt(Math.pow(x2 - x1, 2) + (Math.pow(y2 - y1, 2)));
             }
@@ -872,14 +699,9 @@ $keikaku[] = $goal_info;
                 return null;
             }
             getPointAlongLine(resultLayer, 10, 1);
-
+            */
 
         });
-
-        //観光経路表示を更新する
-        function kousin() {
-            location.reload();
-        }
 
         function decimalPart(num, decDigits) {
             var decPart = num - ((num >= 0) ? Math.floor(num) : Math.ceil(num));
@@ -910,6 +732,8 @@ $keikaku[] = $goal_info;
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
             <h3>目的地までの経路</h3>
+            <a id="view_result" name="view_result" href="navigation_ar.php?navi_spot_id=37&navi_spot_type=2">ARで結果を表示</a><br>
+
             <div class="icon_explain">
                 <b>
                     <div id="length_km">総歩行距離：0.00 km</div>
