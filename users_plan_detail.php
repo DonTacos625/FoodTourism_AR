@@ -1,6 +1,8 @@
 <?php
 
-require "frame.php";
+require "frame_header.php";
+require "frame_menu.php";
+require "frame_rightmenu.php";
 $plan_id = $_GET["plan_id"];
 
 function set_checked($session_name, $value)
@@ -28,7 +30,7 @@ try {
     $l_d_times = explode(",", $result["l_d_times"]);
     $d_g_ids = explode(",", $result["d_g"]);
     $d_g_times = explode(",", $result["d_g_times"]);
-    
+
     //stations_id設定
     if ($result["plan_start"] == -1) {
         $start_station_id = 0;
@@ -131,9 +133,7 @@ try {
     $s_l_times = explode(",", $result["s_l_times"]);
     $l_d_times = explode(",", $result["l_d_times"]);
     $d_g_times = explode(",", $result["d_g_times"]);
-
 } catch (PDOException $e) {
-
 }
 
 //keikakuは目的地の配列
@@ -248,52 +248,64 @@ $keikaku[] = $goal_info;
         }
 
         .flex_test-box {
-                background-color: #eee;     /* 背景色指定 */
-                padding:  10px;             /* 余白指定 */
-                display: flex;              /* フレックスボックスにする */
-                align-items:stretch;        /* 縦の位置指定 */
-            }
+            background-color: #eee;
+            /* 背景色指定 */
+            padding: 10px;
+            /* 余白指定 */
+            display: flex;
+            /* フレックスボックスにする */
+            align-items: stretch;
+            /* 縦の位置指定 */
+        }
 
-            .flex_test-item {
-                padding: 10px;
-                color:  #0a0000;               /* 文字色 */
-                margin:  10px;              /* 外側の余白 */
-                border-radius:  5px;        /* 角丸指定 */
-                width: 15%;                 /* 幅指定 */
-            }
+        .flex_test-item {
+            padding: 10px;
+            color: #0a0000;
+            /* 文字色 */
+            margin: 10px;
+            /* 外側の余白 */
+            border-radius: 5px;
+            /* 角丸指定 */
+            width: 15%;
+            /* 幅指定 */
+        }
 
-            .flex_test-item #imgbox{
-                float: left;
-                display: flex;
-                width: 15vw;
-                height: 15vw;
-                margin-bottom: 15px;
-                justify-content: center;
-                align-items: center;
-            }
+        .flex_test-item #imgbox {
+            float: left;
+            display: flex;
+            width: 15vw;
+            height: 15vw;
+            margin-bottom: 15px;
+            justify-content: center;
+            align-items: center;
+        }
 
-            .flex_test-item #imgbox img{
-                width:auto;
-                height:auto;
-                max-width:100%;
-                max-height:100%;
-            }
+        .flex_test-item #imgbox img {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
+        }
 
-            .flex_test-item:nth-child(1) {
-                background-color:  #fff; /* 背景色指定 */
-            }
+        .flex_test-item:nth-child(1) {
+            background-color: #fff;
+            /* 背景色指定 */
+        }
 
-            .flex_test-item:nth-child(2) {
-                background-color:  #fff; /* 背景色指定 */
-            }
+        .flex_test-item:nth-child(2) {
+            background-color: #fff;
+            /* 背景色指定 */
+        }
 
-            .flex_test-item:nth-child(3) {
-                background-color: #fff; /* 背景色指定 */
-            }
+        .flex_test-item:nth-child(3) {
+            background-color: #fff;
+            /* 背景色指定 */
+        }
 
-            .flex_test-item:nth-child(4) {
-                background-color:  #fff; /* 背景色指定 */
-            }
+        .flex_test-item:nth-child(4) {
+            background-color: #fff;
+            /* 背景色指定 */
+        }
     </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
@@ -403,11 +415,11 @@ $keikaku[] = $goal_info;
                         label: "緯度",
                         visible: true
                     }]
-                }]
-                ,actions: [detailAction_restaurant]
+                }],
+                actions: [detailAction_restaurant]
             };
 
-            
+
             const station_template = {
                 title: "{Name}",
                 content: [{
@@ -425,8 +437,8 @@ $keikaku[] = $goal_info;
                         label: "緯度",
                         visible: true
                     }]
-                }]
-                ,actions: [detailAction_station]
+                }],
+                actions: [detailAction_station]
             };
 
             const spots_template = {
@@ -454,8 +466,8 @@ $keikaku[] = $goal_info;
                         label: "緯度",
                         visible: true
                     }]
-                }]
-                ,actions: [detailAction_spot]
+                }],
+                actions: [detailAction_spot]
             };
 
             //スタートとゴールの駅を決める
@@ -797,13 +809,13 @@ $keikaku[] = $goal_info;
                 var form = document.createElement('form');
                 var reqElm = document.createElement('input');
                 form.method = 'GET';
-                if(type == "station"){
+                if (type == "station") {
                     form.action = './station_detail.php';
                     reqElm.name = 'station_id';
-                } else if(type == "restaurant"){
+                } else if (type == "restaurant") {
                     form.action = './restaurant_detail.php';
                     reqElm.name = 'restaurant_id';
-                } else if(type == "spot"){
+                } else if (type == "spot") {
                     form.action = './sightseeing_spot_detail.php';
                     reqElm.name = 'spot_id';
                 }
@@ -840,15 +852,18 @@ $keikaku[] = $goal_info;
         }
 
         var plan_id = <?php echo json_encode($plan_id); ?>;
+
         function copy_plan() {
-            if(window.confirm('現在作成している観光計画を上書きしますがよろしいですか？')){
+            var mode = 0;
+            if (window.confirm('現在作成している観光計画を上書きしますがよろしいですか？')) {
                 jQuery(function($) {
                     $.ajax({
-                        url: "ajax_replace_plan.php",
+                        url: "ajax_copy_plan.php",
                         type: "POST",
                         dataType: "json",
                         data: {
-                            post_data_1: plan_id
+                            post_data_1: plan_id,
+                            post_data_2: mode
                         },
                         error: function(XMLHttpRequest, textStatus, errorThrown) {
                             alert("ajax通信に失敗しました");
@@ -870,8 +885,116 @@ $keikaku[] = $goal_info;
 </head>
 
 <body>
-    <div class="container">
-        <main>
+    <div id="leftbox">
+
+        <h2>観光計画</h2>
+        <button onclick="remade_plan()">更新する</button><br>
+        <div id="making_plan_box">
+            <div class="sortable">
+                開始駅<br>
+                <ul>
+                    <li id="plan_start_box" value="<?php echo $making_plan[0][1]; ?>">
+                        <img id="pin" width="20" height="20" src="./icons/pop_start.png" alt="開始駅のアイコン" title="開始駅">
+                        <?php echo $start_station_name ?><br>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sortable">
+                移動時間<br>
+                <ul>
+                    <li id="plan_start_box" value="<?php echo $making_plan[0][1]; ?>">
+                        <img id="pin" width="20" height="20" src="./icons/pop_start.png" alt="開始駅のアイコン" title="開始駅">
+                        <?php echo $start_station_name ?><br>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sortable">
+                昼食前に訪れる観光スポット<br>
+                <ul id="sort">
+                    <?php $count_s_l = 0; ?>
+                    <?php foreach ($plan_s_l_spots as $date) { ?>
+                        <?php $count_s_l += 1; ?>
+                        <li value=<?php echo $date[0] ?> id=<?php echo "plan_s_l_" . $count_s_l . "_box"; ?> draggable="true">
+                            <img class="pin_s_l" width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $count_s_l . ".png"; ?> alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
+                            <div class="s_l_name"><?php echo $date[2] ?></div>
+                            <input class="s_l_time" type="number" value="<?php echo $date[1]; ?>">分
+                            <button type="button" class="btn btn-light btn-outline-dark" value=<?php echo "plan_s_l_" . $count_s_l . "_box"; ?> onclick="hidden_spot(value)">削除</button>
+                        </li>
+                    <?php } ?>
+                </ul>
+                <input type="hidden" id="list-ids" name="list-ids" />
+            </div>
+            <div class="sortable">
+                昼食を食べる飲食店<br>
+                <ul>
+                    <li id="plan_lunch_box" value="<?php echo $making_plan[2][1]; ?>">
+                        <img id="pin" width="20" height="20" src="./icons/pop_lunch.png" alt="昼食予定地のアイコン" title="昼食予定地">
+                        <?php echo $lunch_name ?><br>
+                        <input class="time" type="number" value="<?php echo $making_plan[2][2]; ?>">分
+                        <button type="button" class="btn btn-light btn-outline-dark" value="" onclick="hidden_spot('plan_lunch_box')">削除</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="sortable">
+                昼食後に訪れる観光スポット<br>
+                <ul id="sort2">
+                    <?php $count_l_d = 0; ?>
+                    <?php foreach ($plan_l_d_spots as $date) { ?>
+                        <?php $count_l_d += 1; ?>
+                        <li value=<?php echo $date[0] ?> id=<?php echo "plan_l_d_" . $count_l_d . "_box"; ?> draggable="true">
+                            <img class="pin_l_d" width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $count_l_d . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
+                            <div class="l_d_name"><?php echo $date[2] ?></div>
+                            <input class="l_d_time" type="number" value="<?php echo $date[1]; ?>">分
+                            <button type="button" class="btn btn-light btn-outline-dark" value=<?php echo "plan_l_d_" . $count_l_d . "_box"; ?> onclick="hidden_spot(value)">削除</button>
+                        </li>
+                    <?php } ?>
+                </ul>
+                <input type="hidden" id="list-ids" name="list-ids" />
+            </div>
+            <div class="sortable">
+                夕食を食べる飲食店<br>
+                <ul>
+                    <li id="plan_dinner_box" value="<?php echo $making_plan[4][1]; ?>">
+                        <img id="pin" width="20" height="20" src="./icons/pop_dinner.png" alt="夕食予定地のアイコン" title="夕食予定地">
+                        <?php echo $dinner_name ?><br>
+                        <input class="time" type="number" value="<?php echo $making_plan[4][2]; ?>">分
+                        <button type="button" class="btn btn-light btn-outline-dark" value="" onclick="hidden_spot('plan_dinner_box')">削除</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="sortable">
+                夕食後に訪れる観光スポット<br>
+                <ul id="sort3">
+                    <?php $count_d_g = 0; ?>
+                    <?php foreach ($plan_d_g_spots as $date) { ?>
+                        <?php $count_d_g += 1; ?>
+                        <li value=<?php echo $date[0] ?> id=<?php echo "plan_d_g_" . $count_d_g . "_box"; ?> draggable="true">
+                            <img class="pin_d_g" width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $count_d_g . ".png"; ?> alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
+                            <div class="d_g_name"><?php echo $date[2] ?></div>
+                            <input class="d_g_time" type="number" value="<?php echo $date[1]; ?>">分
+                            <button type="button" class="btn btn-light btn-outline-dark" value=<?php echo "plan_d_g_" . $count_d_g . "_box"; ?> onclick="hidden_spot(value)">削除</button>
+                        </li>
+                    <?php } ?>
+                </ul>
+                <input type="hidden" id="list-ids" name="list-ids" />
+            </div>
+            <div class="sortable">
+                終了駅<br>
+                <ul>
+                    <li id="plan_goal_box" value="<?php echo $making_plan[6][1] ?>">
+                        <img id="pin" width="20" height="20" src="./icons/pop_goal.png" alt="終了駅のアイコン" title="終了駅">
+                        <div class="plan_goal_name"><?php echo $goal_station_name ?></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="container-fluid">
+        <main class="row">
             <div>
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>

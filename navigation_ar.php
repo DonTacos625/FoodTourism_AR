@@ -554,7 +554,7 @@ try {
                     longitude,
                     latitude
                 } = position.coords;
-                alert(`${longitude.toFixed(4)}, ${latitude.toFixed(4)}`);
+                //alert(`${longitude.toFixed(4)}, ${latitude.toFixed(4)}`);
                 var new_keikaku = [
                     [longitude.toFixed(4), latitude.toFixed(4), "start"],
                     [139.6787332, 35.78268538, "goal"]
@@ -645,8 +645,16 @@ try {
                     alert($totalLength);
                 }
 
+                /*
                 newEntity.setAttribute('material', 'color: blue');
                 newEntity.setAttribute('geometry', 'primitive: box');
+                */
+
+                //球を追加
+                const newSphere = document.createElement("a-sphere");
+                newSphere.setAttribute('radius', '1.25');
+                newSphere.setAttribute('color', 'color="#EF2D5E"');
+                newEntity.appendChild(newSphere);
                 /*
                 //planeの作成
                 const newPlane = document.createElement("a-plane");
@@ -689,7 +697,7 @@ try {
                 });
                 //newEntity.setAttribute('data-text', a_name);
                 newEntity.setAttribute('scale', "20 20 20");
-                newEntity.setAttribute('position', "0 20 0");
+                newEntity.setAttribute('position', "0 30 0");
 
                 //newEntity.setAttribute('popovertarget', `modalbox${i+1}`);
                 /*
@@ -721,8 +729,8 @@ try {
         }
 
         function doc() {
-            var km = $totalLength.toPrecision(3);
-            $length = "総歩行距離：" + km + " km";
+            var km = $totalLength.toPrecision(3) * 1000;
+            $length = km + " M";
             //alert($length);
             var time = ($totalLength / 4.8);
             var hour = Math.trunc(time);
@@ -742,7 +750,7 @@ try {
 </head>
 
 <body>
-    <div class="container">
+    <div class="container-fluid">
         <main>
             <a-scene id="ar_scene" vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true' cursor='rayOrigin: mouse'>
                 <a-camera gps-new-camera='gpsMinDistance: 5'></a-camera>

@@ -1,6 +1,8 @@
 <?php
 
-require "frame.php";
+require "frame_header.php";
+require "frame_menu.php";
+require "frame_rightmenu.php";
 
 //stations_id設定
 if (isset($_SESSION["start_station_id"])) {
@@ -475,12 +477,6 @@ $keikaku[] = $goal_info;
 
         });
 
-        //表示を更新する
-        function toframe(data, id) {
-            //frameの関数
-            update_frame(data, id);
-        }
-
         //駅の初期値
         $start_station_id = "";
         $goal_station_id = "";
@@ -514,7 +510,7 @@ $keikaku[] = $goal_info;
                             } else if (num == 4) {
                                 alert("「" + response[0] + "」を終了駅に設定しました");
                             }
-                            update_frame(response[0], response[1]);
+                            //update_frame(response[0], response[1]);
                             location.reload();
                         }
                     });
@@ -530,8 +526,8 @@ $keikaku[] = $goal_info;
 </head>
 
 <body>
-    <div class="container">
-        <main>
+    <div class="container-fluid">
+        <main class="row">
             <h3>開始・終了駅の設定</h3>
             <div id="editbox">
                 <div id="start_box">

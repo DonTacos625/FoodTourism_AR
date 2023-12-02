@@ -78,27 +78,28 @@ if (isset($_SESSION["dinner_time"])) {
 if (isset($_SESSION["s_l_spots"])) {
     $plan_s_l_spots = $_SESSION["s_l_spots"];
 } else {
-    $plan_s_l_spots = [[-1,0,"設定されていません"]];
+    $plan_s_l_spots = [[-1, 0, "設定されていません"]];
 }
 if (isset($_SESSION["l_d_spots"])) {
     $plan_l_d_spots = $_SESSION["l_d_spots"];
 } else {
-    $plan_l_d_spots = [[-1,0,"設定されていません"]];
+    $plan_l_d_spots = [[-1, 0, "設定されていません"]];
 }
 if (isset($_SESSION["d_g_spots"])) {
     $plan_d_g_spots = $_SESSION["d_g_spots"];
 } else {
-    $plan_d_g_spots = [[-1,0,"設定されていません"]];
+    $plan_d_g_spots = [[-1, 0, "設定されていません"]];
 }
 
-$making_plan = [["start", $plan_start_station_id, $plan_start_time],
-                ["s_l", $plan_s_l_spots], 
-                ["lunch", $plan_lunch_id, $plan_lunch_time],
-                ["l_d", $plan_l_d_spots],  
-                ["dinner", $plan_dinner_id, $plan_dinner_time], 
-                ["d_g", $plan_d_g_spots], 
-                ["goal", $plan_goal_station_id, $plan_goal_time]
-               ];
+$making_plan = [
+    ["start", $plan_start_station_id, $plan_start_time],
+    ["s_l", $plan_s_l_spots],
+    ["lunch", $plan_lunch_id, $plan_lunch_time],
+    ["l_d", $plan_l_d_spots],
+    ["dinner", $plan_dinner_id, $plan_dinner_time],
+    ["d_g", $plan_d_g_spots],
+    ["goal", $plan_goal_station_id, $plan_goal_time]
+];
 //var_dump($plan_s_l_spots);
 
 $area = 1;
@@ -137,6 +138,21 @@ if ($area == 1) {
     $map_restaurants = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_chofu_restaurants/FeatureServer";
     $map_sightseeing_spots = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_sightseeing_spots/FeatureServer";
 }
+
+/*
+$area = 2;
+$center = [139.635, 35.453];
+$database_stations = "hasune_stations";
+$database_restaurants = "hasune_restaurants";
+$database_sightseeing_spots = "hasune_sightseeing_spots";
+$map_stations = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_stations/FeatureServer";
+$map_restaurants = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_restaurants/FeatureServer";
+$map_sightseeing_spots = "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_minatomirai_sightseeing_spots/FeatureServer";
+*/
+//$database_restaurants ="hasune_restaurants";
+//$map_stations = "";
+//$map_restaurants = "";
+//$map_sightseeing_spots = "";
 
 try {
 
@@ -238,7 +254,8 @@ if (!isset($_SESSION["goal_station_id"])) {
 }
 
 
-function display_frame($name_row, $time){
+function display_frame($name_row, $time)
+{
     $count = 0;
     foreach ($name_row as $spot_name) {
         $count += 1;
@@ -259,139 +276,45 @@ function display_frame($name_row, $time){
 <html>
 
 <code class="code-multiline">
-<!-- jQuery読み込み -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<!-- Propper.js読み込み -->
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-<!-- BootstrapのJavascript読み込み -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <!-- jQuery読み込み -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <!-- Propper.js読み込み -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <!-- BootstrapのJavascript読み込み -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 </code>
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
-    <!--
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://getbootstrap.jp/docs/5.3/assets/css/docs.css" rel="stylesheet">
     <title>Bootstrap Example</title>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    -->
-    <link rel="stylesheet" type="text/css" href="css/copyright.css">
 
+    <link rel="stylesheet" type="text/css" href="css/copyright.css">
+    <link rel="stylesheet" type="text/css" href="css/viewbox.css?<?php echo date('YmdHis'); ?>">
     <style>
         h1 {
             margin: 0px;
         }
 
-        .search_form {
-            line-height: 200%;
+        #header {
+            display: flex;
+            padding-bottom: 80px;
         }
 
-        #dropmenu {
-            list-style-type: none;
-            position: relative;
-            width: 77vw;
-            height: 35px;
-            padding: 0;
-            background: #0099ff;
-            border-bottom: 5px solid #00ffff;
-            border-radius: 3px 3px 0 0;
-            z-index: 3;
-        }
-
-        #dropmenu li {
-            position: relative;
-            width: 16.665%;
-            float: left;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-            border-right: 1px solid #99ffff;
-            box-sizing: border-box;
-        }
-
-        #dropmenu li a {
-            display: block;
-            margin: 0;
-            padding: 13px 0 11px;
-            color: #FFFFFF;
-            font-size: 17px;
-            font-weight: bold;
-            line-height: 1;
-            text-decoration: none;
-        }
-
-        #dropmenu li ul {
-            list-style: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            margin: 0;
-            padding: 0;
-            border-radius: 0 0 3px 3px;
-        }
-
-        #dropmenu li ul li {
-            overflow: hidden;
-            width: 100%;
-            height: 0;
-            color: #fff;
-            -moz-transition: .2s;
-            -webkit-transition: .2s;
-            -o-transition: .2s;
-            -ms-transition: .2s;
-            transition: .2s;
-        }
-
-        #dropmenu li ul li a {
-            padding: 6px 8px;
-            background: #0099FF;
-            text-align: left;
-            font-size: 15px;
-            font-weight: normal;
-        }
-
-        #dropmenu li:hover>a {
-            background: #0066ff;
-        }
-
-        #dropmenu>li:hover>a {
-            border-radius: 3px 3px 0 0;
-        }
-
-        #dropmenu li:hover ul li {
-            overflow: visible;
-            height: 30px;
-            border-bottom: 3px solid #0066ff;
-            border-right: 0px;
-        }
-
-        #dropmenu li:hover ul li:last-child a {
-            border-radius: 0 0 3px 3px;
-        }
-
-        #leftbox {
-            position: relative;
-            top: -70px;
+        #header #userdata_box {
+            top: -40px;
             float: right;
-            width: 20vw;
-            border-right: 3px solid #0099FF;
+            border: solid;
+            border-color: #111101;
             z-index: 2;
         }
 
-        #leftbox h2 {
-            background: #0099FF;
-            color: #FFFFFF;
-            margin-right: 5px;
-            border-left: 5px solid #000080;
-        }
-
-        #leftbox p {
-            margin-left: 10px;
-        }
-
-        #leftbox #sightseeing_plan {
-            width: 19vw;
+        .container-fluid {
+            padding-bottom: 80px;
         }
 
         @media screen and (min-width:769px) {
@@ -405,39 +328,14 @@ function display_frame($name_row, $time){
                 font-size: 25px;
             }
 
-            #dropmenu {
-                width: 77vw;
-                height: 30px;
-                border-bottom: 4px solid #000080;
-            }
-
-            #dropmenu li a {
-                padding: 7px 0 9px;
-                font-size: 16px;
-            }
-
-            #dropmenu li ul li a {
-                padding: 4px 6px;
-                font-size: 13px;
-            }
-
-            #dropmenu li:hover ul li {
-                height: 23px;
-                border-bottom: 2px solid #000080;
-            }
-
-            #leftbox h2 {
-                background: #0099FF;
-                color: #FFFFFF;
-                margin-right: 4px;
-                border-left: 4px solid #000080;
-                font-size: 17px;
+            #header #userdata_box {
+                font-size: 25px;
             }
         }
 
         @media screen and (max-width:768px) {
             h1 {
-                font-size: 22px;
+                font-size: 3vw;
             }
 
             h2 {
@@ -445,55 +343,6 @@ function display_frame($name_row, $time){
                 font-size: 19px;
             }
 
-            #dropmenu {
-                display: none;
-            }
-
-            #leftbox {
-                display: none;
-            }
-
-            #toggle_menu {
-                padding: 0px;
-                margin-bottom: 5px;
-                border-bottom: 1px solid #000000;
-            }
-
-            #toggle_menu label {
-                font-weight: bold;
-                border: solid 2px black;
-                cursor: pointer;
-            }
-
-            #toggle_menu>input {
-                display: none;
-            }
-
-            #toggle_menu #menu {
-                height: 0;
-                padding: 0;
-                overflow: hidden;
-                opacity: 0;
-                transition: 0.2s;
-            }
-
-            #toggle_menu input:checked~#menu {
-                height: auto;
-                opacity: 1;
-            }
-        }
-
-        .sortable ul{
-          list-style: none;
-          padding: 0;
-        }
-        .sortable li{
-          cursor:pointer;
-          border:1px solid;
-        }
-
-        .hidden {
-            background: #808080;
         }
     </style>
 </head>
@@ -511,118 +360,57 @@ function display_frame($name_row, $time){
         //観光計画からスポットを削除
         function hidden_spot(name) {
             var name_tag = document.getElementById(name);
-            if(name_tag.className != "hidden"){
+            if (name_tag.className != "hidden") {
                 name_tag.className = "hidden";
                 name_tag.querySelector(".btn").textContent = "戻す";
             } else {
                 name_tag.className = "";
                 name_tag.querySelector(".btn").textContent = "削除";
             }
-            
-        };
 
-        //観光計画の情報を更新
-        function update_making_plan() {
-            var radios = document.getElementsByName("lunch_or_dinner");
-            for(var i=0; i<radios.length; i++){
-                if (radios[i].checked) {
-                //選択されたラジオボタンのvalue値を取得する
-                mode = radios[i].value;
-                break;
-                }
-            }
-            if(mode == "0"){
-                alert("昼食か夕食を選択してください");
-            } else {
-                var plan_start_time = document.getElementById("plan_start_time").value;
-                var plan_goal_time = document.getElementById("plan_goal_time").value;
-                jQuery(function($) {
-                    $.ajax({
-                        url: "ajax_update_making_plan.php",
-                        type: "POST",
-                        dataType: "json",
-                        data: {
-                            post_data_1: restaurant_id,
-                            post_data_2: mode,
-                            post_data_3: time
-                        },
-                        error: function(XMLHttpRequest, textStatus, errorThrown) {
-                            alert("ajax通信に失敗しました");
-                        },
-                        success: function(response) {
-                            //frameの関数
-                            //update_frame(response[0], response[1]);
-                            if (mode == "1") {
-                                alert("「" + response[0] + "」を昼食に設定しました");
-                            } else {
-                                alert("「" + response[0] + "」を夕食に設定しました");
-                            }
-                        }
-                    });
-                });
-            };
         };
     </script>
 
+    <div id="header">
+        <div id="title">
+            <h1>横浜みなとみらいフードツーリズム計画作成支援システム</h1>
+        </div>
+        <div id="userdata_box" class="position-absolute top-0 end-0">
+            <h2>会員情報</h2>
+
+            <b>名前:</b> <?php echo htmlspecialchars($_SESSION["user_name"], ENT_QUOTES); ?><br>
+
+            <b>年代:</b> <?php if (!$frameresult["age"]) { ?>
+                未回答
+                <?php } else {
+                            echo htmlspecialchars($frameresult["age"], ENT_QUOTES); ?>代 <?php } ?><br>
+
+            <b>性別:</b> <?php echo htmlspecialchars($frameresult["gender"], ENT_QUOTES); ?><br>
+        </div>
+        <div id="survey_box">
+            <h2>アンケート</h2>
+            <p>
+                <?php
+                print "アンケートの回答を締め切りました。ご回答くださった方々、誠にありがとうございました。";
+                /*
+                if ($frameresult["survey"]) {
+                    print "<form action=\"\" method=\"POST\">";
+                    print "<input type=\"submit\" id=\"survey\" name=\"survey\" value=\"回答する\" onClick=\"window.open('https://forms.gle/amw8j1wJDPcAn29h7?openExternalBrowser=1','_blank')\"><br>";
+                    print "</form>";
+                    print "回答は<font color=\"red\">1回</font>のみです<br>";
+                    print "<b>システムを1度以上利用してからご回答ください</b>";
+                } else {
+                    print "ご回答ありがとうございました";
+                }
+                */
+                ?>
+            </p>
+        </div>
+    </div>
 
 </body>
-
-<!-- ドラッグアンドドロップを実装する用 -->
-<script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-
-<script src="Sortable.min.js"></script>
-<!-- -->
-<script>
-/*
-var el = document.getElementById('sort');
-var sortable = Sortable.create(el);
-
-var el2 = document.getElementById('sort2');
-var sortable2 = Sortable.create(el2);
-
-var el3 = document.getElementById('sort3');
-var sortable3 = Sortable.create(el3);
-*/
-
-var el = document.getElementById('sort');
-var sortable = Sortable.create(el, {
-    onSort: function(evt) {
-        var items = el.querySelectorAll('li');
-        for (var i = 0; i < items.length; i++) {
-            items[i].querySelector('.no_s_l').value = i + 1;
-            var src = `./icons/pop_icon_s_l${i + 1}.png`;
-            items[i].querySelector('.pin_s_l').src = src;
-        }
-    }
-});
-
-var el2 = document.getElementById('sort2');
-var sortable2 = Sortable.create(el2, {
-    onSort: function(evt) {
-        var items = el2.querySelectorAll('li');
-        for (var i = 0; i < items.length; i++) {
-            items[i].querySelector('.no_l_d').value = i + 1;
-            var src = `./icons/pop_icon_l_d${i + 1}.png`;
-            items[i].querySelector('.pin_l_d').src = src;
-        }
-    }
-});
-
-var el3 = document.getElementById('sort3');
-var sortable3 = Sortable.create(el3, {
-    onSort: function(evt) {
-        var items = el3.querySelectorAll('li');
-        for (var i = 0; i < items.length; i++) {
-            items[i].querySelector('.no_d_g').value = i + 1;
-            var src = `./icons/pop_icon_d_g${i + 1}.png`;
-            items[i].querySelector('.pin_d_g').src = src;
-        }
-    }
-});
-
-
-
-
-</script>
+<footer class="position-absolute top-100 start-50 translate-middle">
+    <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
+</footer>
 
 </html>

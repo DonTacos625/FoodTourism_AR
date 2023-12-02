@@ -1,6 +1,8 @@
 <?php
 
-require "frame.php";
+require "frame_header.php";
+require "frame_menu.php";
+require "frame_rightmenu.php";
 
 try {
 
@@ -148,19 +150,19 @@ try {
     //予算範囲
     if($lunch_min != 0){
         $keywordCondition[] =  " lunch_min >= $lunch_min";
-        $keywordCondition[] =  " lunch_min <> 999999";
+        $keywordCondition[] =  " lunch_min <> -1";
     }
     if($lunch_max != 999999){
         $keywordCondition[] =  " lunch_max <= $lunch_max";
-        $keywordCondition[] =  " lunch_max <> 0";
+        $keywordCondition[] =  " lunch_max <> -1";
     }
     if($dinner_min != 0){
         $keywordCondition[] =  " dinner_min >= $dinner_min";
-        $keywordCondition[] =  " dinner_min <> 999999";
+        $keywordCondition[] =  " dinner_min <> -1";
     }
     if($dinner_max != 999999){
         $keywordCondition[] =  " dinner_max <= $dinner_max";
-        $keywordCondition[] =  " dinner_max <> 0";
+        $keywordCondition[] =  " dinner_max <> -1";
     }
     //$keywordCondition[] =  " lunch_min >= $lunch_min AND lunch_max <= $lunch_max ";
     //$keywordCondition[] =  " dinner_min >= $dinner_min AND dinner_max <= $dinner_max ";
@@ -364,8 +366,8 @@ $count = 0;
 </script>
 
 <body>
-    <div class="container">
-        <main>
+    <div class="container-fluid">
+        <main class="row">
             <div id="detailbox">
                 <h3 id="search_start">飲食店の検索・決定</h3>
                 <a id="view_result" name="view_result" href="search_map.php">地図上で結果を表示</a><br>

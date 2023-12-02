@@ -3,6 +3,7 @@ session_start();
 require_once("connect_database.php");
 
 $post_data_1 = $_POST['post_data_1'];
+$post_data_2 = json_decode($_POST['post_data_2'], true);
 
 $database_name = "minatomirai_sightseeing_spots";
 try {
@@ -14,12 +15,28 @@ try {
     $stmt1->execute();
     $result1 = $stmt1->fetch(PDO::FETCH_ASSOC);
 
+    if($post_data_2){
+        $_SESSION["input_plan_name"] = $result1["plan_name"];
+        $_SESSION["input_plan_memo"] = $result1["memo"];
+        $_SESSION["plan_show"] = $result1["show"];
+    }
+
     $_SESSION["start_station_id"] = $result1["plan_start"];
     $_SESSION["goal_station_id"] = $result1["plan_goal"];
-    $_SESSION["lunch_id"] = $result1["lunch"];
-    $_SESSION["lunch_time"] = $result1["lunch_time"];
-    $_SESSION["dinner_id"] = $result1["dinner"];
-    $_SESSION["dinner_time"] = $result1["dinner_time"];;
+    if($result1["lunch"] == -1){
+        unset($_SESSION["lunch_id"]);
+        unset($_SESSION["lunch_time"]);
+    } else {
+        $_SESSION["lunch_id"] = $result1["lunch"];
+        $_SESSION["lunch_time"] = $result1["lunch_time"];
+    }
+    if($result1["dinner"] == -1){
+        unset($_SESSION["dinner_id"]);
+        unset($_SESSION["dinner_time"]);
+    } else {
+        $_SESSION["dinner_id"] = $result1["dinner"];
+        $_SESSION["dinner_time"] = $result1["dinner_time"];
+    }
 
     if($result1["s_l"] == -1){
         unset($_SESSION["s_l_spots"]);

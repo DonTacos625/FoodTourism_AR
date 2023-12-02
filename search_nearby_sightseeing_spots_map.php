@@ -1,6 +1,8 @@
 <?php
 
-require "frame.php";
+require "frame_header.php";
+require "frame_menu.php";
+require "frame_rightmenu.php";
 
 try {
 
@@ -10,6 +12,12 @@ try {
     }
     if (!isset($_SESSION["spots_around_distance"])) {
         $_SESSION["spots_around_distance"] = "500";
+    }
+    if (!isset($_SESSION["spots_around_count"])) {
+        $_SESSION["spots_around_count"] = "5";
+    }
+    if (!isset($_SESSION["spots_sort_conditions"])) {
+        $_SESSION["spots_sort_conditions"] = "distance_nearest";
     }
 
     //提出されたデータ
@@ -24,6 +32,18 @@ try {
         $_SESSION["spots_around_distance"] = $spots_around_distance;
     } else {
         $spots_around_distance = $_SESSION["spots_around_distance"];
+    }
+    if (isset($_POST["spots_around_count"])) {
+        $spots_around_count = $_POST["spots_around_count"];
+        $_SESSION["spots_around_count"] = $spots_around_count;
+    } else {
+        $spots_around_count = $_SESSION["spots_around_count"];
+    }
+    if (isset($_POST["spots_sort_conditions"])) {
+        $spots_sort_conditions = $_POST["spots_sort_conditions"];
+        $_SESSION["spots_sort_conditions"] = $spots_sort_conditions;
+    } else {
+        $spots_sort_conditions = $_SESSION["spots_sort_conditions"];
     }
 
     $keywordCondition = [];
@@ -58,7 +78,7 @@ try {
 
     //sql文にする
     $sql = 'SELECT * FROM ' . $database_sightseeing_spots .' WHERE ' . $keywordCondition . ' ';
-    var_dump($sql);
+    //var_dump($sql);
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
 } catch (PDOException $e) {
@@ -158,7 +178,7 @@ if ($categoryName == "0") {
             border: solid 3px #ffffff;
         }
 
-        #detailbox #infobox #imgbox{
+        #detailbox #infobox #imgbox {
             float: left;
             display: flex;
             width: 20vw;
@@ -168,11 +188,11 @@ if ($categoryName == "0") {
             align-items: center;
         }
 
-        #detailbox #infobox #imgbox img{
-            width:auto;
-            height:auto;
-            max-width:100%;
-            max-height:100%;
+        #detailbox #infobox #imgbox img {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
         }
 
         #detailbox #infobox table th {
@@ -233,7 +253,7 @@ if ($categoryName == "0") {
 
         }
 
-        
+
         .move_box {
             position: relative;
             width: 76vw;
@@ -266,30 +286,31 @@ if ($categoryName == "0") {
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
     <script src="https://js.arcgis.com/4.21/"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    
+
     <script>
         var pointpic = "";
 
         var current_latitude = 0;
         var current_longitude = 0;
+
         function test() {
             navigator.geolocation.getCurrentPosition(
-                    test2,
-                    // 取得失敗した場合
-                    function (error) {
+                test2,
+                // 取得失敗した場合
+                function(error) {
                     switch (error.code) {
                         case 1: //PERMISSION_DENIED
-                        alert("位置情報の利用が許可されていません");
-                        break;
+                            alert("位置情報の利用が許可されていません");
+                            break;
                         case 2: //POSITION_UNAVAILABLE
-                        alert("現在位置が取得できませんでした");
-                        break;
+                            alert("現在位置が取得できませんでした");
+                            break;
                         case 3: //TIMEOUT
-                        alert("タイムアウトになりました");
-                        break;
+                            alert("タイムアウトになりました");
+                            break;
                         default:
-                        alert("その他のエラー(エラーコード:" + error.code + ")");
-                        break;
+                            alert("その他のエラー(エラーコード:" + error.code + ")");
+                            break;
                     }
                 }
             );
@@ -309,7 +330,7 @@ if ($categoryName == "0") {
             "esri/layers/WebTileLayer",
             "esri/layers/FeatureLayer",
             "esri/widgets/Locate",
-            "esri/widgets/Track", 
+            "esri/widgets/Track",
             "esri/Graphic",
             "esri/layers/GraphicsLayer",
             "esri/rest/support/Query",
@@ -325,7 +346,7 @@ if ($categoryName == "0") {
             WebTileLayer,
             FeatureLayer,
             Locate,
-            Track, 
+            Track,
             Graphic,
             GraphicsLayer,
             Query,
@@ -400,10 +421,10 @@ if ($categoryName == "0") {
                         visible: true
                     }]
                 }]
-                ,actions: [detailAction]
+                //,actions: [detailAction]
             };
 
-            
+
             const station_template = {
                 title: "{Name}",
                 content: [{
@@ -423,7 +444,7 @@ if ($categoryName == "0") {
                     }]
                 }]
             };
-
+            
             const spot_template = {
                 title: "{Name}",
                 content: [{
@@ -452,6 +473,7 @@ if ($categoryName == "0") {
                 }]
                 ,actions: [detailAction]
             };
+            
 
             //飲食店のIDから表示するスポットを決める
             var spots_feature_sql = "";
@@ -509,13 +531,12 @@ if ($categoryName == "0") {
                 definitionExpression: spots_feature_sql
             });
 
-
             //選択したスポットの表示レイヤー
             const resultsLayer = new GraphicsLayer();
 
             const map = new Map({
                 basemap: "streets",
-                layers: [sightseeing_spotsLayer, resultsLayer]
+                layers: [resultsLayer]
                 //layers: [$food]
             });
 
@@ -574,104 +595,132 @@ if ($categoryName == "0") {
 
             //Locate関数
             const locate = new Locate({
-            view: view,
-            graphic: new Graphic({
-                symbol: {
-                type: "simple-marker",
-                size: "12px",
-                color: "green",
-                outline: {
-                    color: "#efefef",
-                    width: "1.5px"
-                }
-                }
-            }),
-            useHeadingEnabled: false
+                view: view,
+                graphic: new Graphic({
+                    symbol: {
+                        type: "simple-marker",
+                        size: "12px",
+                        color: "green",
+                        outline: {
+                            color: "#efefef",
+                            width: "1.5px"
+                        }
+                    }
+                }),
+                useHeadingEnabled: false
             });
             view.ui.add(locate, "top-left");
 
             var featureLayer = new FeatureLayer({
                 url: "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_sightseeing_spots/FeatureServer",
                 id: "featureLayer",
-                popupTemplate: food_template,
+                popupTemplate: spot_template,
                 definitionExpression: spots_feature_sql
             });
 
             var current_Symbol = new PictureMarkerSymbol({
-                url: "./markers/d_g_spot3.png",
+                url: "./markers/current_location_pin.png",
                 width: "30px",
                 height: "46.5px"
             });
+            const current_template = {
+                title: "現在地",
+                content: [{
+                    type: "text",
+                    text: `緯度：${current_latitude}`
+                }, {
+                    type: "text",
+                    text: `経度：${current_longitude}`
+                }]
+            };
 
             const distance = <?php echo json_encode($spots_around_distance); ?>;
+            const count = <?php echo json_encode($spots_around_count); ?>;
+            const sort_conditions = <?php echo json_encode($spots_sort_conditions); ?>;
             nearby_spots = (geom) => {
+                test();
                 let graphic = new Graphic({
                     geometry: {
                         type: "point",
-                        /*
-                        latitude: evt.mapPoint.latitude,
-                        longitude: evt.mapPoint.longitude,
-                        */
+
                         latitude: current_latitude,
                         longitude: current_longitude,
                         spatialReference: view.spatialReference
                     },
-                    symbol: current_Symbol
+                    symbol: current_Symbol,
+                    popupTemplate: current_template
                 });
-
+                //sort_restaurants(currebt_latidute, current_longitude);
                 //クリックした位置から 500m のバッファ内のスポット（避難所）を検索するための query式を作成
                 let query = featureLayer.createQuery();
                 query.geometry = graphic.geometry;
                 query.outFields = ["*"];
-                query.orderByFields = ["id DESC"];
-                //query.topCount = 3,
-                //query.maxRecordCount = 3;
+                //ソートの処理
+                var distance_sort = 0;
+                if (sort_conditions == "distance_nearest") {
+                    distance_sort = 1;
+                } else if (sort_conditions == "distance_farthest") {
+                    distance_sort = 2;
+                }
+
                 query.distance = distance;
                 query.units = "meters";
 
-                var query_count = 5;
+                var query_count = count;
                 var s_count = 0;
-                featureLayer.queryFeatures(query).then(function (featureSet) {
+
+                featureLayer.queryFeatures(query).then(function(featureSet) {
                     var result_fs = featureSet.features;
                     //検索結果が0件だったら、何もしない
                     //if (result_fs.length === 0) { return }
 
                     //前回の検索結果を、グラフィックスレイヤーから削除
                     resultsLayer.removeAll();
-
+                    $sort_array = [];
                     //検索結果に対する設定
-                    var features = result_fs.map(function (graphic) {
+                    var features = result_fs.map(function(graphic) {
+                        var distance_from_here = Math.abs(current_latitude - graphic.attributes.Y) + Math.abs(current_longitude - graphic.attributes.X);
+                        $sort_array.push([Math.round(distance_from_here * 100000), graphic]);
+                        return graphic;
+                    });
+                    //ソート方法の選択
+                    if (distance_sort == 1) {
+                        var sorted_array = $sort_array.sort(function(a, b) {
+                            return (a[0] - b[0]);
+                        });
+                    } else if (distance_sort == 2) {
+                        var sorted_array = $sort_array.sort(function(a, b) {
+                            return (b[0] - a[0]);
+                        });
+                    } else {
+                        var sorted_array = $sort_array;
+                    }
+                    var sorted_features = sorted_array.map(function(graphic) {
                         s_count += 1;
-                        if(s_count <= query_count){
+                        if (s_count <= query_count) {
                             //シンボル設定
-                            graphic.symbol = {
+                            graphic[1].symbol = {
                                 type: "simple-marker",
                                 style: "diamond",
                                 size: 10.5,
                                 color: "darkorange"
                             };
-                            graphic.popupTemplate = spot_template;
-                            //alert(s_count);
-                            return graphic;
+                            graphic[1].popupTemplate = spot_template;
+                            //alert(graphic[1].attributes.dinner_min);
+                            return graphic[1];
                         }
                     });
 
                     //検索結果と現在地を、グラフィックスレイヤーに登録（マップに表示）
                     resultsLayer.add(graphic);
-                    resultsLayer.addMany(features);
-
+                    resultsLayer.addMany(sorted_features);
                 });
-                //alert(current_longitude);
+                view.goTo(graphic);
             };
 
             nearby_spots();
 
         });
-
-        function toframe(data, id) {
-            //frameの関数
-            update_frame(data, id);
-        }
 
         function input_search_name(word) {
             const update = document.getElementById("search_name");
@@ -683,46 +732,53 @@ if ($categoryName == "0") {
 
 <script type="text/javascript">
 
-    //セレクトボックスから選ばれたワードを検索ワードボックスに入れる　もっといい方法あるかも
-    function input_search_name(word) {
-        const update = document.getElementById("search_name");
-        update.value = word;
-    };
-    //予算範囲が不適切な場合
-    function right_range(word) {
-        if(word.match(/lunch/)){
-            const lunch_min = document.getElementById("lunch_min");
-            const lunch_max = document.getElementById("lunch_max");
-            if(lunch_min.value - lunch_max.value > 0){
-                alert("最小予算が最大予算を超えています！");
-            }
-        } else if(word.match(/dinner/)){
-            const dinner_min = document.getElementById("dinner_min");
-            const dinner_max = document.getElementById("dinner_max");
-            if(dinner_min.value - dinner_max.value > 0){
-                alert("最小予算が最大予算を超えています！");
-            }
-        }
-    };
+    function display_results() {
+        nearby_spots();
+        //alert("s");
+    }
+
 </script>
 
 <body>
-    <div class="container">
-        <main>
+    <div class="container-fluid">
+        <main class="row">
             <div id="detailbox">
                 <h3 id="search_start">飲食店の検索・決定</h3>
-                <a id="view_result" name="view_result" href="search_nearby_sightseeing_spots_ar.php">ARで結果を表示</a><br>
+                <a id="view_result" name="view_result" href="search_nearby_sightseein_ar.php">ARで結果を表示</a><br>
+                <a id="view_result2" name="view_result2" href="search_nearby_restaurants_map.php">飲食店</a><br>
                 <div class="search_form">
                     <form action="search_nearby_sightseeing_spots_map.php" method="post">
                         観光スポットの検索範囲：<br>
                         <input type="radio" id="spots_around_distance" name="spots_around_distance" value="300" <?php set_checked("spots_around_distance", "300"); ?>>周囲300m
                         <input type="radio" id="spots_around_distance" name="spots_around_distance" value="400" <?php set_checked("spots_around_distance", "400"); ?>>周囲400m
                         <input type="radio" id="spots_around_distance" name="spots_around_distance" value="500" <?php set_checked("spots_around_distance", "500"); ?>>周囲500m
-                        <input type="radio" id="spots_around_distance" name="spots_around_distance" value="600" <?php set_checked("spots_around_distance", "600"); ?>>周囲600m<br>
+                        <input type="radio" id="spots_around_distance" name="spots_around_distance" value="600" <?php set_checked("spots_around_distance", "600"); ?>>周囲600m
+                        <input type="radio" id="spots_around_distance" name="spots_around_distance" value="700" <?php set_checked("spots_around_distance", "700"); ?>>周囲700m
+                        <input type="radio" id="spots_around_distance" name="spots_around_distance" value="800" <?php set_checked("spots_around_distance", "800"); ?>>周囲800m<br>
+
+                        並び替え条件：
+                        <select size="1" id="spots_sort_conditions" name="spots_sort_conditions" onchange="">
+                            <option value="distance_nearest" <?php set_selected("spots_sort_conditions", "distance_nearest"); ?>> 距離が近い順 </option>
+                            <option value="distance_farthest" <?php set_selected("spots_sort_conditions", "distance_farthest"); ?>> 距離が遠い順 </option>
+                        </select><br>
+
+                        表示数：
+                        <select size="1" id="spots_around_count" name="spots_around_count" onchange="">
+                            <option value="1" <?php set_selected("spots_around_count", "1"); ?>> 1 </option>
+                            <option value="2" <?php set_selected("spots_around_count", "2"); ?>> 2 </option>
+                            <option value="3" <?php set_selected("spots_around_count", "3"); ?>> 3 </option>
+                            <option value="4" <?php set_selected("spots_around_count", "4"); ?>> 4 </option>
+                            <option value="5" <?php set_selected("spots_around_count", "5"); ?>> 5 </option>
+                            <option value="6" <?php set_selected("spots_around_count", "6"); ?>> 6 </option>
+                            <option value="7" <?php set_selected("spots_around_count", "7"); ?>> 7 </option>
+                            <option value="8" <?php set_selected("spots_around_count", "8"); ?>> 8 </option>
+                            <option value="9" <?php set_selected("spots_around_count", "9"); ?>> 9 </option>
+                            <option value="10" <?php set_selected("spots_around_count", "10"); ?>> 10 </option>
+                        </select><br>
 
                         観光スポットのカテゴリー：<br>
                         <input type="radio" id="category" name="category" value="0" <?php set_checked("search_spots_category", "0"); ?>>指定なし
-                        <input type="radio" id="category" name="category" value="名所・史跡"  <?php set_checked("search_spots_category", "名所・史跡"); ?>>名所・史跡
+                        <input type="radio" id="category" name="category" value="名所・史跡" <?php set_checked("search_spots_category", "名所・史跡"); ?>>名所・史跡
                         <input type="radio" id="category" name="category" value="ショッピング" <?php set_checked("search_spots_category", "ショッピング"); ?>>ショッピング
                         <input type="radio" id="category" name="category" value="芸術・博物館" <?php set_checked("search_spots_category", "芸術・博物館"); ?>>芸術・博物館
                         <input type="radio" id="category" name="category" value="テーマパーク・公園" <?php set_checked("search_spots_category", "テーマパーク・公園"); ?>>テーマパーク・公園
@@ -731,6 +787,7 @@ if ($categoryName == "0") {
                         <input type="submit" name="submit" value="検索する">
                     </form>
                 </div><br>
+                <button type="button" onclick="display_results()">再読み込み</button>
                 <?php
                 if (!$count) {
                     echo "検索条件に該当する飲食店はありませんでした";

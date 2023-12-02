@@ -1,5 +1,7 @@
 <?php
-require "frame.php";
+require "frame_header.php";
+require "frame_menu.php";
+require "frame_rightmenu.php";
 ?>
 
 <!doctype html>
@@ -66,8 +68,8 @@ require "frame.php";
 </head>
 
 <body>
-    <div class="container">
-        <main>
+    <div class="container-fluid">
+        <main class="row">
             <div id="homebox">
                 <h2>ホーム</h2>
 

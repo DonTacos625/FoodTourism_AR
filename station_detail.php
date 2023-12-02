@@ -1,6 +1,8 @@
 <?php
 
-require "frame.php";
+require "frame_header.php";
+require "frame_menu.php";
+require "frame_rightmenu.php";
 
 $station_id = $_GET["station_id"];
 
@@ -465,7 +467,7 @@ try {
                         },
                         success: function(response) {
                             //frameの関数
-                            update_frame(response[0], response[1]);
+                            //update_frame(response[0], response[1]);
                             if (mode == "1") {
                                 alert("「" + response[0] + "」を開始駅に設定しました");
                             } else {
@@ -478,17 +480,12 @@ try {
             };
         };
 
-        //表示を更新する
-        function toframe(data, id) {
-            //frameの関数
-            update_frame(data, id);
-        }
     </script>
 
 </head>
 
 <body>
-    <div class="container">
+    <div class="container-fluid">
         <main>
             <div id="detailbox">
                 <h3>観光スポットの詳細情報</h3>

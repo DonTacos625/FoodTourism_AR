@@ -1,6 +1,8 @@
 <?php
 
-require "frame.php";
+require "frame_header.php";
+require "frame_menu.php";
+require "frame_rightmenu.php";
 
 $message = "";
 if (!isset($_SESSION["start_station_id"]) || !isset($_SESSION["goal_station_id"])) {
@@ -793,7 +795,7 @@ function set_checked($session_name, $value)
                         success: function(response) {
                             //alert(response[0]);
                             //esriの関数の外へ
-                            toframe(time, response[1]);
+                            //toframe(time, response[1]);
 
                             if (response[0] == "") {
                                 alert("同じスポットは登録できません");
@@ -902,13 +904,6 @@ function set_checked($session_name, $value)
             $categoryName = category_name;
         }
 
-        //frame関数内のoverwriteを実行する
-        function toframe(time, response) {
-            //frameの関数
-            overwrite(time, response, 0);
-            overwrite(time, response, 1);
-        }
-
         //観光経路表示を更新する
         function kousin() {
             location.reload();
@@ -929,7 +924,7 @@ function set_checked($session_name, $value)
                         alert("ajax通信に失敗しました");
                     },
                     success: function(response) {
-                        toframe(time, response[1]);
+                        //toframe(time, response[1]);
 
                         if (response[0] == "") {
                             alert("同じスポットは登録できません");
@@ -1065,8 +1060,8 @@ function set_checked($session_name, $value)
 </head>
 
 <body>
-    <div class="container">
-        <main>
+    <div class="container-fluid">
+        <main class="row">
             <div>
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>

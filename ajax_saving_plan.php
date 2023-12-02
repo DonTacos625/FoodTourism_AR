@@ -23,7 +23,7 @@ try {
     $stmt1 = $pdo->prepare("SELECT * FROM userplan WHERE plan_name = :plan_name");
     $stmt1->bindParam(":plan_name", $save_plan_name);
     $stmt1->execute();
-    $result1 = $stmt1->fetchAll(PDO::FETCH_ASSOC);
+    $result1 = $stmt1->fetch(PDO::FETCH_ASSOC);
 
     if (isset($_SESSION["start_station_id"])) {
         $save_plan_start = $_SESSION["start_station_id"];
@@ -105,9 +105,14 @@ try {
     $save_d_g = implode(',', $d_g_spots_id);
     $save_d_g_times = implode(',', $d_g_spots_time);
 
-    //データベースに観光計画情報を保存
-    //名前重複チェック
-    if (empty($result1)) {
+    $same_plan_name = "初期値";
+    $same_plan_id = -1;
+    //名前重複チェック かつ　製作者が同じ場合
+    if($result1 && $result1["maker_id"] == $save_maker_id){
+        $errormessage = "上書き保存";
+        $same_plan_name = $result1["plan_name"];
+        $same_plan_id = $result1["id"];
+    } else if (empty($result1)) {
         if($save_plan_start != -1 && $save_plan_goal != -1){
             if($save_lunch != -1 || $save_dinner != -1){
                 //ID,Pass書き込み
@@ -171,7 +176,7 @@ try {
     $errormessage = "データベースエラー";
 }
 
-$return_array = array($errormessage);
+$return_array = array($errormessage, $same_plan_name, $same_plan_id);
 
 echo json_encode($return_array);
 ?>

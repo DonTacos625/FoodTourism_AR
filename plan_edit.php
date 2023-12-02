@@ -1,6 +1,8 @@
 <?php
 
-require "frame.php";
+require "frame_header.php";
+require "frame_menu.php";
+require "frame_rightmenu.php";
 
 //入力情報保存用のSESSION変数初期値設定
 if (!isset($_SESSION["input_plan_name"])) {
@@ -859,49 +861,104 @@ $keikaku[] = $goal_info;
         var set_foods = <?php echo json_encode($set_foods); ?>;
 
         function upload_plan() {
-            var radios = document.getElementsByName("plan_show");
-            for(var i=0; i<radios.length; i++){
-                if (radios[i].checked) {
-                //選択されたラジオボタンのvalue値を取得する
-                mode = radios[i].value;
-                break;
-                }
-            }
             var plan_name = document.getElementById("plan_name").value;
             var plan_memo = document.getElementById("plan_comment").value;
             var area = <?php echo json_encode($area); ?>;
-            if (plan_name != "") {
-                jQuery(function($) {
-                    $.ajax({
-                        url: "./ajax_saving_plan.php",
-                        type: "POST",
-                        dataType: "json",
-                        data: {
-                            post_data_1: mode,
-                            post_data_2: plan_name,
-                            post_data_3: plan_memo,
-                            post_data_4: area
-                        },
-                        error: function(XMLHttpRequest, textStatus, errorThrown) {
-                            alert("ajax通信に失敗しました");
-                        },
-                        success: function(response) {
-                            alert(response);
-                        }
+            //if(window.confirm(`観光計画「${plan_name}」を新規登録しますがよろしいですか？`)){
+                var radios = document.getElementsByName("plan_show");
+                for(var i=0; i<radios.length; i++){
+                    if (radios[i].checked) {
+                    //選択されたラジオボタンのvalue値を取得する
+                    mode = radios[i].value;
+                    break;
+                    }
+                }
+                if (plan_name != "") {
+                    jQuery(function($) {
+                        $.ajax({
+                            url: "./ajax_saving_plan.php",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                post_data_1: mode,
+                                post_data_2: plan_name,
+                                post_data_3: plan_memo,
+                                post_data_4: area
+                            },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                alert("ajax通信に失敗しました");
+                            },
+                            success: function(response) {
+                                if(response[0] == "上書き保存"){
+                                    //alert(response[2]);
+                                    updating_plan(response[1],response[2]);
+                                } else {
+                                    alert(response[0]);
+                                }
+                            }
+                        });
                     });
-                });
+                } else {
+                    alert("プラン名を登録してください");
+                }
+            //} else {
+
+            //}
+
+        };
+
+        function updating_plan(same_plan_name, same_plan_id) {
+            if(window.confirm(`「${same_plan_name}」の内容を上書きしますがよろしいですか？`)){
+                var radios = document.getElementsByName("plan_show");
+                for(var i=0; i<radios.length; i++){
+                    if (radios[i].checked) {
+                    //選択されたラジオボタンのvalue値を取得する
+                    mode = radios[i].value;
+                    break;
+                    }
+                }
+                var plan_name = document.getElementById("plan_name").value;
+                var plan_memo = document.getElementById("plan_comment").value;
+                var plan_id = same_plan_id;
+                //frame内の変数
+                var area = <?php echo json_encode($area); ?>;
+                if (plan_name != "") {
+                    jQuery(function($) {
+                        $.ajax({
+                            url: "./ajax_updating_plan.php",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                post_data_1: mode,
+                                post_data_2: plan_name,
+                                post_data_3: plan_memo,
+                                post_data_4: area,
+                                post_data_5: plan_id
+                            },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                alert("ajax通信に失敗しました");
+                            },
+                            success: function(response) {
+                                alert(response);
+                            }
+                        });
+                    });
+                } else {
+                    alert("プラン名を登録してください");
+                }
+
             } else {
-                alert("プラン名を登録してください");
+
             }
-        }
+        };
 
     </script>
 
 </head>
 
 <body>
-    <div class="container">
-        <main>
+    <div class="container-fluid">
+        <main class="row">
             <div>
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
@@ -931,7 +988,7 @@ $keikaku[] = $goal_info;
                 <p>プラン名：<br>
 	            <input type="text" id="plan_name" size="15" value="<?php echo $input_plan_name; ?>"></p>
                 <p>メモ：<br>
-	            <textarea id="plan_comment"><?php echo $input_plan_memo; ?></textarea><br>
+	            <textarea class="form-control" rows="5" id="plan_comment"><?php echo $input_plan_memo; ?></textarea><br>
                 <p>観光計画を公開しますか？：<br>
                 <input type="radio" id="plan_show" name="plan_show" value="1" <?php set_checked("plan_show", "1"); ?>>公開する
                 <input type="radio" id="plan_show" name="plan_show" value="0" <?php set_checked("plan_show", "0"); ?>>公開しない<br>

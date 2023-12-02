@@ -6,8 +6,8 @@
         #viewbox {
             position: relative;
             float: left;
-            width: 80vw;
-            height: 80vh;
+            width: 77vw;
+            height: 90vh;
             margin-left: 5px;
         }
 
@@ -20,8 +20,8 @@
             position: relative;
             padding: 0;
             margin: 0;
-            height: 90%;
-            width: 95%;
+            height: 100%;
+            width: 77vw;
         }
 
         @media screen and (min-width:769px) and (max-width:1366px) {
@@ -30,7 +30,7 @@
             }
 
             #viewbox {
-                width: 80vw;
+                width: 77vw;
                 height: 70vh;
             }
         }
@@ -43,7 +43,7 @@
             #viewbox {
                 position: relative;
                 float: left;
-                width: 95vw;
+                width: 100vw;
                 height: 60vh;
                 margin: 0px;
             }

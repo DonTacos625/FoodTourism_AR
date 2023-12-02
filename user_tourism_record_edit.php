@@ -1,6 +1,8 @@
 <?php
 
-require "frame.php";
+require "frame_header.php";
+require "frame_menu.php";
+require "frame_rightmenu.php";
 
 $spot_id = $_GET["spot_id"];
 
@@ -590,7 +592,7 @@ $keikaku[] = $goal_station_info;
                         success: function(response) {
                             //alert(response[0]);
                             //esriの関数の外へ
-                            toframe(time, response[1]);
+                            //toframe(time, response[1]);
 
                             if (response[0] == "") {
                                 alert("同じスポットは登録できません");
@@ -648,7 +650,7 @@ $keikaku[] = $goal_station_info;
                         },
                         success: function(response) {
                             //frameの関数
-                            toframe(mode, response[1]);
+                            //toframe(mode, response[1]);
                             //alert(response[1]);
                             if (response[0] == "") {
                                 alert("同じスポットは登録できません");
@@ -670,19 +672,13 @@ $keikaku[] = $goal_station_info;
             };
         };
 
-        //frame関数内のoverwriteを実行する
-        function toframe(time, response) {
-            //frameの関数
-            overwrite(time, response, 0);
-            overwrite(time, response, 1);
-        }
     </script>
 
 </head>
 
 <body>
-    <div class="container">
-        <main>
+    <div class="container-fluid">
+        <main class="row">
             <div id="detailbox">
                 <h3>観光スポットの詳細情報</h3>
 

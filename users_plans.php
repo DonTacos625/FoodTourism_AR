@@ -1,6 +1,8 @@
 <?php
 
-require "frame.php";
+require "frame_header.php";
+require "frame_menu.php";
+require "frame_rightmenu.php";
 
 try {
 
@@ -40,12 +42,6 @@ $count = 0
             margin: 0px;
         }
 
-        #detailbox {
-            position: relative;
-            float: left;
-            margin-left: 0px;
-        }
-
         @media screen and (min-width:769px) and (max-width:1366px) {
             h3 {
                 margin: 0px;
@@ -72,39 +68,25 @@ $count = 0
         }
 
         .flex_test-box {
-            width: 90%;
+            width: 97%;
             background-color: #eee;     /* 背景色指定 */
             padding:  10px;             /* 余白指定 */
             display: flex;              /* フレックスボックスにする */
             align-items:stretch;        /* 縦の位置指定 */
             flex-wrap: wrap;
+
         }
 
-        .flex_test-item {
-            padding: 10px;
-            color:  #0a0000;               /* 文字色 */
+        .plan_text{
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2; /* 任意の行数を指定*/ 
+        }
+        .card{
             margin:  10px;              /* 外側の余白 */
-            border-radius:  5px;        /* 角丸指定 */
-            width: 25%;                 /* 幅指定 */
-            background-color:  #fff; /* 背景色指定 */
         }
 
-        .flex_test-item #imgbox{
-            float: left;
-            display: flex;
-            width: 15vw;
-            height: 15vw;
-            margin-bottom: 15px;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .flex_test-item #imgbox img{
-            width:auto;
-            height:auto;
-            max-width:100%;
-            max-height:100%;
-        }
         h4 {
             border-left: 5px solid #000080;
             margin: 0px;
@@ -138,8 +120,8 @@ $count = 0
 </script>
 
 <body>
-    <div class="container">
-        <main>
+    <div class="container-fluid">
+        <main class="row">
             <div id="detailbox">
                 <h3 id="search_start">飲食店の検索・決定</h3>
                 <div class="move_box">
@@ -150,14 +132,14 @@ $count = 0
                 <div class="flex_test-box">
                     <?php foreach ($stmt as $row) : ?>
                         <?php $count += 1; ?>
-                            <div class="flex_test-item" value=<?php echo $row["id"]; ?>>
-                                <h4>プラン名：<?php echo $row["plan_name"]; ?></h4><br>
-                                <div id="imgbox">
-                                    <img src=<?php if($row["lunch"] != -1) {echo "images/minatomirai/restaurants/". $row["lunch"] .".jpg" ;} else {echo "images/minatomirai/restaurants/". $row["dinner"] .".jpg" ;}?> alt=""><br>
+                            <div class="card" style="width: 18rem;" value=<?php echo $row["id"]; ?>>
+                                <h4 class="card-header"><?php echo $row["plan_name"]; ?></h4><br>
+                                <img class="card-img-top" src=<?php if($row["lunch"] != -1) {echo "images/minatomirai/restaurants/". $row["lunch"] .".jpg" ;} else {echo "images/minatomirai/restaurants/". $row["dinner"] .".jpg" ;}?> alt="">
+                                <div class="card-text">
+                                    <div class="plan_text">作成したユーザー：<br><?php echo $row["user_name"]; ?></div><br>
+                                    <div class="plan_text">メモ：<br><?php echo $row["memo"]; ?></div>
                                 </div>
-                                <div>作成したユーザー：<?php echo $row["user_name"]; ?></div><br>
-                                <div>メモ：<?php echo $row["memo"]; ?></div><br>
-                                <a href="users_plan_detail.php?plan_id=<?php echo $row["id"]; ?>">詳細ページに移動する</a>
+                                <br><a href="users_plan_detail.php?plan_id=<?php echo $row["id"]; ?>">詳細ページに移動する</a>
                             </div>
                     <?php endforeach; ?>
                     <?php

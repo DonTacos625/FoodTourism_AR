@@ -1,12 +1,20 @@
 <?php
 
-require "frame.php";
+require "frame_header.php";
+require "frame_menu.php";
+//require "frame_rightmenu.php";
 
 try {
 
     //SESSION変数初期値設定
     if (!isset($_SESSION["restaurants_around_distance"])) {
         $_SESSION["restaurants_around_distance"] = "500";
+    }
+    if (!isset($_SESSION["restaurants_around_count"])) {
+        $_SESSION["restaurants_around_count"] = "5";
+    }
+    if (!isset($_SESSION["sort_conditions"])) {
+        $_SESSION["sort_conditions"] = "distance_nearest";
     }
     if (!isset($_SESSION["wifi"])) {
         $_SESSION["wifi"] = "0";
@@ -54,6 +62,18 @@ try {
         $_SESSION["restaurants_around_distance"] = $restaurants_around_distance;
     } else {
         $restaurants_around_distance = $_SESSION["restaurants_around_distance"];
+    }
+    if (isset($_POST["restaurants_around_count"])) {
+        $restaurants_around_count = $_POST["restaurants_around_count"];
+        $_SESSION["restaurants_around_count"] = $restaurants_around_count;
+    } else {
+        $restaurants_around_count = $_SESSION["restaurants_around_count"];
+    }
+    if (isset($_POST["sort_conditions"])) {
+        $sort_conditions = $_POST["sort_conditions"];
+        $_SESSION["sort_conditions"] = $sort_conditions;
+    } else {
+        $sort_conditions = $_SESSION["sort_conditions"];
     }
     if (isset($_POST["wifi"])) {
         $wifi = $_POST["wifi"];
@@ -135,7 +155,7 @@ try {
 
     $keywordCondition = [];
     //posts = [["データベースのカラム名", "検索条件"]]
-    $posts = [["wifi", $wifi], ["private_room", $private_room], ["credit_card", $credit_card], ["non_smoking", $non_smoking], ["lunch", $lunch], ["capacity", $capacity] ];
+    $posts = [["wifi", $wifi], ["private_room", $private_room], ["credit_card", $credit_card], ["non_smoking", $non_smoking], ["lunch", $lunch], ["capacity", $capacity]];
 
     $search_word = strtr($search_name, [
         '\\' => '\\\\',
@@ -156,21 +176,21 @@ try {
         }
     }
     //予算範囲
-    if($lunch_min != 0){
+    if ($lunch_min != 0) {
         $keywordCondition[] =  " lunch_min >= $lunch_min";
-        $keywordCondition[] =  " lunch_min <> 999999";
+        $keywordCondition[] =  " lunch_min <> -1";
     }
-    if($lunch_max != 999999){
+    if ($lunch_max != 999999) {
         $keywordCondition[] =  " lunch_max <= $lunch_max";
-        $keywordCondition[] =  " lunch_max <> 0";
+        $keywordCondition[] =  " lunch_max <> -1";
     }
-    if($dinner_min != 0){
+    if ($dinner_min != 0) {
         $keywordCondition[] =  " dinner_min >= $dinner_min";
-        $keywordCondition[] =  " dinner_min <> 999999";
+        $keywordCondition[] =  " dinner_min <> -1";
     }
-    if($dinner_max != 999999){
+    if ($dinner_max != 999999) {
         $keywordCondition[] =  " dinner_max <= $dinner_max";
-        $keywordCondition[] =  " dinner_max <> 0";
+        $keywordCondition[] =  " dinner_max <> -1";
     }
     //$keywordCondition[] =  " lunch_min >= $lunch_min AND lunch_max <= $lunch_max ";
     //$keywordCondition[] =  " dinner_min >= $dinner_min AND dinner_max <= $dinner_max ";
@@ -183,8 +203,7 @@ try {
         $column1 = "name";
         $keywordCondition[] = " $column1 LIKE '%" . $search_word . "%' ";
     }
-    $keywordCondition[] =  " show >= 1 ";
-;
+    $keywordCondition[] =  " show >= 1 ";;
 
     // ここで、 
     // [ 'product_name LIKE "%hoge%"', 
@@ -198,9 +217,10 @@ try {
     //$keywordCondition = $keywordCondition . " OR (id = $lunch_shop_id OR id = $dinner_shop_id) ";
     //var_dump($keywordCondition);
 
+    //$database_restaurants = "hasune_restaurants";
     //sql文にする
-    $sql = 'SELECT * FROM ' . $database_restaurants .' WHERE ' . $keywordCondition . ' ';
-    var_dump($sql);
+    $sql = 'SELECT * FROM ' . $database_restaurants . ' WHERE ' . $keywordCondition . ' ';
+    //var_dump($sql);
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
 } catch (PDOException $e) {
@@ -208,26 +228,12 @@ try {
     exit();
 }
 
-/*
-//keikakuは目的地の配列
-//keikakuの配列作成
-$keikaku[] = $start_info;
-
-$keikaku[] = $lunch_info;
-
-$keikaku[] = $dinner_info;
-
-$keikaku[] = $goal_info;
-//var_dump($keikaku);
-*/
 //検索結果を配列に格納
 $count = 0;
 foreach ($stmt as $shop_id) {
     $food_shop_id[] = $shop_id["id"];
     $count += 1;
 }
-//var_dump($food_shop_id);
-
 
 //検索条件の保存のため
 function set_checked($session_name, $value)
@@ -251,9 +257,11 @@ function set_selected($session_name, $value)
 
 //検索条件が初期の場合
 $all_foodLayer_Flag = 0;
-if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking == "0" && $lunch == "0" 
-    && ($capacity == "0" || $capacity == "") && $search_word == "" 
-    && $dinner_min == "0" && $dinner_max == "999999" && $lunch_min == "0" && $lunch_max == "999999") {
+if (
+    $wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking == "0" && $lunch == "0"
+    && ($capacity == "0" || $capacity == "") && $search_word == ""
+    && $dinner_min == "0" && $dinner_max == "999999" && $lunch_min == "0" && $lunch_max == "999999"
+) {
     $all_foodLayer_Flag = 1;
 }
 //var_dump($all_foodLayer_Flag);
@@ -302,7 +310,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             border: solid 3px #ffffff;
         }
 
-        #detailbox #infobox #imgbox{
+        #detailbox #infobox #imgbox {
             float: left;
             display: flex;
             width: 20vw;
@@ -312,11 +320,11 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             align-items: center;
         }
 
-        #detailbox #infobox #imgbox img{
-            width:auto;
-            height:auto;
-            max-width:100%;
-            max-height:100%;
+        #detailbox #infobox #imgbox img {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
         }
 
         #detailbox #infobox table th {
@@ -377,7 +385,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
 
         }
 
-        
+
         .move_box {
             position: relative;
             width: 76vw;
@@ -410,30 +418,31 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
     <script src="https://js.arcgis.com/4.21/"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    
+
     <script>
         var pointpic = "";
 
         var current_latitude = 0;
         var current_longitude = 0;
+
         function test() {
             navigator.geolocation.getCurrentPosition(
-                    test2,
-                    // 取得失敗した場合
-                    function (error) {
+                test2,
+                // 取得失敗した場合
+                function(error) {
                     switch (error.code) {
                         case 1: //PERMISSION_DENIED
-                        alert("位置情報の利用が許可されていません");
-                        break;
+                            alert("位置情報の利用が許可されていません");
+                            break;
                         case 2: //POSITION_UNAVAILABLE
-                        alert("現在位置が取得できませんでした");
-                        break;
+                            alert("現在位置が取得できませんでした");
+                            break;
                         case 3: //TIMEOUT
-                        alert("タイムアウトになりました");
-                        break;
+                            alert("タイムアウトになりました");
+                            break;
                         default:
-                        alert("その他のエラー(エラーコード:" + error.code + ")");
-                        break;
+                            alert("その他のエラー(エラーコード:" + error.code + ")");
+                            break;
                     }
                 }
             );
@@ -442,7 +451,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
         function test2(position) {
             current_latitude = position.coords.latitude;
             current_longitude = position.coords.longitude;
-            alert(current_longitude);
+            //alert(current_longitude);
         }
         test();
         //alert(current_longitude);
@@ -453,7 +462,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             "esri/layers/WebTileLayer",
             "esri/layers/FeatureLayer",
             "esri/widgets/Locate",
-            "esri/widgets/Track", 
+            "esri/widgets/Track",
             "esri/Graphic",
             "esri/layers/GraphicsLayer",
             "esri/rest/support/Query",
@@ -469,7 +478,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             WebTileLayer,
             FeatureLayer,
             Locate,
-            Track, 
+            Track,
             Graphic,
             GraphicsLayer,
             Query,
@@ -543,11 +552,11 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                         label: "緯度",
                         visible: true
                     }]
-                }]
-                ,actions: [detailAction]
+                }],
+                actions: [detailAction]
             };
 
-            
+
             const station_template = {
                 title: "{Name}",
                 content: [{
@@ -639,14 +648,16 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
 
             /*
             var stationLayer = new FeatureLayer({
-                url: <?php //echo json_encode($map_stations); ?>,
+                url: <?php //echo json_encode($map_stations); 
+                        ?>,
                 id: "stationLayer",
                 popupTemplate: station_template,
                 definitionExpression: station_feature_sql
             });
 
             var sightseeing_spotsLayer = new FeatureLayer({
-                url: <?php //echo json_encode($map_sightseeing_spots); ?>,
+                url: <?php //echo json_encode($map_sightseeing_spots); 
+                        ?>,
                 id: "sightseeing_spotsLayer",
                 popupTemplate: sightseeing_spots_template
             });
@@ -724,19 +735,19 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
 
             //Locate関数
             const locate = new Locate({
-            view: view,
-            graphic: new Graphic({
-                symbol: {
-                type: "simple-marker",
-                size: "12px",
-                color: "green",
-                outline: {
-                    color: "#efefef",
-                    width: "1.5px"
-                }
-                }
-            }),
-            useHeadingEnabled: false
+                view: view,
+                graphic: new Graphic({
+                    symbol: {
+                        type: "simple-marker",
+                        size: "12px",
+                        color: "green",
+                        outline: {
+                            color: "#efefef",
+                            width: "1.5px"
+                        }
+                    }
+                }),
+                useHeadingEnabled: false
             });
             view.ui.add(locate, "top-left");
 
@@ -748,81 +759,118 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             });
 
             var current_Symbol = new PictureMarkerSymbol({
-                url: "./markers/d_g_spot3.png",
+                url: "./markers/current_location_pin.png",
                 width: "30px",
                 height: "46.5px"
             });
-
+            const current_template = {
+                title: "現在地",
+                content: [{
+                    type: "text",
+                    text: `緯度：${current_latitude}`
+                }, {
+                    type: "text",
+                    text: `経度：${current_longitude}`
+                }]
+            };
             const distance = <?php echo json_encode($restaurants_around_distance); ?>;
+            const count = <?php echo json_encode($restaurants_around_count); ?>;
+            const sort_conditions = <?php echo json_encode($sort_conditions); ?>;
             nearby_restaurants = (geom) => {
                 test();
                 let graphic = new Graphic({
                     geometry: {
                         type: "point",
-                        /*
-                        latitude: evt.mapPoint.latitude,
-                        longitude: evt.mapPoint.longitude,
-                        */
                         latitude: current_latitude,
                         longitude: current_longitude,
                         spatialReference: view.spatialReference
                     },
-                    symbol: current_Symbol
+                    symbol: current_Symbol,
+                    popupTemplate: current_template
                 });
 
-                //クリックした位置から 500m のバッファ内のスポット（避難所）を検索するための query式を作成
                 let query = featureLayer.createQuery();
                 query.geometry = graphic.geometry;
                 query.outFields = ["*"];
-                query.orderByFields = ["lunch_min DESC"];
-                //query.topCount = 3,
-                //query.maxRecordCount = 3;
+                //ソートの処理
+                var distance_sort = 0;
+                if (sort_conditions == "distance_nearest") {
+                    distance_sort = 1;
+                } else if (sort_conditions == "distance_farthest") {
+                    distance_sort = 2;
+                } else if (sort_conditions == "lunch_minimum") {
+                    query.orderByFields = ["lunch_min ASC"];
+                    query.where = "lunch_min <> -1";
+                } else if (sort_conditions == "lunch_maximum") {
+                    query.orderByFields = ["lunch_max DESC"];
+                    query.where = "lunch_max <> -1";
+                } else if (sort_conditions == "dinner_minimum") {
+                    query.orderByFields = ["dinner_min ASC"];
+                    query.where = "dinner_min <> -1";
+                } else if (sort_conditions == "dinner_maximum") {
+                    query.orderByFields = ["dinner_max DESC"];
+                    query.where = "dinner_max <> -1";
+                }
+
                 query.distance = distance;
                 query.units = "meters";
 
-                var query_count = 5;
+                var query_count = count;
                 var s_count = 0;
-                featureLayer.queryFeatures(query).then(function (featureSet) {
+
+                featureLayer.queryFeatures(query).then(function(featureSet) {
                     var result_fs = featureSet.features;
                     //検索結果が0件だったら、何もしない
                     //if (result_fs.length === 0) { return }
 
                     //前回の検索結果を、グラフィックスレイヤーから削除
                     resultsLayer.removeAll();
-
+                    $sort_array = [];
                     //検索結果に対する設定
-                    var features = result_fs.map(function (graphic) {
+                    var features = result_fs.map(function(graphic) {
+                        var distance_from_here = Math.abs(current_latitude - graphic.attributes.Y) + Math.abs(current_longitude - graphic.attributes.X);
+                        $sort_array.push([Math.round(distance_from_here * 100000), graphic]);
+                        return graphic;
+                    });
+                    //ソート方法の選択
+                    if (distance_sort == 1) {
+                        var sorted_array = $sort_array.sort(function(a, b) {
+                            return (a[0] - b[0]);
+                        });
+                    } else if (distance_sort == 2) {
+                        var sorted_array = $sort_array.sort(function(a, b) {
+                            return (b[0] - a[0]);
+                        });
+                    } else {
+                        var sorted_array = $sort_array;
+                    }
+                    var sorted_features = sorted_array.map(function(graphic) {
                         s_count += 1;
-                        if(s_count <= query_count){
+                        if (s_count <= query_count) {
                             //シンボル設定
-                            graphic.symbol = {
+                            graphic[1].symbol = {
                                 type: "simple-marker",
                                 style: "diamond",
                                 size: 10.5,
                                 color: "darkorange"
                             };
-                            graphic.popupTemplate = food_template;
-                            //alert(s_count);
-                            return graphic;
+                            graphic[1].popupTemplate = food_template;
+                            //alert(graphic[1].attributes.dinner_min);
+                            return graphic[1];
                         }
                     });
 
                     //検索結果と現在地を、グラフィックスレイヤーに登録（マップに表示）
                     resultsLayer.add(graphic);
-                    resultsLayer.addMany(features);
+                    resultsLayer.addMany(sorted_features);
 
                 });
-                //alert(current_longitude);
+                view.goTo(graphic);
             };
 
             nearby_restaurants();
 
         });
-
-        function toframe(data, id) {
-            //frameの関数
-            update_frame(data, id);
-        }
 
         function input_search_name(word) {
             const update = document.getElementById("search_name");
@@ -833,7 +881,6 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
 </head>
 
 <script type="text/javascript">
-
     //セレクトボックスから選ばれたワードを検索ワードボックスに入れる　もっといい方法あるかも
     function input_search_name(word) {
         const update = document.getElementById("search_name");
@@ -841,31 +888,31 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
     };
     //予算範囲が不適切な場合
     function right_range(word) {
-        if(word.match(/lunch/)){
+        if (word.match(/lunch/)) {
             const lunch_min = document.getElementById("lunch_min");
             const lunch_max = document.getElementById("lunch_max");
-            if(lunch_min.value - lunch_max.value > 0){
+            if (lunch_min.value - lunch_max.value > 0) {
                 alert("最小予算が最大予算を超えています！");
             }
-        } else if(word.match(/dinner/)){
+        } else if (word.match(/dinner/)) {
             const dinner_min = document.getElementById("dinner_min");
             const dinner_max = document.getElementById("dinner_max");
-            if(dinner_min.value - dinner_max.value > 0){
+            if (dinner_min.value - dinner_max.value > 0) {
                 alert("最小予算が最大予算を超えています！");
             }
         }
     };
 
     function display_results() {
-            nearby_restaurants();
-            alert("s");
-        }
+        nearby_restaurants();
+        //alert("s");
+    }
 </script>
 
 <body>
-    <div class="container">
-        <main>
-        <div id="detailbox">
+    <div class="container-fluid">
+        <main class="row">
+            <div id="detailbox">
                 <h3 id="search_start">飲食店の検索・決定</h3>
                 <a id="view_result" name="view_result" href="search_nearby_restaurants_ar.php">ARで結果を表示</a><br>
                 <a id="view_result2" name="view_result2" href="search_nearby_sightseeing_spots_map.php">観光スポット</a><br>
@@ -875,7 +922,33 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                         <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="300" <?php set_checked("restaurants_around_distance", "300"); ?>>周囲300m
                         <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="400" <?php set_checked("restaurants_around_distance", "400"); ?>>周囲400m
                         <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="500" <?php set_checked("restaurants_around_distance", "500"); ?>>周囲500m
-                        <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="600" <?php set_checked("restaurants_around_distance", "600"); ?>>周囲600m<br>
+                        <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="600" <?php set_checked("restaurants_around_distance", "600"); ?>>周囲600m
+                        <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="700" <?php set_checked("restaurants_around_distance", "700"); ?>>周囲700m
+                        <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="800" <?php set_checked("restaurants_around_distance", "800"); ?>>周囲800m<br>
+
+                        並び替え条件：
+                        <select size="1" id="sort_conditions" name="sort_conditions" onchange="">
+                            <option value="distance_nearest" <?php set_selected("sort_conditions", "distance_nearest"); ?>> 距離が近い順 </option>
+                            <option value="distance_farthest" <?php set_selected("sort_conditions", "distance_farthest"); ?>> 距離が遠い順 </option>
+                            <option value="lunch_minimum" <?php set_selected("sort_conditions", "lunch_minimum"); ?>> 昼の予算が低い順 </option>
+                            <option value="lunch_maximum" <?php set_selected("sort_conditions", "lunch_maximum"); ?>> 昼の予算が高い順 </option>
+                            <option value="dinner_minimum" <?php set_selected("sort_conditions", "dinner_minimum"); ?>> 夜の予算が低い順 </option>
+                            <option value="dinner_maximum" <?php set_selected("sort_conditions", "dinner_maximum"); ?>> 夜の予算が高い順 </option>
+                        </select><br>
+
+                        表示数：
+                        <select size="1" id="restaurants_around_count" name="restaurants_around_count" onchange="">
+                            <option value="1" <?php set_selected("restaurants_around_count", "1"); ?>> 1 </option>
+                            <option value="2" <?php set_selected("restaurants_around_count", "2"); ?>> 2 </option>
+                            <option value="3" <?php set_selected("restaurants_around_count", "3"); ?>> 3 </option>
+                            <option value="4" <?php set_selected("restaurants_around_count", "4"); ?>> 4 </option>
+                            <option value="5" <?php set_selected("restaurants_around_count", "5"); ?>> 5 </option>
+                            <option value="6" <?php set_selected("restaurants_around_count", "6"); ?>> 6 </option>
+                            <option value="7" <?php set_selected("restaurants_around_count", "7"); ?>> 7 </option>
+                            <option value="8" <?php set_selected("restaurants_around_count", "8"); ?>> 8 </option>
+                            <option value="9" <?php set_selected("restaurants_around_count", "9"); ?>> 9 </option>
+                            <option value="10" <?php set_selected("restaurants_around_count", "10"); ?>> 10 </option>
+                        </select><br>
 
                         WIFI：
                         <input type="radio" id="wifi" name="wifi" value="0" <?php set_checked("wifi", "0"); ?>>指定なし
@@ -993,7 +1066,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                         <input type="submit" name="submit" value="検索する">
                     </form>
                 </div><br>
-                <button type="button" onclick="display_results()">絞り込む</button>
+                <button type="button" onclick="display_results()">再読み込み</button>
                 <?php
                 if (!$count) {
                     echo "検索条件に該当する飲食店はありませんでした";

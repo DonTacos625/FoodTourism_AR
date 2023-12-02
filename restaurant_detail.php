@@ -1,6 +1,8 @@
 <?php
 
-require "frame.php";
+require "frame_header.php";
+require "frame_menu.php";
+require "frame_rightmenu.php";
 
 $restaurant_id = $_GET["restaurant_id"];
 
@@ -469,7 +471,7 @@ try {
                         },
                         success: function(response) {
                             //frameの関数
-                            update_frame(response[0], response[1]);
+                            //update_frame(response[0], response[1]);
                             if (mode == "1") {
                                 alert("「" + response[0] + "」を昼食に設定しました");
                             } else {
@@ -482,18 +484,13 @@ try {
             };
         };
 
-        //表示を更新する
-        function toframe(data, id) {
-            //frameの関数
-            update_frame(data, id);
-        }
     </script>
 
 </head>
 
 <body>
-    <div class="container">
-        <main>
+    <div class="container-fluid">
+        <main class="row">
             <div id="detailbox">
                 <h3>観光スポットの詳細情報</h3>
 

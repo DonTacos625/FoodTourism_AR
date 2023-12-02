@@ -1,7 +1,19 @@
 <?php
 
-require "frame.php";
+require "frame_header.php";
+require "frame_menu.php";
+require "frame_rightmenu.php";
 $plan_id = $_GET["plan_id"];
+
+function set_checked($session_name, $value)
+{
+    if ($value == $_SESSION[$session_name]) {
+        //値がセッション変数と等しいとチェックされてる判定として返す
+        print "checked=\"checked\"";
+    } else {
+        print "";
+    }
+}
 
 $message = "";
 
@@ -125,6 +137,7 @@ try {
 } catch (PDOException $e) {
 
 }
+
 //keikakuは目的地の配列
 //keikakuの配列作成
 $keikaku[] = $start_info;
@@ -140,15 +153,6 @@ foreach ($d_g_spots as $d_g_add) {
     $keikaku[] = $d_g_add;
 }
 $keikaku[] = $goal_info;
-
-function set_checked($flag, $value)
-{
-    if ($value == $flag) {
-        print "checked=\"checked\"";
-    } else {
-        print "";
-    }
-}
 
 ?>
 
@@ -838,89 +842,17 @@ function set_checked($flag, $value)
         }
 
         var plan_id = <?php echo json_encode($plan_id); ?>;
-        function updating_plan() {
-            var radios = document.getElementsByName("plan_show");
-            for(var i=0; i<radios.length; i++){
-                if (radios[i].checked) {
-                //選択されたラジオボタンのvalue値を取得する
-                mode = radios[i].value;
-                break;
-                }
-            }
-            var plan_name = document.getElementById("plan_name").value;
-            var plan_memo = document.getElementById("plan_comment").value;
-            //frame内の変数
-            var area = <?php echo json_encode($area); ?>;
-            if (plan_name != "") {
-                jQuery(function($) {
-                    $.ajax({
-                        url: "./ajax_updating_plan.php",
-                        type: "POST",
-                        dataType: "json",
-                        data: {
-                            post_data_1: mode,
-                            post_data_2: plan_name,
-                            post_data_3: plan_memo,
-                            post_data_4: area,
-                            post_data_5: plan_id
-                        },
-                        error: function(XMLHttpRequest, textStatus, errorThrown) {
-                            alert("ajax通信に失敗しました");
-                        },
-                        success: function(response) {
-                            alert(response);
-                        }
-                    });
-                });
-            } else {
-                alert("プラン名を登録してください");
-            }
-        }
-        function upload_plan() {
-            var radios = document.getElementsByName("plan_show");
-            for(var i=0; i<radios.length; i++){
-                if (radios[i].checked) {
-                //選択されたラジオボタンのvalue値を取得する
-                mode = radios[i].value;
-                break;
-                }
-            }
-            var plan_name = document.getElementById("plan_name").value;
-            var plan_memo = document.getElementById("plan_comment").value;
-            var area = <?php echo json_encode($area); ?>;
-            if (plan_name != "") {
-                jQuery(function($) {
-                    $.ajax({
-                        url: "./ajax_saving_plan.php",
-                        type: "POST",
-                        dataType: "json",
-                        data: {
-                            post_data_1: mode,
-                            post_data_2: plan_name,
-                            post_data_3: plan_memo,
-                            post_data_4: area
-                        },
-                        error: function(XMLHttpRequest, textStatus, errorThrown) {
-                            alert("ajax通信に失敗しました");
-                        },
-                        success: function(response) {
-                            alert(response);
-                        }
-                    });
-                });
-            } else {
-                alert("プラン名を登録してください");
-            }
-        }
         function copy_plan() {
+            var mode = 1;
             if(window.confirm('現在作成している観光計画を上書きしますがよろしいですか？')){
                 jQuery(function($) {
                     $.ajax({
-                        url: "ajax_replace_plan.php",
+                        url: "ajax_copy_plan.php",
                         type: "POST",
                         dataType: "json",
                         data: {
-                            post_data_1: plan_id
+                            post_data_1: plan_id,
+                            post_data_2: mode
                         },
                         error: function(XMLHttpRequest, textStatus, errorThrown) {
                             alert("ajax通信に失敗しました");
@@ -942,13 +874,14 @@ function set_checked($flag, $value)
 </head>
 
 <body>
-    <div class="container">
-        <main>
+    <div class="container-fluid">
+        <main class="row">
             <div>
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
             <h3>プラン詳細</h3>
             <div class="icon_explain">
+                プラン名：<?php echo $result["plan_name"]; ?>
                 <b>
                     <div id="calo_km">消費カロリー：1312.00 kcal</div>
                 </b>
@@ -958,6 +891,10 @@ function set_checked($flag, $value)
                 <b>
                     <div id="time_h_m">総歩行時間：0時間0分</div>
                 </b>
+            </div>
+            <div>
+                説明：<br>
+                <?php echo $result["memo"]; ?>
             </div>
 
             <div class="move_box">
@@ -969,14 +906,7 @@ function set_checked($flag, $value)
             </div>
             <div id="viewbox">
                 <div id="viewDiv"></div>
-                <p>プラン名：<br>
-	            <input type="text" id="plan_name" size="15" value="<?php echo $result["plan_name"]; ?>"></p>
-                <p>メモ：<br>
-	            <textarea id="plan_comment"><?php echo $result["memo"]; ?></textarea><br>
-                <p>観光計画を公開しますか？：<br>
-                <input type="radio" id="plan_show" name="plan_show" value="1" <?php set_checked($result["show"], "1"); ?>>公開する
-                <input type="radio" id="plan_show" name="plan_show" value="0" <?php set_checked($result["show"], "0"); ?>>公開しない<br>
-                <button type="button" id="btn" onclick="updating_plan()" title="観光計画を編集します"><b>観光計画を編集</b></button>
+                <button type="button" id="btn" onclick="copy_plan()" title="観光計画を編集"><b>観光計画を編集します</b></button>
             </div>
         </main>
         <footer>

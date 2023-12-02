@@ -1,5 +1,7 @@
 <?php
-require "frame.php";
+require "frame_header.php";
+require "frame_menu.php";
+require "frame_rightmenu.php";
 
 //frame.phpからの変数
 $now_weight = $frameresult["user_weight"];
@@ -184,8 +186,8 @@ if (!empty($_POST["editopt"])) {
 </head>
 
 <body>
-    <div class="container">
-        <main>
+    <div class="container-fluid">
+        <main class="row">
             <div id="editbox">
                 <h2>パスワード変更</h2>
                 <form id="editform" name="editform" action="" method="POST">

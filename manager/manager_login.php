@@ -126,8 +126,8 @@ if (!empty($_POST["login"])) {
 </head>
 
 <body>
-    <div class="container">
-        <main>
+    <div class="container-fluid">
+        <main  class="row">
             <div id="loginbox"><br><br><br>
                 <h2>横浜みなとみらいフードツーリズム計画作成支援システム</h2>
                 <p>
