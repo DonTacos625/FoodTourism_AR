@@ -677,7 +677,8 @@ if (
             view.ui.add(locate, "top-left");
 
             var featureLayer = new FeatureLayer({
-                url: "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_restaurants/FeatureServer",
+                url: <?php echo json_encode($map_restaurants); ?>, //
+                //url: "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_restaurants/FeatureServer",
                 //url :"https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_chofu_restaurants/FeatureServer",
                 id: "featureLayer",
                 popupTemplate: food_template,
@@ -780,7 +781,10 @@ if (
                             return graphic[1];
                         }
                     });
-
+                    //検索結果が0件だったら、何もしない
+                    if (result_fs.length === 0) {
+                        alert("検索条件に該当する飲食店はありませんでした");
+                    }
                     //検索結果と現在地を、グラフィックスレイヤーに登録（マップに表示）
                     resultsLayer.add(graphic);
                     resultsLayer.addMany(features);
@@ -1041,9 +1045,11 @@ if (
         if (value == "small") {
             for (var i = 0; i < array.length; i++) {
                 const target = document.getElementById(`planebox${i+1}`);
-                const material = `shader:html;target: #namebox${i+1};`
+                //const material = `shader:html;target: #namebox${i+1};`
+                const material = `src: ./markers/ar_icon3.png;`
                 target.setAttribute('geometry', "primitive: sphere");
                 target.setAttribute('scale', "3 3 3");
+                target.removeAttribute('material');
                 target.setAttribute('material', material);
                 target.setAttribute('width', "5");
                 target.setAttribute('height', "3");

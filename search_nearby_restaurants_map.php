@@ -809,11 +809,9 @@ if (
                         }
                     });
                     //検索結果が0件だったら、何もしない
-                    /*
                     if (result_fs.length === 0) {
                         alert("検索条件に該当する飲食店はありませんでした");
                     }
-                    */
                     //検索結果と現在地を、グラフィックスレイヤーに登録（マップに表示）
                     resultsLayer.add(graphic);
                     resultsLayer.addMany(sorted_features);
@@ -859,7 +857,6 @@ if (
 
     function display_results() {
         nearby_restaurants();
-        //alert("s");
     }
 </script>
 
