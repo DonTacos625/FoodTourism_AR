@@ -6,7 +6,8 @@ $post_data_1 = $_POST['post_data_1'];
 $post_data_2 = json_decode($_POST['post_data_2'], true);
 $post_data_3 = $_POST['post_data_3'];
 
-$database_name = "minatomirai_stations";
+$area_database_name = $_SESSION["area_name"];
+$database_name = $area_database_name . '_stations';
 try{
 
     $stmt1 = $pdo->prepare("SELECT * FROM $database_name where id = :id");

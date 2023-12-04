@@ -1,5 +1,6 @@
 <?php
 
+require "frame_define.php";
 require "frame_header.php";
 require "frame_menu.php";
 require "frame_rightmenu.php";
@@ -483,7 +484,23 @@ try {
                 });
             };
         };
-
+            //店の詳細ページに飛ぶときに送信するデータ
+            function restaurant_navi() {
+                //var restaurant_id = view.popup.selectedFeature.attributes.id;
+                var form = document.createElement('form');
+                form.method = 'GET';
+                form.action = './navigation_map.php';
+                var reqElm = document.createElement('input');
+                var reqElm2 = document.createElement('input');
+                reqElm.name = 'navi_spot_id';
+                reqElm.value = 37;
+                reqElm2.name = 'navi_spot_type';
+                reqElm2.value = 2;
+                form.appendChild(reqElm);
+                form.appendChild(reqElm2);
+                document.body.appendChild(form);
+                form.submit();
+            };
     </script>
 
 </head>
@@ -505,7 +522,7 @@ try {
                     <div id="infobox">
                         <table>
                             <tr>
-                                <th><div id="imgbox"><img src=<?php if($area == 1) {echo "images/minatomirai/restaurants/". $result1["id"] .".jpg" ;} else if($area == 2){echo "images/hasune/restaurants/". $result1["id"] .".jpg" ;} else if($area == 3){echo "images/chofu/restaurants/". $result1["id"] .".jpg" ;}?> alt=""></div></th>
+                                <th><div id="imgbox"><img src=<?php echo "images/$area_name/restaurants/". $result1["id"] .".jpg"?> alt=""></div></th>
                                 <td></td>
                             </tr>
                             <tr>
@@ -583,7 +600,7 @@ try {
                                 </td>
                             </tr>
                         </table>
-                        <li><a href="search.php">飲食店検索に戻る</a></li>
+                        <li><a href="#" onclick="window.history.back(); return false;">戻る</a></li>
                     </div><br>
                 </div>
             </div>

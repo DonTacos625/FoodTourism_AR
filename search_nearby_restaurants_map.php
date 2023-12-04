@@ -1,5 +1,6 @@
 <?php
 
+require "frame_define.php";
 require "frame_header.php";
 require "frame_menu.php";
 //require "frame_rightmenu.php";
@@ -299,58 +300,6 @@ if (
             margin-left: 0px;
         }
 
-        #detailbox #infobox {
-            float: left;
-            width: 75vw;
-            margin-left: 5px;
-        }
-
-        #detailbox #infobox table {
-            width: 100%;
-            border: solid 3px #ffffff;
-        }
-
-        #detailbox #infobox #imgbox {
-            float: left;
-            display: flex;
-            width: 20vw;
-            height: 15vw;
-            margin-bottom: 15px;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #detailbox #infobox #imgbox img {
-            width: auto;
-            height: auto;
-            max-width: 100%;
-            max-height: 100%;
-        }
-
-        #detailbox #infobox table th {
-            text-align: left;
-            white-space: nowrap;
-            background: #EEEEEE;
-            width: 15vw;
-        }
-
-        #detailbox #infobox table td {
-            background: #EEEEEE;
-            padding: 3px;
-        }
-
-        #detailbox #infobox table td ul {
-            margin: 0px;
-        }
-
-        #detailbox #infobox table td ul li {
-            display: inline-block;
-        }
-
-        #detailbox #infobox table td pre {
-            white-space: pre-wrap;
-        }
-
         @media screen and (min-width:769px) and (max-width:1366px) {
             h3 {
                 margin: 0px;
@@ -372,15 +321,6 @@ if (
                 width: auto;
                 margin: 0px;
                 float: none;
-            }
-
-            #detailbox #infobox {
-                width: 100%;
-                float: none;
-            }
-
-            #detailbox #infobox table {
-                font-size: 13px;
             }
 
         }
@@ -421,32 +361,33 @@ if (
 
     <script>
         var pointpic = "";
-
         var current_latitude = 0;
         var current_longitude = 0;
 
         function test() {
-            navigator.geolocation.getCurrentPosition(
-                test2,
-                // 取得失敗した場合
-                function(error) {
-                    switch (error.code) {
-                        case 1: //PERMISSION_DENIED
-                            alert("位置情報の利用が許可されていません");
-                            break;
-                        case 2: //POSITION_UNAVAILABLE
-                            alert("現在位置が取得できませんでした");
-                            break;
-                        case 3: //TIMEOUT
-                            alert("タイムアウトになりました");
-                            break;
-                        default:
-                            alert("その他のエラー(エラーコード:" + error.code + ")");
-                            break;
-                    }
-                }
-            );
-        }
+            var options = {
+                timeout: 10000 // 10秒でタイムアウトするように設定する
+            };
+            navigator.geolocation.getCurrentPosition(test2, errorCallback, options);
+        };
+
+        // 取得失敗した場合
+        function errorCallback(error) {
+            switch (error.code) {
+                case 1: //PERMISSION_DENIED
+                    alert("位置情報の利用が許可されていません");
+                    break;
+                case 2: //POSITION_UNAVAILABLE
+                    alert("現在位置が取得できませんでした");
+                    break;
+                case 3: //TIMEOUT
+                    alert("タイムアウトになりました");
+                    break;
+                default:
+                    alert("その他のエラー(エラーコード:" + error.code + ")");
+                    break;
+            }
+        };
 
         function test2(position) {
             current_latitude = position.coords.latitude;
@@ -497,6 +438,11 @@ if (
                 title: "詳細",
                 id: "detail",
                 className: "esri-icon-documentation"
+            };
+            var navigationAction = {
+                title: "ナビゲーション",
+                id: "navigation",
+                className: "esri-icon-navigation"
             };
 
             const food_template = {
@@ -553,9 +499,8 @@ if (
                         visible: true
                     }]
                 }],
-                actions: [detailAction]
+                actions: [detailAction, navigationAction]
             };
-
 
             const station_template = {
                 title: "{Name}",
@@ -676,7 +621,7 @@ if (
 
             const map = new Map({
                 basemap: "streets",
-                layers: [$food, resultsLayer]
+                layers: [resultsLayer]
                 //layers: [$food]
             });
 
@@ -694,28 +639,13 @@ if (
                 }
             });
 
-            function add_point(pic, Layer) {
-                const point = {
-                    type: "point",
-                    x: view.popup.selectedFeature.attributes.X,
-                    y: view.popup.selectedFeature.attributes.Y
-                };
-                var stopSymbol = new PictureMarkerSymbol({
-                    url: pic,
-                    width: "30px",
-                    height: "46.5px"
-                });
-                var stop = new Graphic({
-                    geometry: point,
-                    symbol: stopSymbol
-                });
-                Layer.removeAll();
-                Layer.add(stop);
-            }
             //ポップアップの処理
             view.popup.on("trigger-action", function(event) {
                 if (event.action.id === "detail") {
                     restaurant_detail();
+                }
+                if (event.action.id === "navigation") {
+                    restaurant_navigation();
                 }
             });
 
@@ -729,6 +659,23 @@ if (
                 reqElm.name = 'restaurant_id';
                 reqElm.value = restaurant_id;
                 form.appendChild(reqElm);
+                document.body.appendChild(form);
+                form.submit();
+            };
+            //店のナビゲーションページに飛ぶときに送信するデータ
+            function restaurant_navigation() {
+                var restaurant_id = view.popup.selectedFeature.attributes.id;
+                var form = document.createElement('form');
+                form.method = 'GET';
+                form.action = './navigation_map.php';
+                var reqElm = document.createElement('input');
+                var reqElm2 = document.createElement('input');
+                reqElm.name = 'navi_spot_id';
+                reqElm.value = restaurant_id;
+                reqElm2.name = 'navi_spot_type';
+                reqElm2.value = 2;
+                form.appendChild(reqElm);
+                form.appendChild(reqElm2);
                 document.body.appendChild(form);
                 form.submit();
             };
@@ -752,7 +699,7 @@ if (
             view.ui.add(locate, "top-left");
 
             var featureLayer = new FeatureLayer({
-                url: "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_restaurants/FeatureServer",
+                url: <?php echo json_encode($map_restaurants); ?>, //
                 id: "featureLayer",
                 popupTemplate: food_template,
                 definitionExpression: food_feature_sql
@@ -792,7 +739,7 @@ if (
                 let query = featureLayer.createQuery();
                 query.geometry = graphic.geometry;
                 query.outFields = ["*"];
-                //ソートの処理
+                //ソートの条件確定
                 var distance_sort = 0;
                 if (sort_conditions == "distance_nearest") {
                     distance_sort = 1;
@@ -814,14 +761,11 @@ if (
 
                 query.distance = distance;
                 query.units = "meters";
-
                 var query_count = count;
                 var s_count = 0;
 
                 featureLayer.queryFeatures(query).then(function(featureSet) {
                     var result_fs = featureSet.features;
-                    //検索結果が0件だったら、何もしない
-                    //if (result_fs.length === 0) { return }
 
                     //前回の検索結果を、グラフィックスレイヤーから削除
                     resultsLayer.removeAll();
@@ -859,7 +803,10 @@ if (
                             return graphic[1];
                         }
                     });
-
+                    //検索結果が0件だったら、何もしない
+                    if (result_fs.length === 0) {
+                        alert("検索条件に該当する飲食店はありませんでした");
+                    }
                     //検索結果と現在地を、グラフィックスレイヤーに登録（マップに表示）
                     resultsLayer.add(graphic);
                     resultsLayer.addMany(sorted_features);

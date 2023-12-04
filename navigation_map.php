@@ -1,18 +1,21 @@
 <?php
 
+require "frame_define.php";
 require "frame_header.php";
 require "frame_menu.php";
 require "frame_rightmenu.php";
 
 $navi_spot_id = $_GET["navi_spot_id"];
 $navi_spot_type = $_GET["navi_spot_type"];
+//$navi_spot_id = 37;
+//$navi_spot_type = 2;
 
 $message = "";
 //DB接続
 try {
     if ($navi_spot_type == 1) {
         $database = $database_stations;
-    } else if($navi_spot_type == 2){
+    } else if ($navi_spot_type == 2) {
         $database = $database_restaurants;
         //$database = "hasune_restaurants";
     } else {
@@ -23,7 +26,6 @@ try {
     $stmt1->execute();
     $result1 = $stmt1->fetch(PDO::FETCH_ASSOC);
     $navi_goal_info = [$result1["x"], $result1["y"], "goal"];
-
 } catch (PDOException $e) {
 }
 
@@ -238,6 +240,12 @@ try {
             // Point the URL to a valid routing service
             const routeUrl = "https://utility.arcgis.com/usrsvcs/servers/4550df58672c4bc6b17607b947177b56/rest/services/World/Route/NAServer/Route_World";
             const MY_API_KEY = "AAPKfe5fdd5be2744698a188fcc0c7b7b1d742vtC5TsStg94fpwkldrfNo3SJn2jl_VuCOEEdcBiwR7dKOKxejIP_3EDj9IPSPg";
+            //popup
+            var detailAction = {
+                title: "詳細",
+                id: "detail",
+                className: "esri-icon-documentation"
+            };
 
             const food_template = {
                 title: "{Name}",
@@ -292,7 +300,8 @@ try {
                         label: "緯度",
                         visible: true
                     }]
-                }]
+                }],
+                actions: [detailAction]
             };
 
 
@@ -313,7 +322,8 @@ try {
                         label: "緯度",
                         visible: true
                     }]
-                }]
+                }],
+                actions: [detailAction]
             };
 
             const spots_template = {
@@ -341,7 +351,8 @@ try {
                         label: "緯度",
                         visible: true
                     }]
-                }]
+                }],
+                actions: [detailAction]
             };
 
             // スポット名を表示するラベルを定義
@@ -517,7 +528,7 @@ try {
                 }
             });
 
-            var spot_type = <?php echo json_encode($navi_spot_type); ?>;;
+            var spot_type = <?php echo json_encode($navi_spot_type); ?>;
             if (spot_type == 1) {
                 $goalLayer = stationLayer;
             } else if (spot_type == 2) {
@@ -545,6 +556,43 @@ try {
                 }
             });
 
+            //ポップアップの処理
+            view.popup.on("trigger-action", function(event) {
+                if (event.action.id === "detail") {
+                    if (spot_type == 2) {
+                        restaurant_detail();
+                    } else if (spot_type == 3) {
+                        spot_detail();
+                    }
+                }
+            });
+            //店の詳細ページに飛ぶときに送信するデータ
+            function restaurant_detail() {
+                var restaurant_id = view.popup.selectedFeature.attributes.id;
+                var form = document.createElement('form');
+                form.method = 'GET';
+                form.action = './restaurant_detail.php';
+                var reqElm = document.createElement('input');
+                reqElm.name = 'restaurant_id';
+                reqElm.value = restaurant_id;
+                form.appendChild(reqElm);
+                document.body.appendChild(form);
+                form.submit();
+            };
+            //スポットの詳細ページに飛ぶときに送信するデータ
+            function spot_detail() {
+                var spot_id = view.popup.selectedFeature.attributes.id;
+                var form = document.createElement('form');
+                form.method = 'GET';
+                form.action = './sightseeing_spot_detail.php';
+                var reqElm = document.createElement('input');
+                reqElm.name = 'spot_id';
+                reqElm.value = spot_id;
+                form.appendChild(reqElm);
+                document.body.appendChild(form);
+                form.submit();
+            };
+
             function display_route(plan) {
                 //前回の経路を、グラフィックスレイヤーから削除
                 routeLayer.removeAll();
@@ -568,7 +616,7 @@ try {
                                 if (mode_change == 1) {
                                     pointpic = "./markers/start_and_goal.png";
                                 } else {
-                                    pointpic = "./markers/start.png";
+                                    pointpic = "./markers/current_location_pin.png";
                                 }
                             } else if (plan[j][2] == "lunch") {
                                 pointpic = "./markers/lunch.png";
@@ -634,8 +682,6 @@ try {
                 //alert($totalLength);
             }
 
-            //var goal_point = <?php echo json_encode($navi_goal_info); ?>;
-            var goal_point = [35.78268538, 139.6787332, "goal"];
             const track = new Track({
                 view: view
             });
@@ -646,10 +692,10 @@ try {
                     longitude,
                     latitude
                 } = position.coords;
-                //alert(`${longitude.toFixed(4)}, ${latitude.toFixed(4)}`);
+                const goal_point = <?php echo json_encode($navi_goal_info); ?>;
                 var new_keikaku = [
                     [longitude.toFixed(4), latitude.toFixed(4), "start"],
-                    [139.6787332, 35.78268538, "goal"]
+                    [goal_point[0], goal_point[1], "goal"]
                 ]
                 display_route(new_keikaku);
             });
@@ -723,6 +769,24 @@ try {
             update_frame($length, "length_km");
             update_frame($time, "time_h_m");
         }
+        //店のナビゲーションページに飛ぶときに送信するデータ
+        function navigation_ar() {
+            var spot_id = <?php echo json_encode($navi_spot_id); ?>;
+            var spot_type = <?php echo json_encode($navi_spot_type); ?>;
+            var form = document.createElement('form');
+            form.method = 'GET';
+            form.action = './navigation_ar.php';
+            var reqElm = document.createElement('input');
+            var reqElm2 = document.createElement('input');
+            reqElm.name = 'navi_spot_id';
+            reqElm.value = spot_id;
+            reqElm2.name = 'navi_spot_type';
+            reqElm2.value = spot_type;
+            form.appendChild(reqElm);
+            form.appendChild(reqElm2);
+            document.body.appendChild(form);
+            form.submit();
+        };
     </script>
 
 </head>
@@ -734,7 +798,7 @@ try {
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
             <h3>目的地までの経路</h3>
-            <a id="view_result" name="view_result" href="navigation_ar.php?navi_spot_id=37&navi_spot_type=2">ARで結果を表示</a><br>
+            <a id="view_result" name="view_result" onclick="navigation_ar()">ARで結果を表示</a><br>
 
             <div class="icon_explain">
                 <b>
@@ -745,9 +809,6 @@ try {
                 </b><br>
             </div>
 
-            <div class="move_box">
-                <a class="prev_page" name="prev_keiro" href="sightseeing_spots_selection_map.php">観光スポット選択に戻る</a>
-            </div><br>
             <div class="icon_explain">
                 <img class="pin_list1" src="./markers/icon_explain_s_f.png" alt="昼食予定地のアイコン" title="アイコン説明１">
                 <img class="pin_list2" src="./markers/icon_explain_spots.png" alt="昼食予定地のアイコン" title="アイコン説明２">
@@ -757,7 +818,7 @@ try {
             </div>
         </main>
         <footer>
-            <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>
+            <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
         </footer>
     </div>
 </body>

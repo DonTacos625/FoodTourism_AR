@@ -345,11 +345,27 @@ $keikaku[] = $goal_info;
 
     <script>
         var pointpic = "";
+        var current_latitude = 0;
+        var current_longitude = 0;
+
+        function test() {
+            navigator.geolocation.getCurrentPosition(test2);
+        }
+
+        function test2(position) {
+            current_latitude = position.coords.latitude;
+            current_longitude = position.coords.longitude;
+            //alert(current_longitude);
+        }
+        test();
+
         require([
             "esri/Map",
             "esri/views/MapView",
             "esri/layers/WebTileLayer",
             "esri/layers/FeatureLayer",
+            "esri/widgets/Locate",
+            "esri/widgets/Track",
             "esri/Graphic",
             "esri/layers/GraphicsLayer",
             "esri/rest/support/Query",
@@ -363,6 +379,8 @@ $keikaku[] = $goal_info;
             MapView,
             WebTileLayer,
             FeatureLayer,
+            Locate,
+            Track,
             Graphic,
             GraphicsLayer,
             Query,
@@ -391,6 +409,16 @@ $keikaku[] = $goal_info;
                 title: "詳細",
                 id: "spot_detail",
                 className: "esri-icon-documentation"
+            };
+            var navigationAction_restaurant = {
+                title: "ナビゲーション",
+                id: "restaurant_navigation",
+                className: "esri-icon-navigation"
+            };
+            var navigationAction_spot = {
+                title: "ナビゲーション",
+                id: "spot_navigation",
+                className: "esri-icon-navigation"
             };
 
             const food_template = {
@@ -447,9 +475,8 @@ $keikaku[] = $goal_info;
                         visible: true
                     }]
                 }],
-                actions: [detailAction_restaurant]
+                actions: [detailAction_restaurant, navigationAction_restaurant]
             };
-
 
             const station_template = {
                 title: "{Name}",
@@ -498,7 +525,7 @@ $keikaku[] = $goal_info;
                         visible: true
                     }]
                 }],
-                actions: [detailAction_spot]
+                actions: [detailAction_spot, navigationAction_spot]
             };
 
             //スタートとゴールの駅を決める
@@ -822,6 +849,31 @@ $keikaku[] = $goal_info;
                 doc();
             }
 
+            const track = new Track({
+                view: view
+            });
+            track.on("track", ({
+                position
+            }) => {
+                /*
+                const {
+                    longitude,
+                    latitude
+                } = position.coords;
+                const goal_point = <?php //echo json_encode($navi_goal_info); 
+                                    ?>;
+                var new_keikaku = [
+                    [longitude.toFixed(4), latitude.toFixed(4), "start"],
+                    [goal_point[0], goal_point[1], "goal"]
+                ]
+                display_route(new_keikaku);
+                */
+            });
+            view.ui.add(track, "top-left");
+            view.when(() => {
+                track.start();
+            });
+
             view.popup.on("trigger-action", function(event) {
                 if (event.action.id === "station_detail") {
                     srs_detail("station");
@@ -831,6 +883,12 @@ $keikaku[] = $goal_info;
                 }
                 if (event.action.id === "spot_detail") {
                     srs_detail("spot");
+                }
+                if (event.action.id === "restaurant_navigation") {
+                    spot_navigation(2);
+                }
+                if (event.action.id === "spot_navigation") {
+                    spot_navigation(3);
                 }
             });
 
@@ -852,6 +910,24 @@ $keikaku[] = $goal_info;
                 }
                 reqElm.value = id;
                 form.appendChild(reqElm);
+                document.body.appendChild(form);
+                form.submit();
+            };
+
+            //スポットのナビゲーションページに飛ぶときに送信するデータ
+            function spot_navigation(type) {
+                var restaurant_id = view.popup.selectedFeature.attributes.id;
+                var form = document.createElement('form');
+                form.method = 'GET';
+                form.action = './navigation_map.php';
+                var reqElm = document.createElement('input');
+                var reqElm2 = document.createElement('input');
+                reqElm.name = 'navi_spot_id';
+                reqElm.value = restaurant_id;
+                reqElm2.name = 'navi_spot_type';
+                reqElm2.value = type;
+                form.appendChild(reqElm);
+                form.appendChild(reqElm2);
                 document.body.appendChild(form);
                 form.submit();
             };
@@ -884,7 +960,7 @@ $keikaku[] = $goal_info;
 
         var plan_id = <?php echo json_encode($plan_id); ?>;
 
-        function copy_plan() {
+        function save_tourism_record() {
             var mode = 1;
             if (window.confirm('現在作成している観光計画を上書きしますがよろしいですか？')) {
                 jQuery(function($) {
@@ -902,30 +978,6 @@ $keikaku[] = $goal_info;
                         success: function(response) {
                             alert(response);
                             window.location.href = "plan_edit.php";
-                        }
-                    });
-                });
-            } else {
-
-            }
-        };
-
-        function delete_plan() {
-            if (window.confirm('この観光計画を削除しますがよろしいですか？')) {
-                jQuery(function($) {
-                    $.ajax({
-                        url: "ajax_delete_plan.php",
-                        type: "POST",
-                        dataType: "json",
-                        data: {
-                            post_data_1: plan_id
-                        },
-                        error: function(XMLHttpRequest, textStatus, errorThrown) {
-                            alert("ajax通信に失敗しました");
-                        },
-                        success: function(response) {
-                            alert(response);
-                            window.location.href = "user_plans.php";
                         }
                     });
                 });
@@ -1071,6 +1123,13 @@ $keikaku[] = $goal_info;
                 <?php echo $result["memo"]; ?>
             </div>
 
+            <p>摂取カロリー：<br>
+	            昼：</textarea><input type="text" id="" size="15" value="">:kcal<br>
+                夜：</textarea><input type="text" id="" size="15" value="">:kcal<br></p>
+            <p>感想：<br>
+	            <textarea class="form-control" rows="5" id="">テスト</textarea><br></p>
+                <button type="button" id="btn" onclick="up_session()" title=""><b>下書き保存</b></button>
+
             <div class="move_box">
                 <a class="prev_page" name="prev_keiro" href="sightseeing_spots_selection_map.php">観光スポット選択に戻る</a>
             </div><br>
@@ -1080,12 +1139,11 @@ $keikaku[] = $goal_info;
             </div>
             <div id="viewbox">
                 <div id="viewDiv"></div>
-                <button type="button" id="btn" onclick="copy_plan()" title="観光計画を編集"><b>観光計画を編集します</b></button>
-                <button type="button" id="btn" onclick="delete_plan()" title="観光計画を編集"><b>観光計画を削除します</b></button>
+                <button type="button" id="btn" onclick="save_tourism_record()" title="観光計画を編集"><b>観光記録を保存します</b></button>
             </div>
         </main>
         <footer>
-            <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>
+            <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
         </footer>
     </div>
 </body>

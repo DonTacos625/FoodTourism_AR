@@ -1,13 +1,14 @@
 <?php
 
+require "frame_define.php";
 require "frame_header.php";
 require "frame_menu.php";
-require "frame_rightmenu.php";
+//require "frame_rightmenu.php";
 
 try {
 
     //sql文にする
-    $sql = 'SELECT userplan.*, userinfo.user_name FROM userplan INNER JOIN userinfo ON userplan.maker_id = userinfo.id WHERE show = 1;';
+    $sql = "SELECT userplan.*, userinfo.user_name FROM userplan INNER JOIN userinfo ON userplan.maker_id = userinfo.id WHERE show = 1 AND userplan.area = $area;";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute();

@@ -1,8 +1,9 @@
 <?php
 
+require "frame_define.php";
 require "frame_header.php";
 require "frame_menu.php";
-require "frame_rightmenu.php";
+//require "frame_rightmenu.php";
 
 try {
 
@@ -77,7 +78,7 @@ try {
     //var_dump($keywordCondition);
 
     //sql文にする
-    $sql = 'SELECT * FROM ' . $database_sightseeing_spots .' WHERE ' . $keywordCondition . ' ';
+    $sql = 'SELECT * FROM ' . $database_sightseeing_spots . ' WHERE ' . $keywordCondition . ' ';
     //var_dump($sql);
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
@@ -167,58 +168,6 @@ if ($categoryName == "0") {
             margin-left: 0px;
         }
 
-        #detailbox #infobox {
-            float: left;
-            width: 75vw;
-            margin-left: 5px;
-        }
-
-        #detailbox #infobox table {
-            width: 100%;
-            border: solid 3px #ffffff;
-        }
-
-        #detailbox #infobox #imgbox {
-            float: left;
-            display: flex;
-            width: 20vw;
-            height: 15vw;
-            margin-bottom: 15px;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #detailbox #infobox #imgbox img {
-            width: auto;
-            height: auto;
-            max-width: 100%;
-            max-height: 100%;
-        }
-
-        #detailbox #infobox table th {
-            text-align: left;
-            white-space: nowrap;
-            background: #EEEEEE;
-            width: 15vw;
-        }
-
-        #detailbox #infobox table td {
-            background: #EEEEEE;
-            padding: 3px;
-        }
-
-        #detailbox #infobox table td ul {
-            margin: 0px;
-        }
-
-        #detailbox #infobox table td ul li {
-            display: inline-block;
-        }
-
-        #detailbox #infobox table td pre {
-            white-space: pre-wrap;
-        }
-
         @media screen and (min-width:769px) and (max-width:1366px) {
             h3 {
                 margin: 0px;
@@ -240,15 +189,6 @@ if ($categoryName == "0") {
                 width: auto;
                 margin: 0px;
                 float: none;
-            }
-
-            #detailbox #infobox {
-                width: 100%;
-                float: none;
-            }
-
-            #detailbox #infobox table {
-                font-size: 13px;
             }
 
         }
@@ -289,7 +229,6 @@ if ($categoryName == "0") {
 
     <script>
         var pointpic = "";
-
         var current_latitude = 0;
         var current_longitude = 0;
 
@@ -367,6 +306,12 @@ if ($categoryName == "0") {
                 className: "esri-icon-documentation"
             };
 
+            var navigationAction = {
+                title: "ナビゲーション",
+                id: "navigation",
+                className: "esri-icon-navigation"
+            };
+
             const food_template = {
                 title: "{Name}",
                 content: [{
@@ -424,7 +369,6 @@ if ($categoryName == "0") {
                 //,actions: [detailAction]
             };
 
-
             const station_template = {
                 title: "{Name}",
                 content: [{
@@ -444,7 +388,7 @@ if ($categoryName == "0") {
                     }]
                 }]
             };
-            
+
             const spot_template = {
                 title: "{Name}",
                 content: [{
@@ -470,15 +414,13 @@ if ($categoryName == "0") {
                         label: "緯度",
                         visible: true
                     }]
-                }]
-                ,actions: [detailAction]
+                }],
+                actions: [detailAction, navigationAction]
             };
-            
 
             //飲食店のIDから表示するスポットを決める
             var spots_feature_sql = "";
             spots_feature_sql = <?php echo json_encode($keywordCondition); ?>;
-
 
             // スポット名を表示するラベルを定義
             var labelClass = {
@@ -502,7 +444,8 @@ if ($categoryName == "0") {
             //$map_stations,$map_restaurants,$map_sightseeing_spotsはframe.phpに
             /*
             var foodLayer = new FeatureLayer({
-                url: <?php //echo json_encode($map_restaurants); ?>,
+                url: <?php //echo json_encode($map_restaurants); 
+                        ?>,
                 id: "foodLayer",
                 popupTemplate: food_template,
                 definitionExpression: food_feature_sql,
@@ -510,22 +453,23 @@ if ($categoryName == "0") {
             });
 
             var all_foodLayer = new FeatureLayer({
-                url: <?php //echo json_encode($map_restaurants); ?>,
+                url: <?php //echo json_encode($map_restaurants); 
+                        ?>,
                 id: "all_foodLayer",
                 popupTemplate: food_template,
                 labelingInfo: [labelClass]
             });
 
-
             var stationLayer = new FeatureLayer({
-                url: <?php //echo json_encode($map_stations); ?>,
+                url: <?php //echo json_encode($map_stations); 
+                        ?>,
                 id: "stationLayer",
                 popupTemplate: station_template,
                 definitionExpression: station_feature_sql
             });
             */
             var sightseeing_spotsLayer = new FeatureLayer({
-                url: <?php echo json_encode($map_sightseeing_spots); ?>,
+                url: "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_sightseeing_spots/FeatureServer",
                 id: "sightseeing_spotsLayer",
                 popupTemplate: spot_template,
                 definitionExpression: spots_feature_sql
@@ -537,7 +481,6 @@ if ($categoryName == "0") {
             const map = new Map({
                 basemap: "streets",
                 layers: [resultsLayer]
-                //layers: [$food]
             });
 
             var center = [current_longitude, current_latitude];
@@ -554,28 +497,13 @@ if ($categoryName == "0") {
                 }
             });
 
-            function add_point(pic, Layer) {
-                const point = {
-                    type: "point",
-                    x: view.popup.selectedFeature.attributes.X,
-                    y: view.popup.selectedFeature.attributes.Y
-                };
-                var stopSymbol = new PictureMarkerSymbol({
-                    url: pic,
-                    width: "30px",
-                    height: "46.5px"
-                });
-                var stop = new Graphic({
-                    geometry: point,
-                    symbol: stopSymbol
-                });
-                Layer.removeAll();
-                Layer.add(stop);
-            }
             //ポップアップの処理
             view.popup.on("trigger-action", function(event) {
                 if (event.action.id === "detail") {
                     spot_detail();
+                }
+                if (event.action.id === "navigation") {
+                    spot_navigation();
                 }
             });
 
@@ -589,6 +517,24 @@ if ($categoryName == "0") {
                 reqElm.name = 'spot_id';
                 reqElm.value = spot_id;
                 form.appendChild(reqElm);
+                document.body.appendChild(form);
+                form.submit();
+            };
+
+            //スポットのナビゲーションページに飛ぶときに送信するデータ
+            function spot_navigation() {
+                var restaurant_id = view.popup.selectedFeature.attributes.id;
+                var form = document.createElement('form');
+                form.method = 'GET';
+                form.action = './navigation_map.php';
+                var reqElm = document.createElement('input');
+                var reqElm2 = document.createElement('input');
+                reqElm.name = 'navi_spot_id';
+                reqElm.value = restaurant_id;
+                reqElm2.name = 'navi_spot_type';
+                reqElm2.value = 3;
+                form.appendChild(reqElm);
+                form.appendChild(reqElm2);
                 document.body.appendChild(form);
                 form.submit();
             };
@@ -612,7 +558,7 @@ if ($categoryName == "0") {
             view.ui.add(locate, "top-left");
 
             var featureLayer = new FeatureLayer({
-                url: "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_sightseeing_spots/FeatureServer",
+                url: <?php echo json_encode($map_sightseeing_spots); ?>,
                 id: "featureLayer",
                 popupTemplate: spot_template,
                 definitionExpression: spots_feature_sql
@@ -650,12 +596,11 @@ if ($categoryName == "0") {
                     symbol: current_Symbol,
                     popupTemplate: current_template
                 });
-                //sort_restaurants(currebt_latidute, current_longitude);
-                //クリックした位置から 500m のバッファ内のスポット（避難所）を検索するための query式を作成
+
                 let query = featureLayer.createQuery();
                 query.geometry = graphic.geometry;
                 query.outFields = ["*"];
-                //ソートの処理
+                //ソートの条件確定
                 var distance_sort = 0;
                 if (sort_conditions == "distance_nearest") {
                     distance_sort = 1;
@@ -665,7 +610,6 @@ if ($categoryName == "0") {
 
                 query.distance = distance;
                 query.units = "meters";
-
                 var query_count = count;
                 var s_count = 0;
 
@@ -710,7 +654,10 @@ if ($categoryName == "0") {
                             return graphic[1];
                         }
                     });
-
+                    //検索結果が0件だったら、何もしない
+                    if (result_fs.length === 0) {
+                        alert("検索条件に該当する観光スポットはありませんでした");
+                    }
                     //検索結果と現在地を、グラフィックスレイヤーに登録（マップに表示）
                     resultsLayer.add(graphic);
                     resultsLayer.addMany(sorted_features);
@@ -731,12 +678,10 @@ if ($categoryName == "0") {
 </head>
 
 <script type="text/javascript">
-
     function display_results() {
         nearby_spots();
         //alert("s");
     }
-
 </script>
 
 <body>

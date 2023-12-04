@@ -1,5 +1,6 @@
 <?php
 
+require "frame_define.php";
 require "frame_header.php";
 require "frame_menu.php";
 require "frame_rightmenu.php";
@@ -19,17 +20,19 @@ $message = "";
 
 //DB接続
 try {
+    /*
+    $n_sql = "SELECT userplan.*, start_name.name as start_name, goal_name.name as goal_name, lunch_name.name as lunch_name, dinner_name.name as dinner_name 
+    FROM userplan 
+    INNER JOIN $database_stations as start_name ON userplan.plan_start = start_name.id 
+    INNER JOIN $database_stations as goal_name ON userplan.plan_goal = goal_name.id 
+    INNER JOIN $database_restaurants as lunch_name ON userplan.lunch = lunch_name.id 
+    INNER JOIN $database_restaurants as dinner_name ON userplan.dinner = dinner_name.id 
+    WHERE userplan.id = $plan_id;";
+    */
     $stmt = $pdo->prepare("SELECT * FROM userplan WHERE id = :id");
     $stmt->bindParam(":id", $plan_id);
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    $s_l_ids = explode(",", $result["s_l"]);
-    $s_l_times = explode(",", $result["s_l_times"]);
-    $l_d_ids = explode(",", $result["l_d"]);
-    $l_d_times = explode(",", $result["l_d_times"]);
-    $d_g_ids = explode(",", $result["d_g"]);
-    $d_g_times = explode(",", $result["d_g_times"]);
 
     //stations_id設定
     if ($result["plan_start"] == -1) {
@@ -42,6 +45,7 @@ try {
         $stmt1->execute();
         $result1 = $stmt1->fetch(PDO::FETCH_ASSOC);
         $start_info = [$result1["x"], $result1["y"], "start"];
+        $side_start_station_name = $result1["name"]; //
     }
     if ($result["plan_goal"] == -1) {
         $goal_station_id = 0;
@@ -53,6 +57,7 @@ try {
         $stmt4->execute();
         $result4 = $stmt4->fetch(PDO::FETCH_ASSOC);
         $goal_info = [$result4["x"], $result4["y"], "goal"];
+        $side_goal_station_name = $result4["name"]; //
     }
     $station_id = [$start_station_id, $goal_station_id];
 
@@ -60,6 +65,8 @@ try {
     if ($result["lunch"] == -1) {
         $lunch_shop_id = -1;
         $lunch_info = [0, 0, "lunch"];
+        $side_lunch_name = "設定されていません"; //
+        $side_lunch_time = 0; //
     } else {
         $lunch_shop_id = $result["lunch"];
         $stmt2 = $pdo->prepare("SELECT * FROM $database_restaurants WHERE id = :id");
@@ -67,10 +74,14 @@ try {
         $stmt2->execute();
         $result2 = $stmt2->fetch(PDO::FETCH_ASSOC);
         $lunch_info = [$result2["x"], $result2["y"], "lunch"];
+        $side_lunch_name = $result2["name"]; //
+        $side_lunch_time = $result["lunch_time"]; //
     }
     if ($result["dinner"] == -1) {
         $dinner_shop_id = -1;
         $dinner_info = [0, 0, "dinner"];
+        $side_dinner_name = "設定されていません"; //
+        $side_dinner_time = 0; //
     } else {
         $dinner_shop_id = $result["dinner"];
         $stmt3 = $pdo->prepare("SELECT * FROM $database_restaurants WHERE id = :id");
@@ -78,16 +89,21 @@ try {
         $stmt3->execute();
         $result3 = $stmt3->fetch(PDO::FETCH_ASSOC);
         $dinner_info = [$result3["x"], $result3["y"], "dinner"];
+        $side_dinner_name = $result3["name"]; //
+        $side_dinner_time = $result["dinner_time"]; //
     }
     $food_shop_id = [$lunch_shop_id, $dinner_shop_id];
 
     //spots設定
     $spot_count = 10;
     if ($result["s_l"] == -1) {
-        $s_l_ids = [0];
+        $s_l_ids = [0]; //
+        $s_l_times = [0]; //
+        $s_l_names = ["設定されていません"]; //
         $s_l_spots = [[0, 0, 0]];
     } else {
-        $s_l_ids = explode(",", $result["s_l"]);
+        $s_l_ids = explode(",", $result["s_l"]); //
+        $s_l_times = explode(",", $result["s_l_times"]); //
         foreach ($s_l_ids as $s_l) {
             $stmt5 = $pdo->prepare("SELECT * FROM $database_sightseeing_spots WHERE id = :id");
             $stmt5->bindParam(":id", $s_l);
@@ -95,14 +111,18 @@ try {
             $result5 = $stmt5->fetch(PDO::FETCH_ASSOC);
             $spot_count += 1;
             $s_l_spots[] = [$result5["x"], $result5["y"], $spot_count];
+            $s_l_names[] = $result5["name"]; //
         }
     }
     $spot_count = 20;
     if ($result["l_d"] == -1) {
-        $l_d_ids = [0];
+        $l_d_ids = [0]; //
+        $l_d_times = [0]; //
+        $l_d_names = ["設定されていません"]; //
         $l_d_spots = [[0, 0, 0]];
     } else {
-        $l_d_ids = explode(",", $result["l_d"]);
+        $l_d_ids = explode(",", $result["l_d"]); //
+        $l_d_times = explode(",", $result["l_d_times"]); //
         foreach ($l_d_ids as $l_d) {
             $stmt6 = $pdo->prepare("SELECT * FROM $database_sightseeing_spots WHERE id = :id");
             $stmt6->bindParam(":id", $l_d);
@@ -110,14 +130,18 @@ try {
             $result6 = $stmt6->fetch(PDO::FETCH_ASSOC);
             $spot_count += 1;
             $l_d_spots[] = [$result6["x"], $result6["y"], $spot_count];
+            $l_d_names[] = $result6["name"]; //
         }
     }
     $spot_count = 30;
     if ($result["d_g"] == -1) {
-        $d_g_ids = [0];
+        $d_g_ids = [0]; //
+        $d_g_times = [0]; //
+        $d_g_names = ["設定されていません"]; //
         $d_g_spots = [[0, 0, 0]];
     } else {
-        $d_g_ids = explode(",", $result["d_g"]);
+        $d_g_ids = explode(",", $result["d_g"]); //
+        $d_g_times = explode(",", $result["d_g_times"]); //
         foreach ($d_g_ids as $d_g) {
             $stmt7 = $pdo->prepare("SELECT * FROM $database_sightseeing_spots WHERE id = :id");
             $stmt7->bindParam(":id", $d_g);
@@ -125,16 +149,28 @@ try {
             $result7 = $stmt7->fetch(PDO::FETCH_ASSOC);
             $spot_count += 1;
             $d_g_spots[] = [$result7["x"], $result7["y"], $spot_count];
+            $d_g_names[] = $result7["name"]; //
         }
     }
 
     $spots_id = array_merge($s_l_ids, $l_d_ids, $d_g_ids);
-
-    $s_l_times = explode(",", $result["s_l_times"]);
-    $l_d_times = explode(",", $result["l_d_times"]);
-    $d_g_times = explode(",", $result["d_g_times"]);
 } catch (PDOException $e) {
 }
+$side_s_l_spots = array_map(NULL, $s_l_ids, $s_l_times, $s_l_names);
+$side_l_d_spots = array_map(NULL, $l_d_ids, $l_d_times, $l_d_names);
+$side_d_g_spots = array_map(NULL, $d_g_ids, $d_g_times, $d_g_names);
+//var_dump($side_s_l_spots[0][0]);
+
+$side_display_plan = [
+    ["start", $side_start_station_name],
+    ["s_l", $side_s_l_spots],
+    ["lunch", $side_lunch_name, $side_lunch_time],
+    ["l_d", $side_l_d_spots],
+    ["dinner", $side_dinner_name, $side_dinner_time],
+    ["d_g", $side_d_g_spots],
+    ["goal", $side_goal_station_name]
+];
+//var_dump($side_s_l_spots);
 
 //keikakuは目的地の配列
 //keikakuの配列作成
@@ -888,104 +924,104 @@ $keikaku[] = $goal_info;
     <div id="leftbox">
 
         <h2>観光計画</h2>
-        <button onclick="remade_plan()">更新する</button><br>
-        <div id="making_plan_box">
+
+        <div id="other_plan_box">
             <div class="sortable">
                 開始駅<br>
                 <ul>
-                    <li id="plan_start_box" value="<?php echo $making_plan[0][1]; ?>">
+                    <li id="other_plan_start_box" value="<?php echo $making_plan[0][1]; ?>">
                         <img id="pin" width="20" height="20" src="./icons/pop_start.png" alt="開始駅のアイコン" title="開始駅">
-                        <?php echo $start_station_name ?><br>
+                        <?php echo $side_start_station_name ?><br>
                     </li>
                 </ul>
             </div>
 
-            <div class="sortable">
-                移動時間<br>
-                <ul>
-                    <li id="plan_start_box" value="<?php echo $making_plan[0][1]; ?>">
-                        <img id="pin" width="20" height="20" src="./icons/pop_start.png" alt="開始駅のアイコン" title="開始駅">
-                        <?php echo $start_station_name ?><br>
-                    </li>
-                </ul>
-            </div>
+            <?php if ($side_s_l_spots[0][2] != "設定されていません") { ?>
+                <div class="sortable">
+                    昼食前に訪れる観光スポット<br>
+                    <ul>
+                        <?php $side_count = 0; ?>
+                        <?php foreach ($side_s_l_spots as $date) { ?>
+                            <?php $side_count += 1; ?>
+                            <li>
+                                <img width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $side_count . ".png"; ?> alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
+                                <div><?php echo $date[2] ?></div>
+                                <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
+                            </li>
+                        <?php } ?>
+                    </ul>
+                    <input type="hidden" id="list-ids" name="list-ids" />
+                </div>
+            <?php } ?>
 
-            <div class="sortable">
-                昼食前に訪れる観光スポット<br>
-                <ul id="sort">
-                    <?php $count_s_l = 0; ?>
-                    <?php foreach ($plan_s_l_spots as $date) { ?>
-                        <?php $count_s_l += 1; ?>
-                        <li value=<?php echo $date[0] ?> id=<?php echo "plan_s_l_" . $count_s_l . "_box"; ?> draggable="true">
-                            <img class="pin_s_l" width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $count_s_l . ".png"; ?> alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
-                            <div class="s_l_name"><?php echo $date[2] ?></div>
-                            <input class="s_l_time" type="number" value="<?php echo $date[1]; ?>">分
-                            <button type="button" class="btn btn-light btn-outline-dark" value=<?php echo "plan_s_l_" . $count_s_l . "_box"; ?> onclick="hidden_spot(value)">削除</button>
+            <?php if ($side_lunch_name != "設定されていません") { ?>
+                <div class="sortable">
+                    昼食を食べる飲食店<br>
+                    <ul>
+                        <li id="" value="">
+                            <img id="pin" width="20" height="20" src="./icons/pop_lunch.png" alt="昼食予定地のアイコン" title="昼食予定地">
+                            <?php echo $side_lunch_name ?><br>
+                            <input disabled class="time" type="number" value="<?php echo $side_lunch_time; ?>">分
                         </li>
-                    <?php } ?>
-                </ul>
-                <input type="hidden" id="list-ids" name="list-ids" />
-            </div>
-            <div class="sortable">
-                昼食を食べる飲食店<br>
-                <ul>
-                    <li id="plan_lunch_box" value="<?php echo $making_plan[2][1]; ?>">
-                        <img id="pin" width="20" height="20" src="./icons/pop_lunch.png" alt="昼食予定地のアイコン" title="昼食予定地">
-                        <?php echo $lunch_name ?><br>
-                        <input class="time" type="number" value="<?php echo $making_plan[2][2]; ?>">分
-                        <button type="button" class="btn btn-light btn-outline-dark" value="" onclick="hidden_spot('plan_lunch_box')">削除</button>
-                    </li>
-                </ul>
-            </div>
-            <div class="sortable">
-                昼食後に訪れる観光スポット<br>
-                <ul id="sort2">
-                    <?php $count_l_d = 0; ?>
-                    <?php foreach ($plan_l_d_spots as $date) { ?>
-                        <?php $count_l_d += 1; ?>
-                        <li value=<?php echo $date[0] ?> id=<?php echo "plan_l_d_" . $count_l_d . "_box"; ?> draggable="true">
-                            <img class="pin_l_d" width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $count_l_d . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
-                            <div class="l_d_name"><?php echo $date[2] ?></div>
-                            <input class="l_d_time" type="number" value="<?php echo $date[1]; ?>">分
-                            <button type="button" class="btn btn-light btn-outline-dark" value=<?php echo "plan_l_d_" . $count_l_d . "_box"; ?> onclick="hidden_spot(value)">削除</button>
+                    </ul>
+                </div>
+            <?php } ?>
+
+            <?php if ($side_l_d_spots[0][2] != "設定されていません") { ?>
+                <div class="sortable">
+                    昼食後に訪れる観光スポット<br>
+                    <ul>
+                        <?php $side_count = 0; ?>
+                        <?php foreach ($side_l_d_spots as $date) { ?>
+                            <?php $side_count += 1; ?>
+                            <li>
+                                <img width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $side_count . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
+                                <div><?php echo $date[2] ?></div>
+                                <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
+                            </li>
+                        <?php } ?>
+                    </ul>
+                    <input type="hidden" id="list-ids" name="list-ids" />
+                </div>
+            <?php } ?>
+
+            <?php if ($side_dinner_name != "設定されていません") { ?>
+                <div class="sortable">
+                    夕食を食べる飲食店<br>
+                    <ul>
+                        <li id="" value="">
+                            <img id="pin" width="20" height="20" src="./icons/pop_dinner.png" alt="夕食予定地のアイコン" title="夕食予定地">
+                            <?php echo $side_dinner_name ?><br>
+                            <input disabled class="time" type="number" value="<?php echo $side_dinner_time; ?>">分
                         </li>
-                    <?php } ?>
-                </ul>
-                <input type="hidden" id="list-ids" name="list-ids" />
-            </div>
-            <div class="sortable">
-                夕食を食べる飲食店<br>
-                <ul>
-                    <li id="plan_dinner_box" value="<?php echo $making_plan[4][1]; ?>">
-                        <img id="pin" width="20" height="20" src="./icons/pop_dinner.png" alt="夕食予定地のアイコン" title="夕食予定地">
-                        <?php echo $dinner_name ?><br>
-                        <input class="time" type="number" value="<?php echo $making_plan[4][2]; ?>">分
-                        <button type="button" class="btn btn-light btn-outline-dark" value="" onclick="hidden_spot('plan_dinner_box')">削除</button>
-                    </li>
-                </ul>
-            </div>
-            <div class="sortable">
-                夕食後に訪れる観光スポット<br>
-                <ul id="sort3">
-                    <?php $count_d_g = 0; ?>
-                    <?php foreach ($plan_d_g_spots as $date) { ?>
-                        <?php $count_d_g += 1; ?>
-                        <li value=<?php echo $date[0] ?> id=<?php echo "plan_d_g_" . $count_d_g . "_box"; ?> draggable="true">
-                            <img class="pin_d_g" width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $count_d_g . ".png"; ?> alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
-                            <div class="d_g_name"><?php echo $date[2] ?></div>
-                            <input class="d_g_time" type="number" value="<?php echo $date[1]; ?>">分
-                            <button type="button" class="btn btn-light btn-outline-dark" value=<?php echo "plan_d_g_" . $count_d_g . "_box"; ?> onclick="hidden_spot(value)">削除</button>
-                        </li>
-                    <?php } ?>
-                </ul>
-                <input type="hidden" id="list-ids" name="list-ids" />
-            </div>
+                    </ul>
+                </div>
+            <?php } ?>
+
+            <?php if ($side_d_g_spots[0][2] != "設定されていません") { ?>
+                <div class="sortable">
+                    夕食後に訪れる観光スポット<br>
+                    <ul>
+                        <?php $side_count = 0; ?>
+                        <?php foreach ($side_d_g_spots as $date) { ?>
+                            <?php $side_count += 1; ?>
+                            <li>
+                                <img width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $side_count . ".png"; ?> alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
+                                <div><?php echo $date[2] ?></div>
+                                <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
+                            </li>
+                        <?php } ?>
+                    </ul>
+                    <input type="hidden" id="list-ids" name="list-ids" />
+                </div>
+            <?php } ?>
+
             <div class="sortable">
                 終了駅<br>
                 <ul>
                     <li id="plan_goal_box" value="<?php echo $making_plan[6][1] ?>">
                         <img id="pin" width="20" height="20" src="./icons/pop_goal.png" alt="終了駅のアイコン" title="終了駅">
-                        <div class="plan_goal_name"><?php echo $goal_station_name ?></div>
+                        <div class="plan_goal_name"><?php echo $side_goal_station_name ?></div>
                     </li>
                 </ul>
             </div>

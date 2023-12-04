@@ -1,5 +1,6 @@
 <?php
 
+require "frame_define.php";
 require "frame_header.php";
 require "frame_menu.php";
 require "frame_rightmenu.php";

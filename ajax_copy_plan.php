@@ -5,7 +5,8 @@ require_once("connect_database.php");
 $post_data_1 = $_POST['post_data_1'];
 $post_data_2 = json_decode($_POST['post_data_2'], true);
 
-$database_name = "minatomirai_sightseeing_spots";
+$area_database_name = $_SESSION["area_name"];
+$database_name = $area_database_name . '_sightseeing_spots';
 try {
     $id = $post_data_1;
 

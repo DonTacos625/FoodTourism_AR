@@ -1,14 +1,15 @@
 <?php
 
+require "frame_define.php";
 require "frame_header.php";
 require "frame_menu.php";
-require "frame_rightmenu.php";
+//require "frame_rightmenu.php";
 
 try {
 
     $maker_id = $_SESSION["user_id"];
     //sql文にする
-    $sql = 'SELECT userplan.*, userinfo.user_name FROM userplan INNER JOIN userinfo ON userplan.maker_id = userinfo.id WHERE maker_id =' . $maker_id . ';';
+    $sql = "SELECT userplan.*, userinfo.user_name FROM userplan INNER JOIN userinfo ON userplan.maker_id = userinfo.id WHERE maker_id = $maker_id AND userplan.area = $area;";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute();

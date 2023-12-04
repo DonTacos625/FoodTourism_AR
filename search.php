@@ -1,5 +1,6 @@
 <?php
 
+require "frame_define.php";
 require "frame_header.php";
 require "frame_menu.php";
 require "frame_rightmenu.php";
@@ -499,7 +500,7 @@ $count = 0;
                     <div id="infobox" value=<?php echo $row["id"]; ?>>
                         <table>
                             <tr>
-                                <th><div id="imgbox"><img src=<?php if($area == 1) {echo "images/minatomirai/restaurants/". $row["id"] .".jpg" ;} else if($area == 2){echo "images/hasune/restaurants/". $row["id"] .".jpg" ;} else if($area == 3){echo "images/chofu/restaurants/". $row["id"] .".jpg" ;}?> alt=""></div></th>
+                                <th><div id="imgbox"><img src=<?php echo "images/$area_name/restaurants/". $row["id"] .".jpg"?> alt=""></div></th>
                                 <td></td>
                             </tr>
                             <tr>

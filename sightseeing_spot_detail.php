@@ -1,5 +1,6 @@
 <?php
 
+require "frame_define.php";
 require "frame_header.php";
 require "frame_menu.php";
 require "frame_rightmenu.php";
@@ -692,6 +693,11 @@ $keikaku[] = $goal_station_info;
 
                     <div id="infobox">
                         <table>
+                        <table>
+                            <tr>
+                                <th><div id="imgbox"><img src=<?php echo "images/$area_name/sightseeing_spots/". $result["id"] .".jpg"?> alt=""></div></th>
+                                <td></td>
+                            </tr>
                             <tr>
                                 <th>名称</th>
                                 <td><?php echo $result["name"]; ?></td>
@@ -725,7 +731,7 @@ $keikaku[] = $goal_station_info;
                             </tr>
 
                         </table>
-                        <li><a href="sightseeing_spots_selection_map.php">観光スポット選択に戻る</a></li>
+                        <li><a href="#" onclick="window.history.back(); return false;">戻る</a></li>
                     </div>
                 </div>
             </div>

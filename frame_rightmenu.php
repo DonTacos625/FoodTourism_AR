@@ -194,7 +194,6 @@
         </div>
     </div>
 
-
     <div id="toggle_menu">
         <label for="menu_label2">≡設定情報</label>
         <input type="checkbox" id="menu_label2" />
@@ -355,25 +354,31 @@
         //alert(dinner_time);
         var s_l_spots = document.getElementById('sort').querySelectorAll('li');
         s_l_spots.forEach(function(element) {
-            if (element.className != "hidden") {
-                s_l_post_box.push([element.value, element.querySelector('.s_l_time').value, element.querySelector(
-                    '.s_l_name').textContent]);
+            if (element.className != "hidden" && element.value != -1) {
+                s_l_post_box.push([element.value, element.querySelector('.s_l_time').value, element.querySelector('.s_l_name').textContent]);
             }
         });
+        if(s_l_post_box.length == 0){
+            s_l_post_box.push([-1,0,"設定されていません"]);
+        }
         var l_d_spots = document.getElementById('sort2').querySelectorAll('li');
         l_d_spots.forEach(function(element) {
-            if (element.className != "hidden") {
-                l_d_post_box.push([element.value, element.querySelector('.l_d_time').value, element.querySelector(
-                    '.l_d_name').textContent]);
+            if (element.className != "hidden" && element.value != -1) {
+                l_d_post_box.push([element.value, element.querySelector('.l_d_time').value, element.querySelector('.l_d_name').textContent]);
             }
         });
+        if(l_d_post_box.length == 0){
+            l_d_post_box.push([-1,0,"設定されていません"]);
+        }
         var d_g_spots = document.getElementById('sort3').querySelectorAll('li');
         d_g_spots.forEach(function(element) {
-            if (element.className != "hidden") {
-                d_g_post_box.push([element.value, element.querySelector('.d_g_time').value, element.querySelector(
-                    '.d_g_name').textContent]);
+            if (element.className != "hidden" && element.value != -1) {
+                d_g_post_box.push([element.value, element.querySelector('.d_g_time').value, element.querySelector('.d_g_name').textContent]);
             }
         });
+        if(d_g_post_box.length == 0){
+            d_g_post_box.push([-1,0,"設定されていません"]);
+        }
 
         jQuery(function($) {
             $.ajax({

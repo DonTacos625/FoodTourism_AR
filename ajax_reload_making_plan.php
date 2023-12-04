@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once("connect_database.php");
+//require_once("connect_database.php");
 
 $post_start = $_POST['post_data_1'];
 $post_goal = $_POST['post_data_2'];
@@ -31,22 +31,21 @@ if($post_dinner_box[0] == -1){
     $_SESSION["dinner_time"] = $post_dinner_box[1];
 }
 
-if(empty($post_s_l)){
+if($post_s_l[0][0] == -1){
     unset($_SESSION["s_l_spots"]);
 } else {
     $_SESSION["s_l_spots"] = $post_s_l;
 }
-if(empty($post_l_d)){
+if($post_l_d[0][0] == -1){
     unset($_SESSION["l_d_spots"]);
 } else {
     $_SESSION["l_d_spots"] = $post_l_d;
 }
-if(empty($post_d_g)){
+if($post_d_g[0][0] == -1){
     unset($_SESSION["d_g_spots"]);
 } else {
     $_SESSION["d_g_spots"] = $post_d_g;
 }
-
 
 $return_array = "更新";
 

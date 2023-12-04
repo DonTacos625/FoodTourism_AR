@@ -1,6 +1,6 @@
 <?php
 
-require "frame_ar.php";
+require "frame_define.php";
 
 try {
 
@@ -262,7 +262,7 @@ if (
     $all_foodLayer_Flag = 1;
 }
 //var_dump($all_foodLayer_Flag);
-
+//$area_name = "hasune";
 ?>
 
 <html>
@@ -337,26 +337,14 @@ if (
             z-index: 1000;
         }
 
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            border: 1px solid black;
-            padding: 20px;
-            z-index: 1000;
-        }
-
-        .modal table th {
+        .modal-body table th {
             text-align: left;
             white-space: nowrap;
             background: #EEEEEE;
             width: 5vw;
         }
 
-        .modal table td {
+        .modal-body table td {
             background: #EEEEEE;
             padding: 3px;
         }
@@ -407,7 +395,7 @@ if (
 
         @media screen and (max-width:768px) {
             .modal {
-                font-size: 2vw;
+                font-size: 3vw;
             }
 
             .search_form {
@@ -577,35 +565,6 @@ if (
                     }]
                 }]
             };
-            /*
-            const sightseeing_spot_template = {
-                title: "{Name}",
-                content: [{
-                    type: "fields",
-                    fieldInfos: [{
-                        fieldName: "ID",
-                        label: "ID",
-                        visible: true
-                    }, {
-                        fieldName: "category",
-                        label: "カテゴリー",
-                        visible: true
-                    }, {
-                        fieldName: "homepage",
-                        label: "ホームページ",
-                        visible: true
-                    }, {
-                        fieldName: "X",
-                        label: "経度",
-                        visible: true
-                    }, {
-                        fieldName: "Y",
-                        label: "緯度",
-                        visible: true
-                    }]
-                }]
-            };
-            */
 
             //飲食店のIDから表示するスポットを決める
             var food_feature_sql = "";
@@ -830,7 +789,7 @@ if (
                     var table_column = ["ID", "緯度", "経度", "店舗名", "ジャンル", "営業時間", "定休日", "予算"];
                     //make_table(test_row, table_column);
                     make_little_table(test_row, table_column);
-                    //make_modal_table(test_row, table_column);
+                    make_modal_table(test_row, table_column);
                     make_name_table(test_row);
                     make_image_table(test_row);
                     make_ar_object(test_row);
@@ -883,37 +842,6 @@ if (
         }
     };
 
-    function showModal(id, name, genre, genre_sub, open_time, close_time, lunch_budget, dinner_budget) {
-        var overlay = document.querySelector(".overlay");
-        overlay.style.display = "block";
-        //ポップアウトを編集
-        var modal = document.querySelector(".modal");
-        modal.style.display = "block";
-        modal.querySelector(".modal_img").setAttribute('src', `images/${area_name}/restaurants/${id}.jpg`);
-        modal.querySelector(".modal_name").textContent = name;
-        modal.querySelector(".modal_a").href = `restaurant_detail.php?restaurant_id=${id}`;
-
-        document.getElementById("modal_table_name").querySelector(".modal_change").textContent = name;
-        document.getElementById("modal_table_genre").querySelector(".modal_change").textContent = `${genre}、${genre_sub}`;
-        document.getElementById("modal_open_time").querySelector(".modal_change").textContent = open_time;
-        document.getElementById("modal_close_time").querySelector(".modal_change").textContent = close_time;
-        document.getElementById("modal_budget").querySelector(".modal_change").textContent = `昼：${lunch_budget}　　夜：${dinner_budget}`;
-    }
-
-    function closeModal() {
-        document.querySelector(".overlay").style.display = "none";
-        document.querySelector(".modal").style.display = "none";
-        document.querySelector(".search_form").style.display = "none";
-        document.getElementById("result_table").style.display = "none";
-    }
-
-    function open_search_form() {
-        var overlay = document.querySelector(".overlay");
-        overlay.style.display = "block";
-        var modal = document.querySelector(".search_form");
-        modal.style.display = "block";
-    }
-
     function open_result_list() {
         var overlay = document.querySelector(".overlay");
         overlay.style.display = "block";
@@ -965,90 +893,66 @@ if (
         return newtr;
     }
 
-    //検索結果を表示する
-    function make_table(array, columns) {
-        var count = 0;
-
-        $results_form = document.getElementById("result_table");
-        $results_form.innerHTML = "";
-        $results_form.className = 'tables';
-
-        for (var i = 0; i < array.length; i++) {
-            const a_id = array[i][0];
-            const a_lattitude = array[i][1];
-            const a_longitude = array[i][2];
-            const a_name = array[i][3];
-
-            //表示するhtmlの作成
-            const newDiv = document.createElement("div");
-            newDiv.id = `infobox${i+1}`;
-            newDiv.className = 'target';
-            //表示する画像の作成
-            const newImgDiv = document.createElement("div");
-            newImgDiv.id = 'ar_imgbox';
-            const newImg = document.createElement("img");
-            newImg.id = 'ar_img';
-            const src = `images/${area_name}/restaurants/${a_id}.jpg`;
-            newImg.setAttribute('src', src);
-            newImgDiv.appendChild(newImg);
-            newDiv.appendChild(newImgDiv);
-            //テーブルの作成
-            const newTableBox = document.createElement("div");
-            newTableBox.id = 'ar_tablebox';
-            const newTable = document.createElement("table");
-            for (var j = 3; j < columns.length; j++) {
-                const newtablecell = make_tablecell(array, columns[j], i, j);
-                newTable.appendChild(newtablecell);
-            }
-            newTableBox.appendChild(newTable);
-            newDiv.appendChild(newTableBox);
-            $results_form.appendChild(newDiv);
-
-            count += 1;
-        }
-        if (count == 0) {
-            alert("検索条件に該当する観光スポットはありませんでした");
-        }
-    }
-
+    //モーダルウィンドウを表示する
     function make_modal_table(array, columns) {
-
-        $results_form = document.getElementById("result_modal_table");
-        $results_form.innerHTML = "";
-        $results_form.className = 'tables';
+        $result_modal_form = document.getElementById("result_modal_table");
+        $result_modal_form.innerHTML = "";
+        $result_modal_form.className = 'tables';
 
         for (var i = 0; i < array.length; i++) {
             const a_id = array[i][0];
             const a_lattitude = array[i][1];
             const a_longitude = array[i][2];
             const a_name = array[i][3];
+            const a_genre = array[i][4][0];
+            const a_genre_sub = array[i][4][1];
+            const a_open_time = array[i][5];
+            const a_close_time = array[i][6];
+            const a_lunch_budget = array[i][7];
+            const a_dinner_budget = array[i][8];
 
             //表示するhtmlの作成
             const newDiv = document.createElement("div");
-            newDiv.id = `modalbox${i+1}`;
-            newDiv.className = 'result_modals';
-            newDiv.setAttribute('popover', "auto");
-            //表示する画像の作成
-            const newImgDiv = document.createElement("div");
-            newImgDiv.id = 'ar_imgbox';
-            const newImg = document.createElement("img");
-            newImg.id = 'ar_img';
-            const src = `images/${area_name}/restaurants/${a_id}.jpg`;
-            newImg.setAttribute('src', src);
-            newImgDiv.appendChild(newImg);
-            newDiv.appendChild(newImgDiv);
-            //テーブルの作成
-            const newTableBox = document.createElement("div");
-            newTableBox.id = 'ar_tablebox';
-            const newTable = document.createElement("table");
-            for (var j = 3; j < columns.length; j++) {
-                const newtablecell = make_tablecell(array, columns[j], i, j);
-                newTable.appendChild(newtablecell);
-            }
-            newTableBox.appendChild(newTable);
-            newDiv.appendChild(newTableBox);
-            $results_form.appendChild(newDiv);
-
+            newDiv.id = `modal_box${i+1}`;
+            newDiv.className = 'modal fade';
+            newDiv.setAttribute('tabindex', "-1");
+            newDiv.setAttribute('aria-labelledby', `modal_box_label${i+1}`);
+            newDiv.setAttribute('aria-hidden', "true");
+            newDiv.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="modal_box_Label${i+1}">${a_name}</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img class="modal_img" src="images/${area_name}/restaurants/${a_id}.jpg" alt="">
+                        <table class="table text-wrap">
+                            <tr>
+                                <th>ジャンル</th>
+                                <td class="modal_change">${a_genre},${a_genre_sub}</td>
+                            </tr>
+                            <tr>
+                                <th>営業時間</th>
+                                <td class="modal_change">${a_open_time}</td>
+                            </tr>
+                            <tr>
+                                <th>定休日</th>
+                                <td class="modal_change">${a_close_time}</td>
+                            </tr>
+                            <tr>
+                                <th>予算</th>
+                                <td>昼：${a_lunch_budget}　　夜：${a_dinner_budget}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+                        <a class="btn btn-primary" href="restaurant_detail.php?restaurant_id=${a_id}">詳細ページへ</a>
+                    </div>
+                </div>
+            </div>`;
+            $result_modal_form.appendChild(newDiv);
         }
     }
 
@@ -1093,7 +997,7 @@ if (
             count += 1;
         }
         if (count == 0) {
-            alert("検索条件に該当する観光スポットはありませんでした");
+            alert("検索条件に該当する飲食店はありませんでした");
         }
     }
 
@@ -1138,6 +1042,8 @@ if (
             for (var i = 0; i < array.length; i++) {
                 const target = document.getElementById(`planebox${i+1}`);
                 const material = `shader:html;target: #namebox${i+1};`
+                target.setAttribute('geometry', "primitive: sphere");
+                target.setAttribute('scale', "3 3 3");
                 target.setAttribute('material', material);
                 target.setAttribute('width', "5");
                 target.setAttribute('height', "3");
@@ -1146,6 +1052,8 @@ if (
             for (var i = 0; i < array.length; i++) {
                 const target = document.getElementById(`planebox${i+1}`);
                 const material = `shader:html;target: #infobox${i+1};`
+                target.setAttribute('geometry', "primitive: plane");
+                target.removeAttribute('scale');
                 target.setAttribute('material', material);
                 target.setAttribute('width', "16");
                 target.setAttribute('height', "10");
@@ -1154,6 +1062,8 @@ if (
             for (var i = 0; i < array.length; i++) {
                 const target = document.getElementById(`planebox${i+1}`);
                 const material = `shader:html;target: #info_image_box${i+1};`
+                target.setAttribute('geometry', "primitive: plane");
+                target.removeAttribute('scale');
                 target.setAttribute('material', material);
                 target.setAttribute('width', "8");
                 target.setAttribute('height', "5");
@@ -1163,7 +1073,7 @@ if (
         }
     }
 
-    //検索結果を表示する
+    //ARのオブジェクトを作成する
     function make_ar_object(array) {
 
         $AR_form = document.getElementById("ar_scene");
@@ -1189,17 +1099,17 @@ if (
                 longitude: a_longitude
             });
             newEntity.setAttribute('data-text', a_name);
-            newEntity.setAttribute('scale', "10 10 10");
-            newEntity.setAttribute('popovertarget', `modalbox${i+1}`);
+            newEntity.setAttribute('scale', "7 7 7");
 
-            newEntity.onclick = () => {
-                showModal(a_id, a_name, a_genre, a_genre_sub, a_open_time, a_close_time, a_lunch_budget, a_dinner_budget);
-            }
+            newEntity.setAttribute('data-bs-toggle', "modal");
+            newEntity.setAttribute('data-bs-target', `#modal_box${i+1}`);
 
             //planeの作成
             const newPlane = document.createElement("a-plane");
             newPlane.id = `planebox${i+1}`;
             newPlane.setAttribute('look-at', "[gps-new-camera]");
+
+            newPlane.setAttribute('geometry', "primitive: plane");
 
             newPlane.setAttribute('position', `0 ${-10 + i*5} 0`);
             newPlane.setAttribute('width', "16");
@@ -1224,62 +1134,28 @@ if (
 
 <body>
 
-    <div id="result_table">
-    </div>
+    <div id="result_table"></div>
 
-    <div id="result_name_table">
-    </div>
+    <div id="result_name_table"></div>
 
-    <div id="result_image_table">
-    </div>
-
-    <div class="overlay" onclick="closeModal()"></div>
-    <div class="modal">
-        <img class="modal_img" src="images/minatomirai/restaurants/0.jpg" alt="">
-        <h2 class="modal_name">モーダルウィンドウ</h2>
-        <table>
-            <tr id="modal_table_name">
-                <th>店舗名</th>
-                <td class="modal_change">name</td>
-            </tr>
-            <tr id="modal_table_genre">
-                <th>ジャンル</th>
-                <td class="modal_change">genre,genre_sub</td>
-            </tr>
-            <tr id="modal_open_time">
-                <th>営業時間</th>
-                <td class="modal_change">open_time</td>
-            </tr>
-            <tr id="modal_close_time">
-                <th>定休日</th>
-                <td class="modal_change">close_time</td>
-            </tr>
-            <tr id="modal_budget">
-                <th>予算</th>
-                <td class="modal_change">昼：lunch_budget　　夜：dinner_budget</td>
-            </tr>
-        </table>
-        <a class="modal_a" href="">詳細ページへ</a>
-        <button onclick="closeModal()">閉じる</button>
-    </div>
+    <div id="result_image_table"></div>
 
     <a-scene id="ar_scene" vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true' cursor='rayOrigin: mouse'>
         <a-camera gps-new-camera='gpsMinDistance: 5'></a-camera>
     </a-scene>
+
     <div id="bottom_bar">
-        <button id="change" type=button onclick="location.href='search_nearby_restaurants_map.php'">Change</button>
-        <button id="searchform_btn" type=button onclick="open_search_form()">検索フォームを開く</button>
-        <select id="change_display_btn" size="1" onchange="change_display(value)">
+        <select class="btn btn-primary w-15" id="change_display_btn" size="1" onchange="change_display(value)">
             <option value="default"> 通常表示 </option>
-            <option value="small"> 店名だけ表示 </option>
+            <option value="small"> オブジェクト表示 </option>
             <option value="image"> 写真だけ表示 </option>
         </select>
-        <button id="result_list_btn" popovertarget="mypopover" type=button>ボタン</button>
+        <button class="btn btn-primary w-15" id="searchform_btn" type=button popovertarget="mypopover">検索フォームを開く</button>
+        <button class="btn btn-primary w-15" id="change" type=button onclick="location.href='search_nearby_restaurants_map.php'">戻る</button>
     </div>
 
     <div class="container-fluid">
         <main>
-
             <div class="search_form" id="mypopover" popover>
                 <form action="search_nearby_restaurants_ar.php" method="post">
                     飲食店の検索範囲：<br>
@@ -1422,9 +1298,9 @@ if (
                 </form>
             </div><br>
 
-            <div id="result_modal_table">
-            </div>
+            <div id="result_modal_table"></div>
         </main>
+
         <footer>
             <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>
         </footer>

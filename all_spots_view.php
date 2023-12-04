@@ -1,30 +1,205 @@
 <?php
 
 require "frame_define.php";
+require "frame_header.php";
+require "frame_menu.php";
+require "frame_rightmenu.php";
 
-$navi_spot_id = $_GET["navi_spot_id"];
-$navi_spot_type = $_GET["navi_spot_type"];
+//入力情報保存用のSESSION変数初期値設定
+if (!isset($_SESSION["input_plan_name"])) {
+    $_SESSION["input_plan_name"] = "";
+}
+$input_plan_name = $_SESSION["input_plan_name"];
+if (!isset($_SESSION["input_plan_memo"])) {
+    $_SESSION["input_plan_memo"] = "";
+} else {
+}
+$input_plan_memo = $_SESSION["input_plan_memo"];
+
+if (!isset($_SESSION["plan_show"])) {
+    $_SESSION["plan_show"] = 1;
+}
+
+function set_checked($session_name, $value)
+{
+    if ($value == $_SESSION[$session_name]) {
+        //値がセッション変数と等しいとチェックされてる判定として返す
+        print "checked=\"checked\"";
+    } else {
+        print "";
+    }
+}
+
 
 $message = "";
+$set_stations = 0;
+$set_foods = 0;
+if (!isset($_SESSION["start_station_id"]) || !isset($_SESSION["goal_station_id"])) {
+    $message = "開始・終了駅が設定されていません";
+} else if (!isset($_SESSION["lunch_id"]) && !isset($_SESSION["dinner_id"])) {
+    $message = "昼食または夕食予定地が設定されていません";
+}
+
+//stations_id設定
+if (!isset($_SESSION["start_station_id"])) {
+    $start_station_id = 0;
+} else {
+    $start_station_id = $_SESSION["start_station_id"];
+}
+if (!isset($_SESSION["goal_station_id"])) {
+    $goal_station_id = 0;
+} else {
+    $goal_station_id = $_SESSION["goal_station_id"];
+}
+$station_id = [$start_station_id, $goal_station_id];
+
+//food_shops_id設定
+if (!isset($_SESSION["lunch_id"])) {
+    $lunch_shop_id = -1;
+} else {
+    $lunch_shop_id = $_SESSION["lunch_id"];
+}
+if (!isset($_SESSION["dinner_id"])) {
+    $dinner_shop_id = -1;
+} else {
+    $dinner_shop_id = $_SESSION["dinner_id"];
+}
+$food_shop_id = [$lunch_shop_id, $dinner_shop_id];
+
+//spots設定
+if (!isset($_SESSION["s_l_spots"])) {
+    $s_l_ids = [0];
+} else {
+    foreach ($_SESSION["s_l_spots"] as $s_l) {
+        $s_l_ids[] = $s_l[0];
+    }
+}
+if (!isset($_SESSION["l_d_spots"])) {
+    $l_d_ids = [0];
+} else {
+    foreach ($_SESSION["l_d_spots"] as $l_d) {
+        $l_d_ids[] = $l_d[0];
+    }
+}
+if (!isset($_SESSION["d_g_spots"])) {
+    $d_g_ids = [0];
+} else {
+    foreach ($_SESSION["d_g_spots"] as $d_g) {
+        $d_g_ids[] = $d_g[0];
+    }
+}
+$spots_id = array_merge($s_l_ids, $l_d_ids, $d_g_ids);
+
+//デバッグ用
+//$_SESSION["s_l_spots"] = [1,2];
+//$_SESSION["l_d_spots"] = [3,4];
+//$_SESSION["d_g_spots"] = [5,6];
+
 //DB接続
 try {
-    if ($navi_spot_type == 1) {
-        $database = $database_stations;
-    } else if ($navi_spot_type == 2) {
-        //$database = $database_restaurants;
-        $database = "hasune_restaurants";
+    if (!isset($_SESSION["start_station_id"])) {
+        $start_info = [0, 0, "start"];
     } else {
-        $database = $database_sightseeing_spots;
+        $stmt1 = $pdo->prepare("SELECT * FROM $database_stations WHERE id = :id");
+        $stmt1->bindParam(":id", $start_station_id);
+        $stmt1->execute();
+        $result1 = $stmt1->fetch(PDO::FETCH_ASSOC);
+        $start_info = [$result1["x"], $result1["y"], "start"];
     }
-    $stmt1 = $pdo->prepare("SELECT * FROM $database WHERE id = :id");
-    $stmt1->bindParam(":id", $navi_spot_id);
-    $stmt1->execute();
-    $result1 = $stmt1->fetch(PDO::FETCH_ASSOC);
-    $navi_goal_info = [$result1["x"], $result1["y"], "goal"];
-    //var_dump($navi_goal_info);
+
+    if (!isset($_SESSION["lunch_id"])) {
+        $lunch_info = [0, 0, "lunch"];
+    } else {
+        $stmt2 = $pdo->prepare("SELECT * FROM $database_restaurants WHERE id = :id");
+        $stmt2->bindParam(":id", $lunch_shop_id);
+        $stmt2->execute();
+        $result2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+        $lunch_info = [$result2["x"], $result2["y"], "lunch"];
+    }
+
+    if (!isset($_SESSION["dinner_id"])) {
+        $dinner_info = [0, 0, "dinner"];
+    } else {
+        $stmt3 = $pdo->prepare("SELECT * FROM $database_restaurants WHERE id = :id");
+        $stmt3->bindParam(":id", $dinner_shop_id);
+        $stmt3->execute();
+        $result3 = $stmt3->fetch(PDO::FETCH_ASSOC);
+        $dinner_info = [$result3["x"], $result3["y"], "dinner"];
+    }
+
+    if (!isset($_SESSION["goal_station_id"])) {
+        $goal_info = [0, 0, "goal"];
+    } else {
+        $stmt4 = $pdo->prepare("SELECT * FROM $database_stations WHERE id = :id");
+        $stmt4->bindParam(":id", $goal_station_id);
+        $stmt4->execute();
+        $result4 = $stmt4->fetch(PDO::FETCH_ASSOC);
+        $goal_info = [$result4["x"], $result4["y"], "goal"];
+    }
+
+    $spot_count = 10;
+    if (!isset($_SESSION["s_l_spots"])) {
+        $s_l_spots = [[0, 0, 0]];
+    } else {
+        foreach ($_SESSION["s_l_spots"] as $s_l) {
+            $stmt5 = $pdo->prepare("SELECT * FROM $database_sightseeing_spots WHERE id = :id");
+            $stmt5->bindParam(":id", $s_l[0]);
+            $stmt5->execute();
+            $result5 = $stmt5->fetch(PDO::FETCH_ASSOC);
+            $spot_count += 1;
+            $s_l_spots[] = [$result5["x"], $result5["y"], $spot_count];
+        }
+    }
+    $spot_count = 20;
+    if (!isset($_SESSION["l_d_spots"])) {
+        $l_d_spots = [[0, 0, 0]];
+    } else {
+        foreach ($_SESSION["l_d_spots"] as $l_d) {
+            $stmt6 = $pdo->prepare("SELECT * FROM $database_sightseeing_spots WHERE id = :id");
+            $stmt6->bindParam(":id", $l_d[0]);
+            $stmt6->execute();
+            $result6 = $stmt6->fetch(PDO::FETCH_ASSOC);
+            $spot_count += 1;
+            $l_d_spots[] = [$result6["x"], $result6["y"], $spot_count];
+        }
+    }
+    $spot_count = 30;
+    if (!isset($_SESSION["d_g_spots"])) {
+        $d_g_spots = [[0, 0, 0]];
+    } else {
+        foreach ($_SESSION["d_g_spots"] as $d_g) {
+            $stmt7 = $pdo->prepare("SELECT * FROM $database_sightseeing_spots WHERE id = :id");
+            $stmt7->bindParam(":id", $d_g[0]);
+            $stmt7->execute();
+            $result7 = $stmt7->fetch(PDO::FETCH_ASSOC);
+            $spot_count += 1;
+            $d_g_spots[] = [$result7["x"], $result7["y"], $spot_count];
+        }
+    }
 } catch (PDOException $e) {
 }
 
+//keikakuは目的地の配列
+//keikakuの配列作成
+$keikaku[] = $start_info;
+foreach ($s_l_spots as $s_l_add) {
+    $keikaku[] = $s_l_add;
+}
+$keikaku[] = $lunch_info;
+foreach ($l_d_spots as $l_d_add) {
+    $keikaku[] = $l_d_add;
+}
+$keikaku[] = $dinner_info;
+foreach ($d_g_spots as $d_g_add) {
+    $keikaku[] = $d_g_add;
+}
+$keikaku[] = $goal_info;
+
+//var_dump($start_info);
+//var_dump($_SESSION["s_l_spots"]);
+//var_dump($s_l_ids);
+//var_dump($keikaku);
+//var_dump($_SESSION["plan_show"]);
 ?>
 
 <html>
@@ -43,78 +218,155 @@ try {
 
         gtag('config', 'UA-214561408-1');
     </script>
-
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
-    <script src='https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar-threex-location-only.js'></script>
-    <script src='https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js'></script>
-
-    <!-- <script src="https://unpkg.com/aframe-html-shader@0.2.0/dist/aframe-html-shader.min.js"></script> 
-         <script src="http://html2canvas.hertzen.com/dist/html2canvas.min.js"></script> -->
-
-    <script src="script/aframe-html-shader.min.js"></script>
-    <script src="script/html2canvas.min.js"></script>
-    <link rel="stylesheet" href="css/ar_style.css?<?php echo date('YmdHis'); ?>">
-
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>作成した観光計画を見る</title>
     <style>
-        h3 {
-            border-left: 5px solid #000080;
-            margin: 0px;
+        .icon_explain {
+            position: relative;
+            float: left;
+            width: 100%;
+            height: 15%;
         }
 
-        #viewbox {
-            position: fixed;
-            overflow-x: hidden;
-            width: 1vw;
-            height: 1vh;
-            margin-left: 5px;
+        .pin_list1 {
+            width: 315px;
+            height: 75px;
         }
 
-        #viewbox h3 {
-            border-left: 5px solid #000080;
-            margin: 0px;
+        .pin_list2 {
+            width: 390px;
+            height: 75px;
         }
 
-        #viewbox #viewDiv {
+        .pin_list3 {
+            width: 192px;
+            height: 75px;
+        }
 
-            height: 90%;
-            width: 95%;
+        #viewbox #btn {
+            width: 80%;
+            height: 40px;
+            color: #fff;
+            background-color: #3399ff;
+            border-bottom: 5px solid #33ccff;
+            -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, .3);
+            box-shadow: 0 3px 5px rgba(0, 0, 0, .3);
+        }
+
+        #viewbox #btn:hover {
+            margin-top: 3px;
+            color: #fff;
+            background: #0099ff;
+            border-bottom: 2px solid #00ccff;
         }
 
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
-        @media screen and (max-width:768px) {}
+        @media screen and (max-width:768px) {
+
+            h3 {
+                margin: 0px;
+                font-size: 17px;
+            }
+
+            .icon_explain {
+                width: 95vw;
+            }
+
+            .pin_list1 {
+                width: 100%;
+                height: 100%;
+            }
+
+            .pin_list2 {
+                width: 100%;
+                height: 100%;
+            }
+
+            .pin_list3 {
+                width: 100%;
+                height: 100%;
+            }
+
+            .container {
+                display: flex;
+                flex-direction: column;
+                min-height: 160vh;
+            }
+        }
+
+        .flex_test-box {
+            background-color: #eee;
+            /* 背景色指定 */
+            padding: 10px;
+            /* 余白指定 */
+            display: flex;
+            /* フレックスボックスにする */
+            align-items: stretch;
+            /* 縦の位置指定 */
+        }
+
+        .flex_test-item {
+            padding: 10px;
+            color: #0a0000;
+            /* 文字色 */
+            margin: 10px;
+            /* 外側の余白 */
+            border-radius: 5px;
+            /* 角丸指定 */
+            width: 15%;
+            /* 幅指定 */
+        }
+
+        .flex_test-item #imgbox {
+            float: left;
+            display: flex;
+            width: 15vw;
+            height: 15vw;
+            margin-bottom: 15px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .flex_test-item #imgbox img {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .flex_test-item:nth-child(1) {
+            background-color: #fff;
+            /* 背景色指定 */
+        }
+
+        .flex_test-item:nth-child(2) {
+            background-color: #fff;
+            /* 背景色指定 */
+        }
+
+        .flex_test-item:nth-child(3) {
+            background-color: #fff;
+            /* 背景色指定 */
+        }
+
+        .flex_test-item:nth-child(4) {
+            background-color: #fff;
+            /* 背景色指定 */
+        }
     </style>
 
-    <link rel="stylesheet" href="https://js.arcgis.com/4.25/esri/themes/light/main.css" />
-    <script src="https://js.arcgis.com/4.25/"></script>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.21/"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
     <script>
         var pointpic = "";
-        var current_latitude = 0;
-        var current_longitude = 0;
-
-        function test() {
-            navigator.geolocation.getCurrentPosition(test2);
-        }
-
-        function test2(position) {
-            current_latitude = position.coords.latitude;
-            current_longitude = position.coords.longitude;
-            //alert(current_longitude);
-        }
-        test();
-
         require([
             "esri/Map",
             "esri/views/MapView",
             "esri/layers/WebTileLayer",
             "esri/layers/FeatureLayer",
-            "esri/widgets/Locate",
-            "esri/widgets/Track",
             "esri/Graphic",
             "esri/layers/GraphicsLayer",
             "esri/rest/support/Query",
@@ -122,14 +374,13 @@ try {
             "esri/rest/support/RouteParameters",
             "esri/rest/support/FeatureSet",
             "esri/symbols/PictureMarkerSymbol",
-            "esri/symbols/CIMSymbol"
+            "esri/symbols/CIMSymbol",
+            "esri/widgets/LayerList"
         ], function(
             Map,
             MapView,
             WebTileLayer,
             FeatureLayer,
-            Locate,
-            Track,
             Graphic,
             GraphicsLayer,
             Query,
@@ -137,12 +388,29 @@ try {
             RouteParameters,
             FeatureSet,
             PictureMarkerSymbol,
-            CIMSymbol
+            CIMSymbol,
+            LayerList
         ) {
 
             // Point the URL to a valid routing service
             const routeUrl = "https://utility.arcgis.com/usrsvcs/servers/4550df58672c4bc6b17607b947177b56/rest/services/World/Route/NAServer/Route_World";
             const MY_API_KEY = "AAPKfe5fdd5be2744698a188fcc0c7b7b1d742vtC5TsStg94fpwkldrfNo3SJn2jl_VuCOEEdcBiwR7dKOKxejIP_3EDj9IPSPg";
+            //popup
+            var detailAction_station = {
+                title: "詳細",
+                id: "station_detail",
+                className: "esri-icon-documentation"
+            };
+            var detailAction_restaurant = {
+                title: "詳細",
+                id: "restaurant_detail",
+                className: "esri-icon-documentation"
+            };
+            var detailAction_spot = {
+                title: "詳細",
+                id: "spot_detail",
+                className: "esri-icon-documentation"
+            };
 
             const food_template = {
                 title: "{Name}",
@@ -198,6 +466,7 @@ try {
                         visible: true
                     }]
                 }]
+                ,actions: [detailAction_restaurant]
             };
 
             const station_template = {
@@ -218,6 +487,7 @@ try {
                         visible: true
                     }]
                 }]
+                ,actions: [detailAction_station]
             };
 
             const spots_template = {
@@ -246,7 +516,48 @@ try {
                         visible: true
                     }]
                 }]
+                ,actions: [detailAction_spot]
             };
+
+            //スタートとゴールの駅を決める
+            var station_id = <?php echo json_encode($station_id); ?>;
+            var station_feature_sql = "";
+            for (var i = 0; i < station_id.length; i++) {
+                if (i != station_id.length - 1) {
+                    station_feature_sql += "ID = "
+                    station_feature_sql += station_id[i];
+                    station_feature_sql += " OR "
+                } else if (i == station_id.length - 1) {
+                    station_feature_sql += "ID = "
+                    station_feature_sql += station_id[i];
+                }
+            }
+            //飲食店のIDから表示するスポットを決める
+            var food_shop_id = <?php echo json_encode($food_shop_id); ?>;
+            var food_feature_sql = "";
+            for (var i = 0; i < food_shop_id.length; i++) {
+                if (i != food_shop_id.length - 1) {
+                    food_feature_sql += "ID = "
+                    food_feature_sql += food_shop_id[i];
+                    food_feature_sql += " OR "
+                } else if (i == food_shop_id.length - 1) {
+                    food_feature_sql += "ID = "
+                    food_feature_sql += food_shop_id[i];
+                }
+            }
+            //観光スポットのIDから表示するスポットを決める
+            var spots_id = <?php echo json_encode($spots_id); ?>;
+            var spots_feature_sql = "";
+            for (var i = 0; i < spots_id.length; i++) {
+                if (i != spots_id.length - 1) {
+                    spots_feature_sql += "ID = "
+                    spots_feature_sql += spots_id[i];
+                    spots_feature_sql += " OR "
+                } else if (i == spots_id.length - 1) {
+                    spots_feature_sql += "ID = "
+                    spots_feature_sql += spots_id[i];
+                }
+            }
 
             // スポット名を表示するラベルを定義
             var labelClass = {
@@ -266,18 +577,12 @@ try {
                 }
             };
 
-            var spot_id = <?php echo json_encode($navi_spot_id); ?>;
-            //観光スポットのIDから表示するスポットを決める
-            var feature_sql = "";
-            feature_sql += "ID = "
-            feature_sql += spot_id;
-
             //spotLayer
             var foodLayer = new FeatureLayer({
                 url: <?php echo json_encode($map_restaurants); ?>,
                 id: "foodLayer",
                 popupTemplate: food_template,
-                definitionExpression: feature_sql,
+                //definitionExpression: food_feature_sql,
                 labelingInfo: [labelClass]
             });
 
@@ -285,7 +590,7 @@ try {
                 url: <?php echo json_encode($map_stations); ?>,
                 id: "stationLayer",
                 popupTemplate: station_template,
-                definitionExpression: feature_sql,
+                //definitionExpression: station_feature_sql,
                 labelingInfo: [labelClass]
             });
 
@@ -293,7 +598,7 @@ try {
                 url: <?php echo json_encode($map_sightseeing_spots); ?>,
                 id: "spotsLayer",
                 popupTemplate: spots_template,
-                definitionExpression: feature_sql,
+                //definitionExpression: spots_feature_sql,
                 labelingInfo: [labelClass]
             });
 
@@ -421,21 +726,13 @@ try {
                 }
             });
 
-            var spot_type = <?php echo json_encode($navi_spot_type); ?>;
-            if (spot_type == 1) {
-                $goalLayer = stationLayer;
-            } else if (spot_type == 2) {
-                $goalLayer = foodLayer;
-            } else if (spot_type == 3) {
-                $goalLayer = spotsLayer;
-            }
             const map = new Map({
                 basemap: "streets",
-                layers: [$goalLayer, routeLayer]
+                layers: [foodLayer, stationLayer, spotsLayer, routeLayer]
             });
 
             //frameの変数
-            var center = [current_longitude, current_latitude];
+            var center = <?php echo json_encode($center); ?>;
             const view = new MapView({
                 container: "viewDiv", // Reference to the scene div created in step 5
                 map: map, // Reference to the map object created before the scene
@@ -449,10 +746,47 @@ try {
                 }
             });
 
+            //ポップアップの処理
+            view.popup.on("trigger-action", function(event) {
+                if (event.action.id === "station_detail") {
+                    srs_detail("station");
+                }
+                if (event.action.id === "restaurant_detail") {
+                    srs_detail("restaurant");
+                }
+                if (event.action.id === "spot_detail") {
+                    srs_detail("spot");
+                }
+            });
+
+            //店の詳細ページに飛ぶときに送信するデータ
+            function srs_detail(type) {
+                var id = view.popup.selectedFeature.attributes.id;
+                var form = document.createElement('form');
+                var reqElm = document.createElement('input');
+                form.method = 'GET';
+                if (type == "station") {
+                    form.action = './station_detail.php';
+                    reqElm.name = 'station_id';
+                } else if (type == "restaurant") {
+                    form.action = './restaurant_detail.php';
+                    reqElm.name = 'restaurant_id';
+                } else if (type == "spot") {
+                    form.action = './sightseeing_spot_detail.php';
+                    reqElm.name = 'spot_id';
+                }
+                reqElm.value = id;
+                form.appendChild(reqElm);
+                document.body.appendChild(form);
+                form.submit();
+            };
+
+            //phpの経路情報をjavascript用に変換           
+            var keikaku = <?php echo json_encode($keikaku); ?>;
+
             function display_route(plan) {
                 //前回の経路を、グラフィックスレイヤーから削除
-                routeLayer.removeAll();
-                routeParams.stops.features.splice(0);
+                //routeLayer.removeAll();
                 //開始駅と終了駅が同じの場合のフラグを設定
                 var start_point = plan[0];
                 var goal_point = plan.slice(-1)[0];
@@ -519,13 +853,11 @@ try {
                         routeParams.stops.features.push(stop);
                     }
                 }
-                //alert(routeParams.stops.features.length);
                 if (routeParams.stops.features.length >= 2) {
                     route.solve(routeUrl, routeParams).then(showRoute);
                 }
-
             }
-            //display_route(keikaku);
+            display_route(keikaku);
 
             // ルート表示用のレイヤーにデータを追加
             function showRoute(data) {
@@ -536,204 +868,41 @@ try {
                 //総距離
                 $totalLength = data.routeResults[0].directions.totalLength;
                 doc();
-                if ($totalLength >= 1) {
-                    alert("目的地は1km以上離れています！");
-                }
-                if ($totalLength <= 0.1) {
-                    alert("目的地周辺に到着しました！");
-                }
             }
 
-            const track = new Track({
-                view: view
-            });
-            track.on("track", ({
-                position
-            }) => {
-                const {
-                    longitude,
-                    latitude
-                } = position.coords;
-                const goal_point = <?php echo json_encode($navi_goal_info); ?>;
-                //alert(`${longitude.toFixed(4)}, ${latitude.toFixed(4)}`);
-                var new_keikaku = [
-                    [longitude.toFixed(4), latitude.toFixed(4), "start"],
-                    [goal_point[0], goal_point[1], "goal"]
-                ]
-                display_route(new_keikaku);
-            });
-            view.ui.add(track, "top-left");
-            view.when(() => {
-                track.start();
-            });
-
-            /*
-            function distanceBetweenPoints(x1, y1, x2, y2) {
-                return Math.sqrt(Math.pow(x2 - x1, 2) + (Math.pow(y2 - y1, 2)));
-            }
-
-            function getPointAlongLine(polyline, distance, pathIndex) {
-                if (!pathIndex)
-                    pathIndex = 0;
-                if (!distance)
-                    distance = 0;
-                alert("d");
-                if ((pathIndex >= 0) && (pathIndex < polyline.paths.length)) {
-                    var path = polyline.paths[pathIndex];
-                    var x1, x2, x3, y1, y2, y3;
-                    var travelledDistance = 0;
-                    var pathDistance;
-                    var distanceDiff;
-                    var angle;
-                    if (distance === 0)
-                        return polyline.getPoint(pathIndex, 0);
-                    else if (distance > 0) {
-                        for (var i = 1; i < path.length; i++) {
-                            x1 = path[i - 1][0];
-                            y1 = path[i - 1][1];
-                            x2 = path[0];
-                            y2 = path[1];
-                            pathDistance = this._distanceBetweenPoints(x1, y1, x2, y2);
-                            travelledDistance += pathDistance;
-                            if (travelledDistance === distance)
-                                return polyline.getPoint(pathIndex, i);
-                            else if (travelledDistance > distance) {
-                                distanceDiff = pathDistance - (travelledDistance - distance);
-                                angle = Math.atan2(y2 - y1, x2 - x1);
-                                x3 = distanceDiff * Math.cos(angle);
-                                y3 = distanceDiff * Math.sin(angle);
-                                return new Point(x1 + x3, y1 + y3, polyline.spatialReference);
-                            }
+            var area_name = <?php echo json_encode($area_name); ?>;
+            var layerlist = new LayerList({
+                view: view,
+                listItemCreatedFunction: function(event) {
+                    if (event.item.title != "") {
+                        let item = event.item;
+                        if (item.title === `Gis ${area_name} restaurants`) {
+                            item.title = "飲食店";
+                        } else if (item.title === `Gis ${area_name} sightseeing spots`) {
+                            item.title = "観光スポット";
+                        } else if (item.title === `Gis ${area_name} statons`) {
+                            item.title = "駅";
                         }
                     }
                 }
-                return null;
-            }
-            getPointAlongLine(resultLayer, 10, 1);
-            */
+            });
+            layerlist.statusIndicatorsVisible = false;
+
+            var windowWidth = $(window).width();
+            var windowSm = 768;
+            if (windowWidth <= windowSm) {
+                view.ui.add(layerlist, "top-right");
+            } else {
+                view.ui.add(layerlist, "bottom-right");
+            };
+            view.ui.add(layerlist, "top-right");
 
         });
 
-        var to_id = <?php echo json_encode($navi_spot_id); ?>;
-        //area_name = 
-        function make_ar_object(array) {
-            $AR_form = document.getElementById("ar_scene");
-            for (var i = 0; i < array.length; i++) {
-                //const a_id = array[i][0];
-                const a_latitude = array[i][1];
-                const a_longitude = array[i][0];
-                const a_name = array[i][2];
-                /*
-                const a_genre = array[i][4][0];
-                const a_genre_sub = array[i][4][1];
-                const a_open_time = array[i][5];
-                const a_close_time = array[i][6];
-                const a_lunch_budget = array[i][7];
-                const a_dinner_budget = array[i][8];
-                */
-
-                //entityの作成
-                const newEntity = document.createElement("a-entity");
-                newEntity.className = 'ar_object';
-                newEntity.setAttribute('look-at', "[gps-new-camera]");
-                newEntity.setAttribute('gps-new-entity-place', {
-                    latitude: a_latitude,
-                    longitude: a_longitude
-                });
-                newEntity.setAttribute('data-text', a_name);
-                newEntity.setAttribute('scale', "20 20 20");
-                newEntity.setAttribute('popovertarget', `modalbox${i+1}`);
-
-                newEntity.onclick = () => {
-                    alert($totalLength);
-                }
-
-                /*
-                newEntity.setAttribute('material', 'color: blue');
-                newEntity.setAttribute('geometry', 'primitive: box');
-                */
-
-                //球を追加
-                const newSphere = document.createElement("a-sphere");
-                newSphere.setAttribute('radius', '1.25');
-                const animation = `
-                            property:rotation;
-                            dur:10000;
-                            from:0 0 0;
-                            to:0 360 0;
-                            loop:-1
-                            easing:linear;`
-                newSphere.setAttribute('animation', animation);
-                //newSphere.setAttribute('src', `images/${area_name}/restaurants/${to_id}.jpg`);
-                newSphere.setAttribute('src', `https://cdn.glitch.com/6668328a-fbb0-4645-8a4e-7a21aac2ab17%2Fearth.jpg?v=1606211796642`);
-                newSphere.setAttribute('color', 'color="#EF2D5E"');
-                newEntity.appendChild(newSphere);
-
-                /*
-                //planeの作成
-                const newPlane = document.createElement("a-plane");
-                newPlane.id = `planebox${i+1}`;
-                newPlane.setAttribute('look-at', "[gps-new-camera]");
-                if (i % 2 == 0) {
-                    newPlane.setAttribute('position', "0 -5 0");
-                } else if (i % 3 == 0) {
-                    newPlane.setAttribute('position', "0 5 0");
-                } else {
-                    newPlane.setAttribute('position', "0 0 0");
-                }
-                //newPlane.setAttribute('position', "0 0 0");
-                newPlane.setAttribute('width', "16");
-                newPlane.setAttribute('height', "10");
-                const material = `shader:html;target: #infobox${i+1};`
-                newPlane.setAttribute('material', material);
-
-                newEntity.appendChild(newPlane);
-                */
-                $AR_form.appendChild(newEntity);
-            }
+        //観光経路表示を更新する
+        function kousin() {
+            location.reload();
         }
-
-        function make_ar_distance(array) {
-            $AR_form = document.getElementById("ar_scene");
-            for (var i = 0; i < array.length; i++) {
-                //const a_id = array[i][0];
-                const a_latitude = array[i][1];
-                const a_longitude = array[i][0];
-                const a_name = array[i][2];
-
-                //entityの作成
-                const newEntity = document.createElement("a-entity");
-                newEntity.className = 'ar_object';
-                newEntity.setAttribute('look-at', "[gps-new-camera]");
-                newEntity.setAttribute('gps-new-entity-place', {
-                    latitude: a_latitude,
-                    longitude: a_longitude
-                });
-                //newEntity.setAttribute('data-text', a_name);
-                newEntity.setAttribute('scale', "20 20 20");
-                newEntity.setAttribute('position', "0 30 0");
-
-                //newEntity.setAttribute('popovertarget', `modalbox${i+1}`);
-                /*
-                newEntity.onclick = () => {
-                    alert($totalLength);
-                }
-                */
-                //newEntity.setAttribute('material', 'color: blue');
-                //newEntity.setAttribute('geometry', 'primitive: box');
-
-                const newText = document.createElement("a-text");
-                newText.id = 'ar_text';
-                newText.setAttribute('value', "100 M");
-                newEntity.appendChild(newText);
-
-                $AR_form.appendChild(newEntity);
-            }
-        }
-
-        var array = [<?php echo json_encode($navi_goal_info); ?>];
-        //alert(array);
-        //var array = [[139.6787332, 35.78268538, "goal"]];
 
         function decimalPart(num, decDigits) {
             var decPart = num - ((num >= 0) ? Math.floor(num) : Math.ceil(num));
@@ -741,61 +910,41 @@ try {
         }
 
         function doc() {
-            var km = $totalLength.toPrecision(3) * 1000;
-            $length = km + " M";
+            var km = $totalLength.toPrecision(3);
+            $length = "総歩行距離：" + km + " km";
             //alert($length);
             var time = ($totalLength / 4.8);
             var hour = Math.trunc(time);
             var mini = 60 * decimalPart(time, 1);
             $time = "総歩行時間：" + hour + "時間" + mini + "分";
             //alert($time);
-            /*
             //frameの関数
             update_frame($length, "length_km");
             update_frame($time, "time_h_m");
-            */
-            //alert($length);
-            change_distance($length);
         }
-        //店のナビゲーションページに飛ぶときに送信するデータ
-        function navigation_map() {
-            var spot_id = <?php echo json_encode($navi_spot_id); ?>;
-            var spot_type = <?php echo json_encode($navi_spot_type); ?>;
-            var form = document.createElement('form');
-            form.method = 'GET';
-            form.action = './navigation_map.php';
-            var reqElm = document.createElement('input');
-            var reqElm2 = document.createElement('input');
-            reqElm.name = 'navi_spot_id';
-            reqElm.value = spot_id;
-            reqElm2.name = 'navi_spot_type';
-            reqElm2.value = spot_type;
-            form.appendChild(reqElm);
-            form.appendChild(reqElm2);
-            document.body.appendChild(form);
-            form.submit();
-        };
+
+        //データベースに観光計画を保存する
+        //phpの情報をjavascript用に変換           
+        var set_stations = <?php echo json_encode($set_stations); ?>;
+        var set_foods = <?php echo json_encode($set_foods); ?>;
     </script>
+
 </head>
 
 <body>
     <div class="container-fluid">
-        <main>
-            <a-scene id="ar_scene" vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true' cursor='rayOrigin: mouse'>
-                <a-camera gps-new-camera='gpsMinDistance: 5'></a-camera>
-            </a-scene>
+        <main class="row">
+            <div>
+                <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
+            </div>
+            <h3>作成した観光計画</h3>
+
+            <div class="icon_explain">
+                <img class="pin_list1" src="./markers/icon_explain_s_f.png" alt="昼食予定地のアイコン" title="アイコン説明１">
+                <img class="pin_list2" src="./markers/icon_explain_spots.png" alt="昼食予定地のアイコン" title="アイコン説明２">
+            </div>
             <div id="viewbox">
                 <div id="viewDiv"></div>
-            </div>
-            <div id="bottom_bar">
-                <button id="result_list_btn" popovertarget="mypopover" type=button>ボタン</button>
-                <button id="searchform_btn" type=button onclick="change_distance()">検索フォームを開く</button>
-                <select id="change_display_btn" size="1" onchange="change_display(value)">
-                    <option value="default"> 通常表示 </option>
-                    <option value="small"> 店名だけ表示 </option>
-                    <option value="image"> 写真だけ表示 </option>
-                </select>
-                <button id="change" type=button onclick="navigation_map()">戻る</button>
             </div>
         </main>
         <footer>
@@ -803,14 +952,5 @@ try {
         </footer>
     </div>
 </body>
-<script>
-    function change_distance(value) {
-        //alert(value);
-        var ar_text = document.getElementById("ar_text");
-        ar_text.setAttribute('value', value);
-    }
-    make_ar_object(array);
-    make_ar_distance(array);
-</script>
 
 </html>
