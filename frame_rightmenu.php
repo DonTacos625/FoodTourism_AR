@@ -13,7 +13,7 @@
     <style>
         #leftbox {
             position: relative;
-            top: -5px;
+            top: 0px;
             float: right;
             width: 20vw;
             border-right: 3px solid #0099FF;
@@ -21,8 +21,8 @@
         }
 
         #leftbox h2 {
-            background: #0099FF;
-            color: #FFFFFF;
+            /*background: #0099FF;
+            color: #FFFFFF;*/
             margin-right: 5px;
             border-left: 5px solid #000080;
         }
@@ -44,8 +44,8 @@
         @media screen and (min-width:769px) and (max-width:1366px) {
 
             #leftbox h2 {
-                background: #0099FF;
-                color: #FFFFFF;
+                /*background: #0099FF;
+                color: #FFFFFF;*/
                 margin-right: 4px;
                 border-left: 4px solid #000080;
                 font-size: 17px;

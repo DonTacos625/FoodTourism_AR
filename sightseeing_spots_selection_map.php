@@ -185,6 +185,20 @@ if (!isset($_SESSION["search_spots_category"])) {
 }
 $categoryName = $_SESSION["search_spots_category"];
 
+//提出されたデータ
+if (isset($_POST["search_spots_distance"])) {
+    $search_distance = $_POST["search_spots_distance"];
+    $_SESSION["search_spots_distance"] = $search_distance;
+} else {
+    $search_distance = $_SESSION["search_spots_distance"];
+}
+if (isset($_POST["search_spots_category"])) {
+    $categoryName = $_POST["search_spots_category"];
+    $_SESSION["search_spots_category"] = $categoryName;
+} else {
+    $categoryName = $_SESSION["search_spots_category"];
+}
+
 //検索条件の保存のため
 function set_checked($session_name, $value)
 {
@@ -217,11 +231,6 @@ function set_checked($session_name, $value)
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>観光スポット選択（地図上表示）</title>
     <style>
-        h3 {
-            border-left: 5px solid #000080;
-            margin: 0px;
-        }
-
         .move_box {
             position: relative;
             width: 76vw;
@@ -229,10 +238,6 @@ function set_checked($session_name, $value)
         }
 
         @media screen and (max-width:768px) {
-            h3 {
-                margin: 0px;
-                font-size: 17px;
-            }
 
             .search_form {
                 font-size: 12px;
@@ -283,36 +288,21 @@ function set_checked($session_name, $value)
             const routeUrl = "https://utility.arcgis.com/usrsvcs/servers/4550df58672c4bc6b17607b947177b56/rest/services/World/Route/NAServer/Route_World";
             const MY_API_KEY = "AAPKfe5fdd5be2744698a188fcc0c7b7b1d742vtC5TsStg94fpwkldrfNo3SJn2jl_VuCOEEdcBiwR7dKOKxejIP_3EDj9IPSPg";
             //popup
-            var routeAction = {
-                title: "ルートに追加する",
-                id: "route",
-                className: "esri-icon-navigation"
-            };
-
-            var s_l_Action = {
-                title: "昼食前に訪れる",
-                id: "s_l",
-                image: "pop_icon1.png"
-            };
-
-            var l_d_Action = {
-                title: "昼食後に訪れる",
-                id: "l_d",
-                image: "pop_icon2.png"
-            };
-
-            var d_g_Action = {
-                title: "夕食後に訪れる",
-                id: "d_g",
-                image: "pop_icon3.png"
-            };
-
-            var detailAction = {
+            var detailAction_station = {
                 title: "詳細",
-                id: "detail",
+                id: "station_detail",
                 className: "esri-icon-documentation"
             };
-
+            var detailAction_restaurant = {
+                title: "詳細",
+                id: "restaurant_detail",
+                className: "esri-icon-documentation"
+            };
+            var detailAction_spot = {
+                title: "詳細",
+                id: "spot_detail",
+                className: "esri-icon-documentation"
+            };
             const food_template = {
                 title: "{Name}",
                 content: [{
@@ -367,10 +357,8 @@ function set_checked($session_name, $value)
                         visible: true
                     }]
                 }],
-                actions: [detailAction]
+                actions: [detailAction_restaurant]
             };
-
-
             const station_template = {
                 title: "{Name}",
                 content: [{
@@ -388,9 +376,9 @@ function set_checked($session_name, $value)
                         label: "緯度",
                         visible: true
                     }]
-                }]
+                }],
+                actions: [detailAction_station]
             };
-
             const spots_template = {
                 title: "{Name}",
                 content: [{
@@ -417,7 +405,7 @@ function set_checked($session_name, $value)
                         visible: true
                     }]
                 }],
-                actions: [detailAction]
+                actions: [detailAction_spot]
             };
 
             //スタートとゴールの駅を決める
@@ -739,26 +727,21 @@ function set_checked($session_name, $value)
             }
             display_route(keikaku);
 
-            //押したボタンによって
+            //ポップアップの処理
             view.popup.on("trigger-action", function(event) {
-                if (event.action.id === "detail") {
-                    var spot_id = view.popup.selectedFeature.attributes.id;
-                    spot_detail(spot_id);
+                if (event.action.id === "station_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "station");
+                }
+                if (event.action.id === "restaurant_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "restaurant");
+                }
+                if (event.action.id === "spot_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "spot");
                 }
             });
-
-            //スポットの詳細ページに飛ぶときに送信するデータ
-            function spot_detail(id) {
-                var form = document.createElement('form');
-                form.method = 'GET';
-                form.action = './sightseeing_spot_detail.php';
-                var reqElm = document.createElement('input');
-                reqElm.name = 'spot_id';
-                reqElm.value = id;
-                form.appendChild(reqElm);
-                document.body.appendChild(form);
-                form.submit();
-            };
 
             /*
             //読み込みせずに経路を更新したかった
@@ -888,6 +871,21 @@ function set_checked($session_name, $value)
         function display_results() {
             queryAroundSpot($route_result_data);
         }
+
+        //検索結果を保存する関数
+        function keep_radio(value, mode) {
+            jQuery(function($) {
+                $.ajax({
+                    url: "./ajax_keepradio.php",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        post_data_1: value,
+                        post_data_2: mode
+                    }
+                });
+            });
+        };
     </script>
 
 </head>
@@ -898,36 +896,38 @@ function set_checked($session_name, $value)
             <div>
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
-            <h3>観光スポット選択</h3>
+            <h3 class="px-0">観光スポット選択</h3>
             <div>
                 <ol class="stepBar">
-                    <li class="visited"><span>1</span><br>開始・終了駅</li>
-                    <li class="visited"><span>2</span><br>飲食店</li>
-                    <li class="visited"><span>3</span><br>観光スポット</li>
-                    <li><span>4</span><br>観光計画を保存</li>
+                    <li class="visited" onclick="location.href='set_station.php'"><span>1</span><br>開始・終了駅</li>
+                    <li class="visited" onclick="location.href='search_map.php'"><span>2</span><br>飲食店</li>
+                    <li class="visited" onclick="location.href='sightseeing_spots_selection_map.php'"><span>3</span><br>観光スポット</li>
+                    <li onclick="location.href='plan_edit.php'"><span>4</span><br>観光計画を保存</li>
                 </ol>
             </div>
-            <a id="list_result" name="list_result" href="keiro_list.php">一覧で結果を表示</a><br>
+            <a id="list_result" name="list_result" href="sightseeing_spots_selection.php">一覧で結果を表示</a><br>
             <div class="search_form">
-                <form action="">
+                <form action="sightseeing_spots_selection_map.php" method="post">
                     経路からの観光スポット表示範囲：<br>
-                    <input type="radio" id="distance" name="distance" value="100000" onclick="change_distance(value) ; keep_radio(value, '1')" <?php set_checked("search_spots_distance", "100000"); ?>>指定なし
-                    <input type="radio" id="distance" name="distance" value="100" onclick="change_distance(value) ; keep_radio(value, '1')" <?php set_checked("search_spots_distance", "100"); ?>>周囲100m
-                    <input type="radio" id="distance" name="distance" value="200" onclick="change_distance(value) ; keep_radio(value, '1')" <?php set_checked("search_spots_distance", "200"); ?>>周囲200m
-                    <input type="radio" id="distance" name="distance" value="300" onclick="change_distance(value) ; keep_radio(value, '1')" <?php set_checked("search_spots_distance", "300"); ?>>周囲300m
-                    <input type="radio" id="distance" name="distance" value="400" onclick="change_distance(value) ; keep_radio(value, '1')" <?php set_checked("search_spots_distance", "400"); ?>>周囲400m
-                    <input type="radio" id="distance" name="distance" value="500" onclick="change_distance(value) ; keep_radio(value, '1')" <?php set_checked("search_spots_distance", "500"); ?>>周囲500m
-                    <input type="radio" id="distance" name="distance" value="600" onclick="change_distance(value) ; keep_radio(value, '1')" <?php set_checked("search_spots_distance", "600"); ?>>周囲600m<br>
+                    <input type="radio" id="search_spots_distance" name="search_spots_distance" value="100000" onclick="change_distance(value) ; keep_radio(value, '1')" <?php set_checked("search_spots_distance", "100000"); ?>>指定なし
+                    <input type="radio" id="search_spots_distance" name="search_spots_distance" value="100" onclick="change_distance(value) ; keep_radio(value, '1')" <?php set_checked("search_spots_distance", "100"); ?>>周囲100m
+                    <input type="radio" id="search_spots_distance" name="search_spots_distance" value="200" onclick="change_distance(value) ; keep_radio(value, '1')" <?php set_checked("search_spots_distance", "200"); ?>>周囲200m
+                    <input type="radio" id="search_spots_distance" name="search_spots_distance" value="300" onclick="change_distance(value) ; keep_radio(value, '1')" <?php set_checked("search_spots_distance", "300"); ?>>周囲300m
+                    <input type="radio" id="search_spots_distance" name="search_spots_distance" value="400" onclick="change_distance(value) ; keep_radio(value, '1')" <?php set_checked("search_spots_distance", "400"); ?>>周囲400m
+                    <input type="radio" id="search_spots_distance" name="search_spots_distance" value="500" onclick="change_distance(value) ; keep_radio(value, '1')" <?php set_checked("search_spots_distance", "500"); ?>>周囲500m
+                    <input type="radio" id="search_spots_distance" name="search_spots_distance" value="600" onclick="change_distance(value) ; keep_radio(value, '1')" <?php set_checked("search_spots_distance", "600"); ?>>周囲600m<br>
 
                     観光スポットのカテゴリー：<br>
-                    <input type="radio" id="category" name="category" value="0" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "0"); ?>>指定なし
-                    <input type="radio" id="category" name="category" value="名所・史跡" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "名所・史跡"); ?>>名所・史跡
-                    <input type="radio" id="category" name="category" value="ショッピング" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "ショッピング"); ?>>ショッピング
-                    <input type="radio" id="category" name="category" value="芸術・博物館" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "芸術・博物館"); ?>>芸術・博物館
-                    <input type="radio" id="category" name="category" value="テーマパーク・公園" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "テーマパーク・公園"); ?>>テーマパーク・公園
-                    <input type="radio" id="category" name="category" value="その他" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "その他"); ?>>その他<br>
+                    <input type="radio" id="search_spots_category" name="search_spots_category" value="0" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "0"); ?>>指定なし
+                    <input type="radio" id="search_spots_category" name="search_spots_category" value="名所・史跡" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "名所・史跡"); ?>>名所・史跡
+                    <input type="radio" id="search_spots_category" name="search_spots_category" value="ショッピング" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "ショッピング"); ?>>ショッピング
+                    <input type="radio" id="search_spots_category" name="search_spots_category" value="芸術・博物館" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "芸術・博物館"); ?>>芸術・博物館
+                    <input type="radio" id="search_spots_category" name="search_spots_category" value="テーマパーク・公園" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "テーマパーク・公園"); ?>>テーマパーク・公園
+                    <input type="radio" id="search_spots_category" name="search_spots_category" value="その他" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "その他"); ?>>その他<br>
+
+                    <input type="submit" name="submit" value="検索する">
                 </form>
-                <button type="button" onclick="display_results()">観光スポットを絞り込む</button>
+                <!--<button type="button" onclick="display_results()">観光スポットを絞り込む</button>-->
             </div><br>
             <div class="move_box">
                 <a class="prev_page" name="prev_search" href="search.php">飲食店検索・決定に戻る</a>
@@ -936,7 +936,7 @@ function set_checked($session_name, $value)
             <div id="result_table"></div>
             <div id="viewbox">
                 <div id="viewDiv"></div>
-                <button type="button" class="btn btn-secondary btn-lg" onclick="kousin()" title="経路を更新し表示します"><b>経路再表示</b></button>
+                <button type="button" class="btn btn-secondary btn-lg" onclick="display_results()" title="経路を更新し表示します"><b>経路再表示</b></button>
             </div>
         </main>
         <footer>

@@ -311,7 +311,26 @@ function display_frame($name_row, $time)
                 name_tag.className = "";
                 name_tag.querySelector(".btn").textContent = "削除";
             }
+        };
 
+        function srs_detail(id, type) {
+            var form = document.createElement('form');
+            var reqElm = document.createElement('input');
+            form.method = 'GET';
+            if (type == "station") {
+                form.action = './station_detail.php';
+                reqElm.name = 'station_id';
+            } else if (type == "restaurant") {
+                form.action = './restaurant_detail.php';
+                reqElm.name = 'restaurant_id';
+            } else if (type == "spot") {
+                form.action = './sightseeing_spot_detail.php';
+                reqElm.name = 'spot_id';
+            }
+            reqElm.value = id;
+            form.appendChild(reqElm);
+            document.body.appendChild(form);
+            form.submit();
         };
     </script>
 

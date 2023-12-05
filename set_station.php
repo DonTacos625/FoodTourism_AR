@@ -123,10 +123,6 @@ $keikaku[] = $goal_info;
     <title>開始・終了駅の設定</title>
 
     <style>
-        h3 {
-            border-left: 5px solid #000080;
-            margin: 0px;
-        }
 
         #editbox {
             position: relative;
@@ -205,29 +201,22 @@ $keikaku[] = $goal_info;
             CIMSymbol,
             LayerList
         ) {
-
             //popup
-            /*
-            var start_Action = {
-                title: "開始駅に設定する",
-                id: "start_station_id",
-                image: "./icons/pop_start.png"
-            };
-
-            var goal_Action = {
-                title: "終了駅に設定する",
-                id: "goal_station_id",
-                image: "./icons/pop_goal.png"
-            };
-            */
-
-            //popup
-            var detailAction = {
+            var detailAction_station = {
                 title: "詳細",
-                id: "detail",
+                id: "station_detail",
                 className: "esri-icon-documentation"
             };
-
+            var detailAction_restaurant = {
+                title: "詳細",
+                id: "restaurant_detail",
+                className: "esri-icon-documentation"
+            };
+            var detailAction_spot = {
+                title: "詳細",
+                id: "spot_detail",
+                className: "esri-icon-documentation"
+            };
             const food_template = {
                 title: "{Name}",
                 content: [{
@@ -282,10 +271,9 @@ $keikaku[] = $goal_info;
                         visible: true
                     }]
                 }]
-                //,actions: [detailAction]
+                ,actions: [detailAction_restaurant]
             };
-
-            const stations_template = {
+            const station_template = {
                 title: "{Name}",
                 content: [{
                     type: "fields",
@@ -302,8 +290,36 @@ $keikaku[] = $goal_info;
                         label: "緯度",
                         visible: true
                     }]
+                }]
+                ,actions: [detailAction_station]
+            };
+            const spots_template = {
+                title: "{Name}",
+                content: [{
+                    type: "fields",
+                    fieldInfos: [{
+                        fieldName: "ID",
+                        label: "ID",
+                        visible: true
+                    }, {
+                        fieldName: "category",
+                        label: "カテゴリー",
+                        visible: true
+                    }, {
+                        fieldName: "homepage",
+                        label: "ホームページ",
+                        visible: true
+                    }, {
+                        fieldName: "X",
+                        label: "経度",
+                        visible: true
+                    }, {
+                        fieldName: "Y",
+                        label: "緯度",
+                        visible: true
+                    }]
                 }],
-                actions: [detailAction]
+                actions: [detailAction_spot]
             };
 
             // スポット名を表示するラベルを定義
@@ -350,7 +366,7 @@ $keikaku[] = $goal_info;
             var stationsLayer = new FeatureLayer({
                 url: <?php echo json_encode($map_stations); ?>,
                 id: "stationsLayer",
-                popupTemplate: stations_template,
+                popupTemplate: station_template,
                 labelingInfo: [labelClass]
             });
 
@@ -434,24 +450,19 @@ $keikaku[] = $goal_info;
 
             //ポップアップの処理
             view.popup.on("trigger-action", function(event) {
-                if (event.action.id === "detail") {
-                    station_detail();
+                if (event.action.id === "station_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "station");
+                }
+                if (event.action.id === "restaurant_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "restaurant");
+                }
+                if (event.action.id === "spot_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "spot");
                 }
             });
-
-            //店の詳細ページに飛ぶときに送信するデータ
-            function station_detail() {
-                var station_id = view.popup.selectedFeature.attributes.id;
-                var form = document.createElement('form');
-                form.method = 'GET';
-                form.action = './station_detail.php';
-                var reqElm = document.createElement('input');
-                reqElm.name = 'station_id';
-                reqElm.value = station_id;
-                form.appendChild(reqElm);
-                document.body.appendChild(form);
-                form.submit();
-            };
 
             //マップ上にポイントを追加
             function add_point(pic, Layer) {
@@ -526,13 +537,13 @@ $keikaku[] = $goal_info;
 <body>
     <div class="container-fluid">
         <main class="row">
-            <h3>開始・終了駅の設定</h3>
+            <h3 class="px-0">開始・終了駅の設定</h3>
             <div>
                 <ol class="stepBar">
-                    <li class="visited"><span>1</span><br>開始・終了駅</li>
-                    <li><span>2</span><br>飲食店</li>
-                    <li><span>3</span><br>観光スポット</li>
-                    <li><span>4</span><br>観光計画を保存</li>
+                    <li class="visited" onclick="location.href='set_station.php'"><span>1</span><br>開始・終了駅</li>
+                    <li onclick="location.href='search_map.php'"><span>2</span><br>飲食店</li>
+                    <li onclick="location.href='sightseeing_spots_selection_map.php'"><span>3</span><br>観光スポット</li>
+                    <li onclick="location.href='plan_edit.php'"><span>4</span><br>観光計画を保存</li>
                 </ol>
             </div>
             <div id="editbox">

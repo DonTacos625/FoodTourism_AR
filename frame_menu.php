@@ -27,10 +27,7 @@
         @media screen and (min-width:769px) and (max-width:1366px) {
 
             #userdata_box {
-                display: none;
-            }
-            #userdata_box_toggle {
-                display: block;
+                font-size: 1vw;
             }
 
         }
@@ -76,14 +73,14 @@
         };
     </script>
 
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+    <nav class="navbar navbar-expand-lg navbar-light mb-3" style="background-color: #e3f2fd;">
         <div class="container-fluid p-2">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <div id="userdata_box_toggle" class="right">
-                    <h3>会員情報</h3>
+                    <h3 class="px-0" >会員情報</h3>
 
                     <b>名前:</b> <?php echo htmlspecialchars($_SESSION["user_name"], ENT_QUOTES); ?><br>
 
@@ -109,6 +106,7 @@
                             <li><a class="dropdown-item" href="set_station.php">開始・終了駅の設定</a></li>
                             <li><a class="dropdown-item" href="search.php">飲食店の検索・決定</a></li>
                             <li><a class="dropdown-item" href="sightseeing_spots_selection_map.php">観光スポット選択</a></li>
+                            <li><a class="dropdown-item" href="plan_edit.php">作成中の観光計画を見る</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -131,10 +129,9 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            観光計画作成
+                            マイページ
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="plan_edit.php">作成中の観光計画を見る</a></li>
                             <li><a class="dropdown-item" href="user_plans.php">保存した観光計画を見る</a></li>
                             <li><a class="dropdown-item" href="user_plans.php">観光記録</a></li>
                             <li><a class="dropdown-item" href="my_page.php">登録情報変更</a></li>

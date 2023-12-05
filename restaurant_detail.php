@@ -77,11 +77,6 @@ try {
             margin-left: 5px;
         }
 
-        #detailbox h3 {
-            border-left: 5px solid #000080;
-            margin: 0px;
-        }
-
         #detailbox #imgbox #viewbox {
             position: relative;
             float: left;
@@ -138,18 +133,9 @@ try {
             display: inline-block;
         }
 
-        @media screen and (min-width:769px) and (max-width:1366px) {
-            h3 {
-                margin: 0px;
-                font-size: 18px;
-            }
-        }
+        @media screen and (min-width:769px) and (max-width:1366px) {}
 
         @media screen and (max-width:768px) {
-            h3 {
-                margin: 0px;
-                font-size: 17px;
-            }
 
             #detailbox {
                 width: auto;
@@ -210,6 +196,22 @@ try {
 
             // Point the URL to a valid routing service
             const routeUrl = "https://utility.arcgis.com/usrsvcs/servers/4550df58672c4bc6b17607b947177b56/rest/services/World/Route/NAServer/Route_World";
+            //popup
+            var detailAction_station = {
+                title: "詳細",
+                id: "station_detail",
+                className: "esri-icon-documentation"
+            };
+            var detailAction_restaurant = {
+                title: "詳細",
+                id: "restaurant_detail",
+                className: "esri-icon-documentation"
+            };
+            var detailAction_spot = {
+                title: "詳細",
+                id: "spot_detail",
+                className: "esri-icon-documentation"
+            };
 
             const food_template = {
                 title: "{Name}",
@@ -265,6 +267,7 @@ try {
                         visible: true
                     }]
                 }]
+                ,actions: [detailAction_restaurant]
             };
 
             const station_template = {
@@ -285,6 +288,7 @@ try {
                         visible: true
                     }]
                 }]
+                ,actions: [detailAction_station]
             };
 
             //スタートとゴールの駅を決める
@@ -325,7 +329,7 @@ try {
             //選択したスポットの表示レイヤー
             const station_pointLayer = new GraphicsLayer();
             const food_pointLayer = new GraphicsLayer();
-            
+
             const center_pointLayer = new GraphicsLayer();
 
             const map = new Map({
@@ -346,8 +350,24 @@ try {
                 }
             });
 
+            //ポップアップの処理
+            view.popup.on("trigger-action", function(event) {
+                if (event.action.id === "station_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "station");
+                }
+                if (event.action.id === "restaurant_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "restaurant");
+                }
+                if (event.action.id === "spot_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "spot");
+                }
+            });
+
             //中心地点にマーカーを
-            function make_center_maker(pic,Layer,X,Y) {
+            function make_center_maker(pic, Layer, X, Y) {
                 const point = {
                     type: "point",
                     x: X,
@@ -364,7 +384,7 @@ try {
                 });
                 Layer.add(stop);
             }
-            make_center_maker("./markers/red_pin.png",center_pointLayer,result1["x"], result1["y"])
+            make_center_maker("./markers/red_pin.png", center_pointLayer, result1["x"], result1["y"])
 
             //phpの経路情報をjavascript用に変換           
             var station_plan = <?php echo json_encode($station_plan); ?>;
@@ -446,14 +466,14 @@ try {
         function post_restaurant(restaurant_id) {
             var mode = 0;
             var radios = document.getElementsByName("lunch_or_dinner");
-            for(var i=0; i<radios.length; i++){
+            for (var i = 0; i < radios.length; i++) {
                 if (radios[i].checked) {
-                //選択されたラジオボタンのvalue値を取得する
-                mode = radios[i].value;
-                break;
+                    //選択されたラジオボタンのvalue値を取得する
+                    mode = radios[i].value;
+                    break;
                 }
             }
-            if(mode == "0"){
+            if (mode == "0") {
                 alert("昼食か夕食を選択してください");
             } else {
                 var time = document.getElementById("food_time").value;
@@ -484,23 +504,23 @@ try {
                 });
             };
         };
-            //店の詳細ページに飛ぶときに送信するデータ
-            function restaurant_navi() {
-                //var restaurant_id = view.popup.selectedFeature.attributes.id;
-                var form = document.createElement('form');
-                form.method = 'GET';
-                form.action = './navigation_map.php';
-                var reqElm = document.createElement('input');
-                var reqElm2 = document.createElement('input');
-                reqElm.name = 'navi_spot_id';
-                reqElm.value = 37;
-                reqElm2.name = 'navi_spot_type';
-                reqElm2.value = 2;
-                form.appendChild(reqElm);
-                form.appendChild(reqElm2);
-                document.body.appendChild(form);
-                form.submit();
-            };
+        //店の詳細ページに飛ぶときに送信するデータ
+        function restaurant_navi() {
+            //var restaurant_id = view.popup.selectedFeature.attributes.id;
+            var form = document.createElement('form');
+            form.method = 'GET';
+            form.action = './navigation_map.php';
+            var reqElm = document.createElement('input');
+            var reqElm2 = document.createElement('input');
+            reqElm.name = 'navi_spot_id';
+            reqElm.value = 37;
+            reqElm2.name = 'navi_spot_type';
+            reqElm2.value = 2;
+            form.appendChild(reqElm);
+            form.appendChild(reqElm2);
+            document.body.appendChild(form);
+            form.submit();
+        };
     </script>
 
 </head>
@@ -509,7 +529,7 @@ try {
     <div class="container-fluid">
         <main class="row">
             <div id="detailbox">
-                <h3>観光スポットの詳細情報</h3>
+                <h3 class="px-0">観光スポットの詳細情報</h3>
 
                 <div id="box" class="clearfix">
 
@@ -522,7 +542,9 @@ try {
                     <div id="infobox">
                         <table>
                             <tr>
-                                <th><div id="imgbox"><img src=<?php echo "images/$area_name/restaurants/". $result1["id"] .".jpg"?> alt=""></div></th>
+                                <th>
+                                    <div id="imgbox"><img src=<?php echo "images/$area_name/restaurants/" . $result1["id"] . ".jpg" ?> alt=""></div>
+                                </th>
                                 <td></td>
                             </tr>
                             <tr>
@@ -557,7 +579,11 @@ try {
 
                             <tr>
                                 <th>予算</th>
-                                <td>昼：<?php if($result1["lunch_budget"]) {echo $result1["lunch_budget"];} else {echo "不明";} ?>　　夜：<?php echo $result1["dinner_budget"]; ?></td>
+                                <td>昼：<?php if ($result1["lunch_budget"]) {
+                                            echo $result1["lunch_budget"];
+                                        } else {
+                                            echo "不明";
+                                        } ?>　　夜：<?php echo $result1["dinner_budget"]; ?></td>
                             </tr>
 
                             <tr>

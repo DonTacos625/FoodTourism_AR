@@ -1,6 +1,6 @@
         h3 {
             border-left: 5px solid #000080;
-            margin: 0px;
+            margin-left: 4px;
         }
 
         .icon_explain {
@@ -48,7 +48,7 @@
 
         @media screen and (min-width:769px) and (max-width:1366px) {
             h3 {
-                font-size: 18px;
+                font-size: 20px;
             }
 
             #viewbox {
@@ -59,7 +59,7 @@
 
         @media screen and (max-width:768px) {
             h3 {
-                font-size: 15px;
+                font-size: 18px;
             }
             .icon_explain {
                 width: 58vw;

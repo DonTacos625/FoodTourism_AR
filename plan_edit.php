@@ -12,7 +12,8 @@ if (!isset($_SESSION["input_plan_name"])) {
 $input_plan_name = $_SESSION["input_plan_name"];
 if (!isset($_SESSION["input_plan_memo"])) {
     $_SESSION["input_plan_memo"] = "";
-} else {}
+} else {
+}
 $input_plan_memo = $_SESSION["input_plan_memo"];
 
 if (!isset($_SESSION["plan_show"])) {
@@ -219,18 +220,11 @@ $keikaku[] = $goal_info;
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>作成した観光計画を見る</title>
     <style>
-
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
         @media screen and (max-width:768px) {
 
-            h3 {
-                margin: 0px;
-                font-size: 17px;
-            }
-
         }
-
     </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
@@ -327,7 +321,7 @@ $keikaku[] = $goal_info;
                 }]
             };
 
-            
+
             const station_template = {
                 title: "{Name}",
                 content: [{
@@ -742,7 +736,7 @@ $keikaku[] = $goal_info;
             $time = "総歩行時間：" + hour + "時間" + mini + "分";
 
             var user_weight = <?php echo json_encode($frameresult["user_weight"]); ?>;
-            if(user_weight > 0){
+            if (user_weight > 0) {
                 var cal = 3.5 * time * user_weight * 1.05;
                 $kcal = "消費カロリー：" + cal.toPrecision(4) + "kcal";
             } else {
@@ -765,42 +759,42 @@ $keikaku[] = $goal_info;
             var plan_memo = document.getElementById("plan_comment").value;
             var area = <?php echo json_encode($area); ?>;
             //if(window.confirm(`観光計画「${plan_name}」を新規登録しますがよろしいですか？`)){
-                var radios = document.getElementsByName("plan_show");
-                for(var i=0; i<radios.length; i++){
-                    if (radios[i].checked) {
+            var radios = document.getElementsByName("plan_show");
+            for (var i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
                     //選択されたラジオボタンのvalue値を取得する
                     mode = radios[i].value;
                     break;
-                    }
                 }
-                if (plan_name != "") {
-                    jQuery(function($) {
-                        $.ajax({
-                            url: "./ajax_saving_plan.php",
-                            type: "POST",
-                            dataType: "json",
-                            data: {
-                                post_data_1: mode,
-                                post_data_2: plan_name,
-                                post_data_3: plan_memo,
-                                post_data_4: area
-                            },
-                            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                                alert("ajax通信に失敗しました");
-                            },
-                            success: function(response) {
-                                if(response[0] == "上書き保存"){
-                                    //alert(response[2]);
-                                    updating_plan(response[1],response[2]);
-                                } else {
-                                    alert(response[0]);
-                                }
+            }
+            if (plan_name != "") {
+                jQuery(function($) {
+                    $.ajax({
+                        url: "./ajax_saving_plan.php",
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            post_data_1: mode,
+                            post_data_2: plan_name,
+                            post_data_3: plan_memo,
+                            post_data_4: area
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            alert("ajax通信に失敗しました");
+                        },
+                        success: function(response) {
+                            if (response[0] == "上書き保存") {
+                                //alert(response[2]);
+                                updating_plan(response[1], response[2]);
+                            } else {
+                                alert(response[0]);
                             }
-                        });
+                        }
                     });
-                } else {
-                    alert("プラン名を登録してください");
-                }
+                });
+            } else {
+                alert("プラン名を登録してください");
+            }
             //} else {
 
             //}
@@ -808,13 +802,13 @@ $keikaku[] = $goal_info;
         };
 
         function updating_plan(same_plan_name, same_plan_id) {
-            if(window.confirm(`「${same_plan_name}」の内容を上書きしますがよろしいですか？`)){
+            if (window.confirm(`「${same_plan_name}」の内容を上書きしますがよろしいですか？`)) {
                 var radios = document.getElementsByName("plan_show");
-                for(var i=0; i<radios.length; i++){
+                for (var i = 0; i < radios.length; i++) {
                     if (radios[i].checked) {
-                    //選択されたラジオボタンのvalue値を取得する
-                    mode = radios[i].value;
-                    break;
+                        //選択されたラジオボタンのvalue値を取得する
+                        mode = radios[i].value;
+                        break;
                     }
                 }
                 var plan_name = document.getElementById("plan_name").value;
@@ -851,7 +845,6 @@ $keikaku[] = $goal_info;
 
             }
         };
-
     </script>
 
 </head>
@@ -862,13 +855,13 @@ $keikaku[] = $goal_info;
             <div>
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
-            <h3>作成した観光計画</h3>
+            <h3 class="px-0">作成した観光計画</h3>
             <div>
                 <ol class="stepBar">
-                    <li class="visited"><span>1</span><br>開始・終了駅</li>
-                    <li class="visited"><span>2</span><br>飲食店</li>
-                    <li class="visited"><span>3</span><br>観光スポット</li>
-                    <li class="visited"><span>4</span><br>観光計画を保存</li>
+                    <li class="visited" onclick="location.href='set_station.php'"><span>1</span><br>開始・終了駅</li>
+                    <li class="visited" onclick="location.href='search_map.php'"><span>2</span><br>飲食店</li>
+                    <li class="visited" onclick="location.href='sightseeing_spots_selection_map.php'"><span>3</span><br>観光スポット</li>
+                    <li class="visited" onclick="location.href='plan_edit.php'"><span>4</span><br>観光計画を保存</li>
                 </ol>
             </div>
             <div class="icon_explain">
@@ -893,13 +886,14 @@ $keikaku[] = $goal_info;
             <div id="viewbox">
                 <div id="viewDiv"></div>
                 <p>プラン名：<br>
-	            <input type="text" id="plan_name" size="15" value="<?php echo $input_plan_name; ?>"></p>
+                    <input type="text" id="plan_name" size="15" value="<?php echo $input_plan_name; ?>">
+                </p>
                 <p>メモ：<br>
-	            <textarea class="form-control" rows="5" id="plan_comment"><?php echo $input_plan_memo; ?></textarea><br>
+                    <textarea class="form-control" rows="5" id="plan_comment"><?php echo $input_plan_memo; ?></textarea><br>
                 <p>観光計画を公開しますか？：<br>
-                <input type="radio" id="plan_show" name="plan_show" value="1" <?php set_checked("plan_show", "1"); ?>>公開する
-                <input type="radio" id="plan_show" name="plan_show" value="0" <?php set_checked("plan_show", "0"); ?>>公開しない<br>
-                <button type="button" class="btn btn-secondary btn-lg" onclick="upload_plan()" title="観光経路を保存します"><b>観光計画を保存する</b></button>
+                    <input type="radio" id="plan_show" name="plan_show" value="1" <?php set_checked("plan_show", "1"); ?>>公開する
+                    <input type="radio" id="plan_show" name="plan_show" value="0" <?php set_checked("plan_show", "0"); ?>>公開しない<br>
+                    <button type="button" class="btn btn-secondary btn-lg" onclick="upload_plan()" title="観光経路を保存します"><b>観光計画を保存する</b></button>
             </div>
         </main>
         <footer>

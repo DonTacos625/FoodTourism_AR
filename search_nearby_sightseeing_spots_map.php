@@ -157,38 +157,15 @@ if ($categoryName == "0") {
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>飲食店の検索・決定（地図上表示）</title>
     <style>
-        h3 {
-            border-left: 5px solid #000080;
-            margin: 0px;
-        }
-
-        #detailbox {
-            position: relative;
-            float: left;
-            margin-left: 0px;
-        }
 
         @media screen and (min-width:769px) and (max-width:1366px) {
-            h3 {
-                margin: 0px;
-                font-size: 18px;
-            }
+
         }
 
         @media screen and (max-width:768px) {
-            h3 {
-                margin: 0px;
-                font-size: 17px;
-            }
 
             .search_form {
                 font-size: 12px;
-            }
-
-            #detailbox {
-                width: auto;
-                margin: 0px;
-                float: none;
             }
 
         }
@@ -201,10 +178,6 @@ if ($categoryName == "0") {
         }
 
         @media screen and (max-width:768px) {
-            h3 {
-                margin: 0px;
-                font-size: 17px;
-            }
 
             .move_box {
                 width: 100%;
@@ -681,8 +654,7 @@ if ($categoryName == "0") {
 <body>
     <div class="container-fluid">
         <main class="row">
-            <div id="detailbox">
-                <h3 id="search_start">周辺観光スポットの検索</h3>
+                <h3 class="px-0"  id="search_start">周辺観光スポットの検索</h3>
                 <a id="view_result" name="view_result" href="search_nearby_sightseeing_spots_ar.php">ARで結果を表示</a><br>
                 <a id="view_result2" name="view_result2" href="search_nearby_restaurants_map.php">飲食店</a><br>
                 <div class="search_form">
@@ -725,8 +697,8 @@ if ($categoryName == "0") {
 
                         <input type="submit" name="submit" value="検索する">
                     </form>
+                    <button type="button" class="btn btn-secondary btn-lg" onclick="display_results()">再読み込み</button><br>
                 </div><br>
-                <button type="button" onclick="display_results()">再読み込み</button><br>
                 <?php
                 if (!$count) {
                     echo "検索条件に該当する飲食店はありませんでした";
@@ -735,7 +707,6 @@ if ($categoryName == "0") {
                 <div id="viewbox">
                     <div id="viewDiv"></div>
                 </div>
-            </div>
         </main>
         <footer>
             <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>

@@ -180,18 +180,9 @@ $keikaku[] = $goal_station_info;
             display: inline-block;
         }
 
-        @media screen and (min-width:769px) and (max-width:1366px) {
-            h3 {
-                margin: 0px;
-                font-size: 18px;
-            }
-        }
+        @media screen and (min-width:769px) and (max-width:1366px) {}
 
         @media screen and (max-width:768px) {
-            h3 {
-                margin: 0px;
-                font-size: 17px;
-            }
 
             #detailbox {
                 width: auto;
@@ -253,22 +244,20 @@ $keikaku[] = $goal_station_info;
             // Point the URL to a valid routing service
             const routeUrl = "https://utility.arcgis.com/usrsvcs/servers/4550df58672c4bc6b17607b947177b56/rest/services/World/Route/NAServer/Route_World";
             //popup
-            var s_l_Action = {
-                title: "昼食前に訪れる",
-                id: "s_l",
-                image: "pop_icon1.png"
+            var detailAction_station = {
+                title: "詳細",
+                id: "station_detail",
+                className: "esri-icon-documentation"
             };
-
-            var l_d_Action = {
-                title: "昼食後に訪れる",
-                id: "l_d",
-                image: "pop_icon2.png"
+            var detailAction_restaurant = {
+                title: "詳細",
+                id: "restaurant_detail",
+                className: "esri-icon-documentation"
             };
-
-            var d_g_Action = {
-                title: "夕食後に訪れる",
-                id: "d_g",
-                image: "pop_icon3.png"
+            var detailAction_spot = {
+                title: "詳細",
+                id: "spot_detail",
+                className: "esri-icon-documentation"
             };
 
             const food_template = {
@@ -284,20 +273,36 @@ $keikaku[] = $goal_station_info;
                         label: "ジャンル",
                         visible: true
                     }, {
-                        fieldName: "time",
+                        fieldName: "genre_sub",
+                        label: "サブジャンル",
+                        visible: true
+                    }, {
+                        fieldName: "open_time",
                         label: "営業時間",
                         visible: true
                     }, {
-                        fieldName: "money",
-                        label: "予算",
+                        fieldName: "close_time",
+                        label: "定休日",
                         visible: true
                     }, {
-                        fieldName: "yoyaku",
-                        label: "予約可否",
+                        fieldName: "lunch_budget",
+                        label: "昼予算",
                         visible: true
                     }, {
-                        fieldName: "tel",
-                        label: "電話番号",
+                        fieldName: "dinner_budget",
+                        label: "夜予算",
+                        visible: true
+                    }, {
+                        fieldName: "capacity",
+                        label: "席数",
+                        visible: true
+                    }, {
+                        fieldName: "non_smoking",
+                        label: "禁煙席",
+                        visible: true
+                    }, {
+                        fieldName: "lunch",
+                        label: "ランチメニュー",
                         visible: true
                     }, {
                         fieldName: "X",
@@ -308,7 +313,8 @@ $keikaku[] = $goal_station_info;
                         label: "緯度",
                         visible: true
                     }]
-                }]
+                }],
+                actions: [detailAction_restaurant]
             };
 
             const station_template = {
@@ -328,7 +334,8 @@ $keikaku[] = $goal_station_info;
                         label: "緯度",
                         visible: true
                     }]
-                }]
+                }],
+                actions: [detailAction_station]
             };
 
             const spots_template = {
@@ -356,7 +363,8 @@ $keikaku[] = $goal_station_info;
                         label: "緯度",
                         visible: true
                     }]
-                }]
+                }],
+                actions: [detailAction_spot]
             };
 
             //スタートとゴールの駅を決める
@@ -543,81 +551,21 @@ $keikaku[] = $goal_station_info;
             }
             display_route(keikaku);
 
-            //押したボタンによって
+            //ポップアップの処理
             view.popup.on("trigger-action", function(event) {
-                if (event.action.id === "s_l") {
-                    hozon("1", s_l_pointLayer);
+                if (event.action.id === "station_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "station");
                 }
-                if (event.action.id === "l_d") {
-                    hozon("2", l_d_pointLayer);
+                if (event.action.id === "restaurant_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "restaurant");
                 }
-                if (event.action.id === "d_g") {
-                    hozon("3", d_g_pointLayer);
+                if (event.action.id === "spot_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "spot");
                 }
             });
-
-            function add_point(pic, Layer) {
-                const point = {
-                    type: "point",
-                    x: view.popup.selectedFeature.attributes.X,
-                    y: view.popup.selectedFeature.attributes.Y
-                };
-                var stopSymbol = new PictureMarkerSymbol({
-                    url: pic,
-                    width: "30px",
-                    height: "46.5px"
-                });
-                var stop = new Graphic({
-                    geometry: point,
-                    symbol: stopSymbol
-                });
-                Layer.removeAll();
-                Layer.add(stop);
-            }
-
-            function hozon(time, Layer) {
-                //スポット取得
-                const spot_id = view.popup.selectedFeature.attributes.id;
-                jQuery(function($) {
-                    $.ajax({
-                        url: "./ajax_addspot.php",
-                        type: "POST",
-                        dataType: "json",
-                        data: {
-                            post_data_1: spot_id,
-                            post_data_2: time
-                        },
-                        error: function(XMLHttpRequest, textStatus, errorThrown) {
-                            alert("ajax通信に失敗しました");
-                        },
-                        success: function(response) {
-                            //alert(response[0]);
-                            //esriの関数の外へ
-                            //toframe(time, response[1]);
-
-                            if (response[0] == "") {
-                                alert("同じスポットは登録できません");
-                            } else if (response[0] == "3") {
-                                alert("各時間帯に登録できるスポットは3つまでです");
-                            } else {
-                                alert("「" + response[0] + "」を訪問する観光スポットに追加しました");
-                                //選択したスポットの座標に印を
-                                const point = {
-                                    type: "point",
-                                    x: view.popup.selectedFeature.attributes.X,
-                                    y: view.popup.selectedFeature.attributes.Y
-                                };
-                                const stop = new Graphic({
-                                    geometry: point,
-                                    symbol: CheckSymbol
-                                });
-                                //Layer.removeAll();
-                                Layer.add(stop);
-                            }
-                        }
-                    });
-                });
-            };
 
         });
 
@@ -625,14 +573,14 @@ $keikaku[] = $goal_station_info;
         function post_sightseeing_spot(spot_id) {
             var mode = 0;
             var radios = document.getElementsByName("s_l_d_g");
-            for(var i=0; i<radios.length; i++){
+            for (var i = 0; i < radios.length; i++) {
                 if (radios[i].checked) {
-                //選択されたラジオボタンのvalue値を取得する
-                mode = radios[i].value;
-                break;
+                    //選択されたラジオボタンのvalue値を取得する
+                    mode = radios[i].value;
+                    break;
                 }
             }
-            if(mode == "0"){
+            if (mode == "0") {
                 alert("時間帯を選択してください");
             } else {
                 var time = document.getElementById("sightseeing_time").value;
@@ -672,7 +620,6 @@ $keikaku[] = $goal_station_info;
                 });
             };
         };
-
     </script>
 
 </head>
@@ -681,7 +628,7 @@ $keikaku[] = $goal_station_info;
     <div class="container-fluid">
         <main class="row">
             <div id="detailbox">
-                <h3>観光スポットの詳細情報</h3>
+                <h3 class="px-0">観光スポットの詳細情報</h3>
 
                 <div id="box" class="clearfix">
 
@@ -693,45 +640,47 @@ $keikaku[] = $goal_station_info;
 
                     <div id="infobox">
                         <table>
-                        <table>
-                            <tr>
-                                <th><div id="imgbox"><img src=<?php echo "images/$area_name/sightseeing_spots/". $result["id"] .".jpg"?> alt=""></div></th>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>名称</th>
-                                <td><?php echo $result["name"]; ?></td>
-                            </tr>
+                            <table>
+                                <tr>
+                                    <th>
+                                        <div id="imgbox"><img src=<?php echo "images/$area_name/sightseeing_spots/" . $result["id"] . ".jpg" ?> alt=""></div>
+                                    </th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>名称</th>
+                                    <td><?php echo $result["name"]; ?></td>
+                                </tr>
 
-                            <tr>
-                                <th>カテゴリー</th>
-                                <td><?php echo $result["category"]; ?></td>
-                            </tr>
+                                <tr>
+                                    <th>カテゴリー</th>
+                                    <td><?php echo $result["category"]; ?></td>
+                                </tr>
 
-                            <tr>
-                                <th>ホームページURL</th>
-                                <td>
-                                    <?php
-                                    if (!empty($result["homepage"])) {
-                                        print "<a href = " . $result["homepage"] . " target=_blank>ホームページにアクセスする</a>";
-                                    }
-                                    ?>
-                                </td>
-                            </tr>
+                                <tr>
+                                    <th>ホームページURL</th>
+                                    <td>
+                                        <?php
+                                        if (!empty($result["homepage"])) {
+                                            print "<a href = " . $result["homepage"] . " target=_blank>ホームページにアクセスする</a>";
+                                        }
+                                        ?>
+                                    </td>
+                                </tr>
 
-                            <tr>
-                                <th>観光計画に組み込みますか？</th>
-                                <td>
-                                    <input type="radio" id="s_l_d_g" name="s_l_d_g" value="1">昼食の前
-                                    <input type="radio" id="s_l_d_g" name="s_l_d_g" value="2">昼食の後
-                                    <input type="radio" id="s_l_d_g" name="s_l_d_g" value="3">夕食の後<br>
-                                    <input type="number" value="30" id="sightseeing_time" name="sightseeing_time">分
-                                    <button type="button" value=<?php echo $spot_id; ?> onclick="post_sightseeing_spot(value)">設定する</button>
-                                </td>
-                            </tr>
+                                <tr>
+                                    <th>観光計画に組み込みますか？</th>
+                                    <td>
+                                        <input type="radio" id="s_l_d_g" name="s_l_d_g" value="1">昼食の前
+                                        <input type="radio" id="s_l_d_g" name="s_l_d_g" value="2">昼食の後
+                                        <input type="radio" id="s_l_d_g" name="s_l_d_g" value="3">夕食の後<br>
+                                        <input type="number" value="30" id="sightseeing_time" name="sightseeing_time">分
+                                        <button type="button" value=<?php echo $spot_id; ?> onclick="post_sightseeing_spot(value)">設定する</button>
+                                    </td>
+                                </tr>
 
-                        </table>
-                        <li><a href="#" onclick="window.history.back(); return false;">戻る</a></li>
+                            </table>
+                            <li><a href="#" onclick="window.history.back(); return false;">戻る</a></li>
                     </div>
                 </div>
             </div>

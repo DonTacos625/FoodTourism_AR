@@ -142,17 +142,10 @@ try {
         }
 
         @media screen and (min-width:769px) and (max-width:1366px) {
-            h3 {
-                margin: 0px;
-                font-size: 18px;
-            }
+
         }
 
         @media screen and (max-width:768px) {
-            h3 {
-                margin: 0px;
-                font-size: 17px;
-            }
 
             #detailbox {
                 width: auto;
@@ -211,6 +204,22 @@ try {
             PictureMarkerSymbol
         ) {
 
+            //popup
+            var detailAction_station = {
+                title: "詳細",
+                id: "station_detail",
+                className: "esri-icon-documentation"
+            };
+            var detailAction_restaurant = {
+                title: "詳細",
+                id: "restaurant_detail",
+                className: "esri-icon-documentation"
+            };
+            var detailAction_spot = {
+                title: "詳細",
+                id: "spot_detail",
+                className: "esri-icon-documentation"
+            };
             const food_template = {
                 title: "{Name}",
                 content: [{
@@ -265,8 +274,8 @@ try {
                         visible: true
                     }]
                 }]
+                ,actions: [detailAction_restaurant]
             };
-
             const station_template = {
                 title: "{Name}",
                 content: [{
@@ -285,6 +294,35 @@ try {
                         visible: true
                     }]
                 }]
+                ,actions: [detailAction_station]
+            };
+            const spots_template = {
+                title: "{Name}",
+                content: [{
+                    type: "fields",
+                    fieldInfos: [{
+                        fieldName: "ID",
+                        label: "ID",
+                        visible: true
+                    }, {
+                        fieldName: "category",
+                        label: "カテゴリー",
+                        visible: true
+                    }, {
+                        fieldName: "homepage",
+                        label: "ホームページ",
+                        visible: true
+                    }, {
+                        fieldName: "X",
+                        label: "経度",
+                        visible: true
+                    }, {
+                        fieldName: "Y",
+                        label: "緯度",
+                        visible: true
+                    }]
+                }],
+                actions: [detailAction_spot]
             };
 
             //昼食と夕食を決める
@@ -341,6 +379,21 @@ try {
                     dockOptions: {
                         breakpoint: false
                     }
+                }
+            });
+            //ポップアップの処理
+            view.popup.on("trigger-action", function(event) {
+                if (event.action.id === "station_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "station");
+                }
+                if (event.action.id === "restaurant_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "restaurant");
+                }
+                if (event.action.id === "spot_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "spot");
                 }
             });
 
@@ -417,28 +470,9 @@ try {
 
             start_map(foods_plan, food_pointLayer);
 
-            function add_point(pic, Layer) {
-                const point = {
-                    type: "point",
-                    x: view.popup.selectedFeature.attributes.X,
-                    y: view.popup.selectedFeature.attributes.Y
-                };
-                var stopSymbol = new PictureMarkerSymbol({
-                    url: pic,
-                    width: "20px",
-                    height: "31px"
-                });
-                var stop = new Graphic({
-                    geometry: point,
-                    symbol: stopSymbol
-                });
-                Layer.removeAll();
-                Layer.add(stop);
-            }
-
         });
 
-        //昼食・夕食を決定
+        //開始・終了駅を決定
         function post_station(station_id) {
             var mode = 0;
             var radios = document.getElementsByName("start_or_goal");
@@ -489,10 +523,8 @@ try {
     <div class="container-fluid">
         <main>
             <div id="detailbox">
-                <h3>観光スポットの詳細情報</h3>
-
+                <h3 class="px-0" >駅の詳細情報</h3>
                 <div id="box" class="clearfix">
-
                     <div id="imgbox">
                         <div id="viewbox">
                             <div id="viewDiv"></div>
@@ -536,7 +568,7 @@ try {
                                 </td>
                             </tr>
                         </table>
-                        <li><a href="set_station.php">駅選択に戻る</a></li>
+                        <li><a href="#" onclick="window.history.back(); return false;">戻る</a></li>
                     </div><br>
                 </div>
             </div>

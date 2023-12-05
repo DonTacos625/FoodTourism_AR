@@ -534,20 +534,6 @@ function set_selected($session_name, $value)
                 }
             });
 
-            //店の詳細ページに飛ぶときに送信するデータ
-            function restaurant_detail() {
-                var restaurant_id = view.popup.selectedFeature.attributes.id;
-                var form = document.createElement('form');
-                form.method = 'GET';
-                form.action = './restaurant_detail.php';
-                var reqElm = document.createElement('input');
-                reqElm.name = 'restaurant_id';
-                reqElm.value = restaurant_id;
-                form.appendChild(reqElm);
-                document.body.appendChild(form);
-                form.submit();
-            };
-
             //Locate関数
             const locate = new Locate({
                 view: view,
@@ -699,6 +685,7 @@ function set_selected($session_name, $value)
 
 <script type="text/javascript">
     var area_name = <?php echo json_encode($area_name); ?>;
+    var hit_count = <?php echo json_encode($count); ?>;
 
     //セレクトボックスから選ばれたワードを検索ワードボックスに入れる　もっといい方法あるかも
     function input_search_name(word) {
@@ -879,6 +866,8 @@ function set_selected($session_name, $value)
         if (count == 0) {
             alert("検索条件に該当する飲食店はありませんでした");
         }
+        var ar_count = document.getElementById("ar_count");
+        ar_count.textContent = `検索結果は${hit_count}件中${count}件を表示しています`;
     }
 
     //検索結果の写真を表示する
@@ -998,10 +987,12 @@ function set_selected($session_name, $value)
 
     <div id="result_image_table"></div>
 
-    <a-scene id="ar_scene" vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true' cursor='rayOrigin: mouse'>
+    <a-scene id="ar_scene" device-orientation-permission-ui="enabled: false" vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true' cursor='rayOrigin: mouse'>
         <a-camera gps-new-camera='gpsMinDistance: 5'></a-camera>
     </a-scene>
-
+    <div id="header_bar" class="justify-content-center">
+        <div id="ar_count">検索結果は0件中0件を表示しています</div>
+    </div>
     <div id="bottom_bar">
         <button class="btn btn-primary w-15" onclick="location.reload()" type=button>再読み込み</button>
         <select class="btn btn-primary w-15" size="1" onchange="change_display(value)">
@@ -1014,7 +1005,7 @@ function set_selected($session_name, $value)
     </div>
 
     <div class="container-fluid">
-        <main>
+        <main class="row">
             <div class="search_form" id="mypopover" popover>
                 <form action="search_nearby_restaurants_ar.php" method="post">
                     飲食店の検索範囲：<br>

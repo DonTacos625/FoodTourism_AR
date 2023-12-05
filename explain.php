@@ -28,7 +28,6 @@ require "frame_menu.php";
         #explainbox {
             width: 70vw;
             float: left;
-            margin-left: 5px;
         }
 
         #explainbox h2 {
@@ -69,7 +68,7 @@ require "frame_menu.php";
 
 <body>
     <div class="container">
-        <main>
+        <main class="row">
             <div id="explainbox">
                 <h2 id="index">当サイトの使い方</h2>
                 <ul>
@@ -98,7 +97,7 @@ require "frame_menu.php";
                 </ul>
 
                 <p>
-                <h3>ページの見方</h3>
+                <h3 class="px-0" >ページの見方</h3>
                 <p>
                     ページの右部には常に「会員情報」、「現在の観光計画」、「アンケート」が表示されています。<br><br>
                     <b id="userinfo">会員情報</b><br>
@@ -112,7 +111,7 @@ require "frame_menu.php";
                 </p>
 
                 <p>
-                <h3>観光計画作成の手順</h3>
+                <h3 class="px-0" >観光計画作成の手順</h3>
                 <p>
                     観光経路を作成するために、以下の3つの手順を行います。<br><br>
 
@@ -147,7 +146,7 @@ require "frame_menu.php";
                 </p>
 
                 <p>
-                <h3 id="spots_view">スポット一覧</h3>
+                <h3 class="px-0"  id="spots_view">スポット一覧</h3>
                 <p>
                     &emsp;本システムに登録されているスポットを地図上で閲覧することができます。マップの右上部で表示するスポットを変更できます。
                     また、スポットのマーカーをクリック（タップ）し、各アイコンを押すことで、地図上からも観光計画に組み込むことができます（駅、飲食店のみ）。<br>
@@ -156,7 +155,7 @@ require "frame_menu.php";
                 </p>
 
                 <p>
-                <h3>マイページ</h3>
+                <h3 class="px-0" >マイページ</h3>
                 <p>
                     <b id="see_route">作成した観光計画を見る</b><br>
                     &emsp;最終的に作成された観光計画の経路を見ることができます。

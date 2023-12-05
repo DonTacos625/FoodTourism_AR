@@ -16,10 +16,10 @@
 .stepBar li:after {
     background: #D0E1F9;
     content: "";
-    width: calc(104% - 36px);
+    width: calc(102% - 36px);
     height: 4px;
     position: absolute;
-    left: calc(-50% + 18px);
+    left: calc(-50% + 16px);
     top: 10px;
 }
 .stepBar li:first-child:after {
@@ -30,13 +30,17 @@
     background: #D0E1F9;
     color: #ffffff;
     display: inline-block;
-    height: 36px;
+    height: 35px;
     margin-bottom: 5px;
-    line-height: 36px;
-    width: 36px;
+    line-height: 35px;
+    width: 35px;
     -moz-border-radius: 50%;
     -webkit-border-radius: 50%;
     border-radius: 50%;
+}
+
+.stepBar li:hover>span {
+    background: #0066ff;
 }
 
 .stepBar .visited:after {
@@ -62,4 +66,28 @@
     .stepBar li {
         font-size: 2.2vw;
     }
+}
+
+#leftbox {
+    position: relative;
+    top: 20px;
+    float: right;
+    width: 20vw;
+    border-right: 3px solid #0099FF;
+    z-index: 2;
+}
+
+#leftbox h2 {
+    /*background: #0099FF;
+    color: #FFFFFF;*/
+    margin-right: 5px;
+    border-left: 5px solid #000080;
+}
+
+#leftbox p {
+    margin-left: 10px;
+}
+
+#leftbox #sightseeing_plan {
+    width: 15vw;
 }

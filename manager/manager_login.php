@@ -114,10 +114,6 @@ if (!empty($_POST["login"])) {
                 font-size: 19px;
             }
 
-            h3 {
-                font-size: 17px;
-            }
-
             #loginbox {
                 width: 90%;
             }
@@ -137,7 +133,7 @@ if (!empty($_POST["login"])) {
                     利用方法につきましては、ログイン後に使い方をご覧になるか、<a href="https://drive.google.com/file/d/1mlQpnjmVcnnn_Qqt2BwjwZzFUHGAplDD/view?usp=sharing" target="blank">こちら</a>のマニュアルからご覧ください<br>
                 </p>
 
-                <h3>ログイン</h3>
+                <h3 class="px-0" >ログイン</h3>
                 <form id="loginform" name="loginform" action="" method="POST" autocomplete="off">
                     <table>
                         <tr>

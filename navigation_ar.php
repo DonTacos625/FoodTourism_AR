@@ -59,11 +59,6 @@ try {
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>作成した観光計画を見る</title>
     <style>
-        h3 {
-            border-left: 5px solid #000080;
-            margin: 0px;
-        }
-
         #viewbox {
             position: fixed;
             overflow-x: hidden;
@@ -78,7 +73,6 @@ try {
         }
 
         #viewbox #viewDiv {
-
             height: 90%;
             width: 95%;
         }
@@ -780,12 +774,15 @@ try {
 
 <body>
     <div class="container-fluid">
-        <main>
-            <a-scene id="ar_scene" vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true' cursor='rayOrigin: mouse'>
+        <div id="viewbox">
+            <div id="viewDiv"></div>
+        </div>
+        <main class="row">
+            <a-scene id="ar_scene" device-orientation-permission-ui="enabled: false" vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true' cursor='rayOrigin: mouse'>
                 <a-camera gps-new-camera='gpsMinDistance: 5'></a-camera>
             </a-scene>
-            <div id="viewbox">
-                <div id="viewDiv"></div>
+            <div id="header_bar" class="justify-content-center">
+                目的地まで<h1 id="ar_distance">0M</h1>
             </div>
             <div id="bottom_bar">
                 <button id="result_list_btn" popovertarget="mypopover" type=button>ボタン</button>
@@ -808,6 +805,8 @@ try {
         //alert(value);
         var ar_text = document.getElementById("ar_text");
         ar_text.setAttribute('value', value);
+        var ar_distance = document.getElementById("ar_distance");
+        ar_distance.textContent = value;
     }
     make_ar_object(array);
     make_ar_distance(array);

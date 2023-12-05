@@ -62,13 +62,15 @@
 
     <div id="header">
         <div id="title">
-            <h1>横浜みなとみらいフードツーリズム計画作成支援システム</h1>
+            <h1>横浜みなとみらいフードツーリズム支援システム</h1>
         </div>
     </div>
 
 </body>
+<!-- 
 <footer class="position-absolute top-100 start-50 translate-middle">
     <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
 </footer>
+-->
 
 </html>

@@ -204,17 +204,9 @@ $keikaku[] = $goal_info;
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>作成した観光計画を見る</title>
     <style>
-
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
-        @media screen and (max-width:768px) {
-
-            h3 {
-                margin: 0px;
-                font-size: 17px;
-            }
-        }
-
+        @media screen and (max-width:768px) {}
     </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
@@ -753,15 +745,19 @@ $keikaku[] = $goal_info;
                 track.start();
             });
 
+            //ポップアップの処理
             view.popup.on("trigger-action", function(event) {
                 if (event.action.id === "station_detail") {
-                    srs_detail("station");
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "station");
                 }
                 if (event.action.id === "restaurant_detail") {
-                    srs_detail("restaurant");
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "restaurant");
                 }
                 if (event.action.id === "spot_detail") {
-                    srs_detail("spot");
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "spot");
                 }
                 if (event.action.id === "restaurant_navigation") {
                     spot_navigation(2);
@@ -770,28 +766,6 @@ $keikaku[] = $goal_info;
                     spot_navigation(3);
                 }
             });
-
-            //店の詳細ページに飛ぶときに送信するデータ
-            function srs_detail(type) {
-                var id = view.popup.selectedFeature.attributes.id;
-                var form = document.createElement('form');
-                var reqElm = document.createElement('input');
-                form.method = 'GET';
-                if (type == "station") {
-                    form.action = './station_detail.php';
-                    reqElm.name = 'station_id';
-                } else if (type == "restaurant") {
-                    form.action = './restaurant_detail.php';
-                    reqElm.name = 'restaurant_id';
-                } else if (type == "spot") {
-                    form.action = './sightseeing_spot_detail.php';
-                    reqElm.name = 'spot_id';
-                }
-                reqElm.value = id;
-                form.appendChild(reqElm);
-                document.body.appendChild(form);
-                form.submit();
-            };
 
             //スポットのナビゲーションページに飛ぶときに送信するデータ
             function spot_navigation(type) {
@@ -833,7 +807,7 @@ $keikaku[] = $goal_info;
             $time = "総歩行時間：" + hour + "時間" + mini + "分";
 
             var user_weight = <?php echo json_encode($frameresult["user_weight"]); ?>;
-            if(user_weight > 0){
+            if (user_weight > 0) {
                 var cal = 3.5 * time * user_weight * 1.05;
                 $kcal = "消費カロリー：" + cal.toPrecision(4) + "kcal";
             } else {
@@ -993,7 +967,7 @@ $keikaku[] = $goal_info;
             <div>
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
-            <h3>プラン詳細</h3>
+            <h3 class="px-0">プラン詳細</h3>
             <div class="icon_explain">
                 プラン名：<?php echo $result["plan_name"]; ?>
                 <b>
@@ -1012,11 +986,12 @@ $keikaku[] = $goal_info;
             </div>
 
             <p>摂取カロリー：<br>
-	            昼：</textarea><input type="text" id="" size="15" value="">:kcal<br>
+                昼：</textarea><input type="text" id="" size="15" value="">:kcal<br>
                 夜：</textarea><input type="text" id="" size="15" value="">:kcal<br></p>
             <p>感想：<br>
-	            <textarea class="form-control" rows="5" id="">テスト</textarea><br></p>
-                <button type="button" id="btn" onclick="up_session()" title=""><b>下書き保存</b></button>
+                <textarea class="form-control" rows="5" id="">テスト</textarea><br>
+            </p>
+            <button type="button" id="btn" onclick="up_session()" title=""><b>下書き保存</b></button>
 
             <div class="move_box">
                 <a class="prev_page" name="prev_keiro" href="sightseeing_spots_selection_map.php">観光スポット選択に戻る</a>

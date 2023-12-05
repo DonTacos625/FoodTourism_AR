@@ -241,11 +241,6 @@ $keikaku[] = $goal_info;
                 height: 90%;
             }
 
-            h3 {
-                margin: 0px;
-                font-size: 17px;
-            }
-
         }
     </style>
 
@@ -732,39 +727,21 @@ $keikaku[] = $goal_info;
                 doc();
             }
 
+            //ポップアップの処理
             view.popup.on("trigger-action", function(event) {
                 if (event.action.id === "station_detail") {
-                    srs_detail("station");
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "station");
                 }
                 if (event.action.id === "restaurant_detail") {
-                    srs_detail("restaurant");
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "restaurant");
                 }
                 if (event.action.id === "spot_detail") {
-                    srs_detail("spot");
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "spot");
                 }
             });
-
-            //店の詳細ページに飛ぶときに送信するデータ
-            function srs_detail(type) {
-                var id = view.popup.selectedFeature.attributes.id;
-                var form = document.createElement('form');
-                var reqElm = document.createElement('input');
-                form.method = 'GET';
-                if (type == "station") {
-                    form.action = './station_detail.php';
-                    reqElm.name = 'station_id';
-                } else if (type == "restaurant") {
-                    form.action = './restaurant_detail.php';
-                    reqElm.name = 'restaurant_id';
-                } else if (type == "spot") {
-                    form.action = './sightseeing_spot_detail.php';
-                    reqElm.name = 'spot_id';
-                }
-                reqElm.value = id;
-                form.appendChild(reqElm);
-                document.body.appendChild(form);
-                form.submit();
-            };
 
         });
 
@@ -987,7 +964,7 @@ $keikaku[] = $goal_info;
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
 
-            <h3>プラン詳細</h3>
+            <h3 class="px-0" >プラン詳細</h3>
             <div class="icon_explain">
                 プラン名：<?php echo $result["plan_name"]; ?><br>
                 <b>
@@ -1007,9 +984,6 @@ $keikaku[] = $goal_info;
                 </b>
             </div>
 
-            <div class="move_box">
-                <a class="prev_page" name="prev_keiro" href="sightseeing_spots_selection_map.php">観光スポット選択に戻る</a>
-            </div><br>
             <div class="icon_explain">
                 <img class="pin_list1" src="./markers/icon_explain_s_f.png" alt="昼食予定地のアイコン" title="アイコン説明１">
                 <img class="pin_list2" src="./markers/icon_explain_spots.png" alt="昼食予定地のアイコン" title="アイコン説明２">

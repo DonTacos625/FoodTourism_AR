@@ -220,18 +220,9 @@ $keikaku[] = $goal_info;
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>作成した観光計画を見る</title>
     <style>
-
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
-        @media screen and (max-width:768px) {
-
-            h3 {
-                margin: 0px;
-                font-size: 17px;
-            }
-
-        }
-
+        @media screen and (max-width:768px) {}
     </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
@@ -289,7 +280,6 @@ $keikaku[] = $goal_info;
                 id: "spot_detail",
                 className: "esri-icon-documentation"
             };
-
             const food_template = {
                 title: "{Name}",
                 content: [{
@@ -346,7 +336,6 @@ $keikaku[] = $goal_info;
                 }]
                 ,actions: [detailAction_restaurant]
             };
-
             const station_template = {
                 title: "{Name}",
                 content: [{
@@ -367,7 +356,6 @@ $keikaku[] = $goal_info;
                 }]
                 ,actions: [detailAction_station]
             };
-
             const spots_template = {
                 title: "{Name}",
                 content: [{
@@ -393,8 +381,8 @@ $keikaku[] = $goal_info;
                         label: "緯度",
                         visible: true
                     }]
-                }]
-                ,actions: [detailAction_spot]
+                }],
+                actions: [detailAction_spot]
             };
 
             //スタートとゴールの駅を決める
@@ -627,37 +615,18 @@ $keikaku[] = $goal_info;
             //ポップアップの処理
             view.popup.on("trigger-action", function(event) {
                 if (event.action.id === "station_detail") {
-                    srs_detail("station");
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "station");
                 }
                 if (event.action.id === "restaurant_detail") {
-                    srs_detail("restaurant");
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "restaurant");
                 }
                 if (event.action.id === "spot_detail") {
-                    srs_detail("spot");
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "spot");
                 }
             });
-
-            //店の詳細ページに飛ぶときに送信するデータ
-            function srs_detail(type) {
-                var id = view.popup.selectedFeature.attributes.id;
-                var form = document.createElement('form');
-                var reqElm = document.createElement('input');
-                form.method = 'GET';
-                if (type == "station") {
-                    form.action = './station_detail.php';
-                    reqElm.name = 'station_id';
-                } else if (type == "restaurant") {
-                    form.action = './restaurant_detail.php';
-                    reqElm.name = 'restaurant_id';
-                } else if (type == "spot") {
-                    form.action = './sightseeing_spot_detail.php';
-                    reqElm.name = 'spot_id';
-                }
-                reqElm.value = id;
-                form.appendChild(reqElm);
-                document.body.appendChild(form);
-                form.submit();
-            };
 
             //phpの経路情報をjavascript用に変換           
             var keikaku = <?php echo json_encode($keikaku); ?>;
@@ -797,7 +766,7 @@ $keikaku[] = $goal_info;
             $time = "総歩行時間：" + hour + "時間" + mini + "分";
 
             var user_weight = <?php echo json_encode($frameresult["user_weight"]); ?>;
-            if(user_weight > 0){
+            if (user_weight > 0) {
                 var cal = 3.5 * time * user_weight * 1.05;
                 $kcal = "消費カロリー：" + cal.toPrecision(4) + "kcal";
             } else {
@@ -824,7 +793,7 @@ $keikaku[] = $goal_info;
             <div>
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
-            <h3>作成した観光計画</h3>
+            <h3 class="px-0">スポット一覧</h3>
 
             <div class="icon_explain">
                 <img class="pin_list1" src="./markers/icon_explain_s_f.png" alt="昼食予定地のアイコン" title="アイコン説明１">

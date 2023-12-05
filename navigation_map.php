@@ -55,10 +55,6 @@ try {
 
         @media screen and (max-width:768px) {
 
-            h3 {
-                margin: 0px;
-                font-size: 17px;
-            }
         }
     </style>
 
@@ -641,10 +637,10 @@ try {
             var hour = Math.trunc(time);
             var mini = 60 * decimalPart(time, 1);
             $time = "総歩行時間：" + hour + "時間" + mini + "分";
-            //alert($time);
+            //alert(mini);
             //frameの関数
-            //update_frame($length, "length_km");
-            //update_frame($time, "time_h_m");
+            update_frame($length, "length_km");
+            update_frame($time, "time_h_m");
         }
         //店のナビゲーションページに飛ぶときに送信するデータ
         function navigation_ar() {
@@ -674,8 +670,8 @@ try {
             <div>
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
-            <h3>目的地までの経路</h3>
-            <a id="view_result" name="view_result" onclick="navigation_ar()">ARで結果を表示</a><br>
+            <h3 class="px-0">目的地までの経路</h3>
+            <a id="view_result" name="view_result" href=<?php echo "navigation_ar.php?navi_spot_id={$navi_spot_id}&navi_spot_type={$navi_spot_type}"?>>ARで結果を表示</a><br>
 
             <div class="icon_explain">
                 <b>

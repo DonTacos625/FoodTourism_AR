@@ -46,18 +46,11 @@ require "frame_rightmenu.php";
                 font-size: 20px;
             }
 
-            h3 {
-                font-size: 18px;
-            }
         }
 
         @media screen and (max-width:768px) {
             h2 {
                 font-size: 19px;
-            }
-
-            h3 {
-                font-size: 17px;
             }
 
             #homebox {
@@ -107,7 +100,7 @@ require "frame_rightmenu.php";
                     <font color=#000080>&emsp;本運用中</font>
                 </h2>
 
-                <h3>目的</h3>
+                <h3 class="px-0" >目的</h3>
                 <p>
                     飲食を主な目的とした観光計画の作成を支援することを目的としたシステムです。
                     使い方に従うことで観光計画を作成することができます。
@@ -115,13 +108,13 @@ require "frame_rightmenu.php";
                     マップ上に表示されます。
                 </p><br>
 
-                <h3>フードツーリズムとは？</h3>
+                <h3 class="px-0" >フードツーリズムとは？</h3>
                 <p>
                     フードツーリズムとは、地域ならではの食・食文化を楽しむことを目的とした旅（日本フードツーリズム協会より）のことです。
                     本システムは、利用者が飲食を主体とした観光計画を作成することを支援するためのシステムです。
                 </p><br>
 
-                <h3>更新履歴</h3>
+                <h3 class="px-0" >更新履歴</h3>
                 <p>
                     2022/1/28 本運用終了<br>
                     2022/1/10 LINEの内部ブラウザからだとアンケートに回答できない問題を修正<br>
@@ -131,7 +124,7 @@ require "frame_rightmenu.php";
                     2021/12/7 試験運用開始
                 </p><br>
 
-                <h3>使い方</h3>
+                <h3 class="px-0" >使い方</h3>
                 <p>
                     ページ上部の観光計画作成から情報を登録することで観光計画を作成することが可能です。<br>
                     地図上のアイコンを押すことでポップアップが表示されます。<br>
@@ -151,7 +144,7 @@ require "frame_rightmenu.php";
                     <option value="3"> 調布 </option>
                 </select><br>
 
-                <h3>連絡先</h3>
+                <h3 class="px-0" >連絡先</h3>
                 <p>
                     不具合等ございましたら、下記のメールアドレスまでご連絡下さい。<br>
                     作成者:平野<br>
