@@ -94,20 +94,21 @@
 
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasRightLabel">Offcanvas right</h5>
+            <h2 class="offcanvas-title" id="offcanvasRightLabel">現在の観光計画</h2>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
 
-            <h2>現在の観光計画</h2>
             <button onclick="remade_plan()">更新する</button><br>
             <div id="making_plan_box">
                 <div class="sortable">
                     開始駅<br>
                     <ul>
-                        <li id="plan_start_box" value="<?php echo $making_plan[0][1]; ?>">
-                            <img id="pin" width="20" height="20" src="./icons/pop_start.png" alt="開始駅のアイコン" title="開始駅">
-                            <?php echo $start_station_name ?><br>
+                        <li class="card" id="plan_start_box" value="<?php echo $making_plan[0][1]; ?>">
+                            <div class="card-body p-2">
+                                <img id="pin" width="20" height="20" src="./icons/pop_start.png" alt="開始駅のアイコン" title="開始駅">
+                                <?php echo $start_station_name ?><br>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -117,11 +118,13 @@
                         <?php $count_s_l = 0; ?>
                         <?php foreach ($plan_s_l_spots as $date) { ?>
                             <?php $count_s_l += 1; ?>
-                            <li value=<?php echo $date[0] ?> id=<?php echo "plan_s_l_" . $count_s_l . "_box"; ?> draggable="true">
-                                <img class="pin_s_l" width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $count_s_l . ".png"; ?> alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
-                                <div class="s_l_name"><?php echo $date[2] ?></div>
-                                <input class="s_l_time" type="number" value="<?php echo $date[1]; ?>">分
-                                <button type="button" class="btn btn-light btn-outline-dark" value=<?php echo "plan_s_l_" . $count_s_l . "_box"; ?> onclick="hidden_spot(value)">削除</button>
+                            <li class="card" value=<?php echo $date[0] ?> id=<?php echo "plan_s_l_" . $count_s_l . "_box"; ?> draggable="true">
+                                <div class="card-body p-2">
+                                    <img class="pin_s_l" width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $count_s_l . ".png"; ?> alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
+                                    <div class="s_l_name"><?php echo $date[2] ?></div>
+                                    <input class="s_l_time" type="number" value="<?php echo $date[1]; ?>">分
+                                    <button type="button" class="btn btn-light btn-outline-dark" value=<?php echo "plan_s_l_" . $count_s_l . "_box"; ?> onclick="hidden_spot(value)">削除</button>
+                                </div>
                             </li>
                         <?php } ?>
                     </ul>
@@ -130,11 +133,13 @@
                 <div class="sortable">
                     昼食を食べる飲食店<br>
                     <ul>
-                        <li id="plan_lunch_box" value="<?php echo $making_plan[2][1]; ?>">
-                            <img id="pin" width="20" height="20" src="./icons/pop_lunch.png" alt="昼食予定地のアイコン" title="昼食予定地">
-                            <?php echo $lunch_name ?><br>
-                            <input class="time" type="number" value="<?php echo $making_plan[2][2]; ?>">分
-                            <button type="button" class="btn btn-light btn-outline-dark" value="" onclick="hidden_spot('plan_lunch_box')">削除</button>
+                        <li class="card" id="plan_lunch_box" value="<?php echo $making_plan[2][1]; ?>">
+                            <div class="card-body p-2">
+                                <img id="pin" width="20" height="20" src="./icons/pop_lunch.png" alt="昼食予定地のアイコン" title="昼食予定地">
+                                <?php echo $lunch_name ?><br>
+                                <input class="time" type="number" value="<?php echo $making_plan[2][2]; ?>">分
+                                <button type="button" class="btn btn-light btn-outline-dark" value="" onclick="hidden_spot('plan_lunch_box')">削除</button>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -144,11 +149,13 @@
                         <?php $count_l_d = 0; ?>
                         <?php foreach ($plan_l_d_spots as $date) { ?>
                             <?php $count_l_d += 1; ?>
-                            <li value=<?php echo $date[0] ?> id=<?php echo "plan_l_d_" . $count_l_d . "_box"; ?> draggable="true">
-                                <img class="pin_l_d" width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $count_l_d . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
-                                <div class="l_d_name"><?php echo $date[2] ?></div>
-                                <input class="l_d_time" type="number" value="<?php echo $date[1]; ?>">分
-                                <button type="button" class="btn btn-light btn-outline-dark" value=<?php echo "plan_l_d_" . $count_l_d . "_box"; ?> onclick="hidden_spot(value)">削除</button>
+                            <li class="card" value=<?php echo $date[0] ?> id=<?php echo "plan_l_d_" . $count_l_d . "_box"; ?> draggable="true">
+                                <div class="card-body p-2">
+                                    <img class="pin_l_d" width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $count_l_d . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
+                                    <div class="l_d_name"><?php echo $date[2] ?></div>
+                                    <input class="l_d_time" type="number" value="<?php echo $date[1]; ?>">分
+                                    <button type="button" class="btn btn-light btn-outline-dark" value=<?php echo "plan_l_d_" . $count_l_d . "_box"; ?> onclick="hidden_spot(value)">削除</button>
+                                </div>
                             </li>
                         <?php } ?>
                     </ul>
@@ -157,11 +164,13 @@
                 <div class="sortable">
                     夕食を食べる飲食店<br>
                     <ul>
-                        <li id="plan_dinner_box" value="<?php echo $making_plan[4][1]; ?>">
-                            <img id="pin" width="20" height="20" src="./icons/pop_dinner.png" alt="夕食予定地のアイコン" title="夕食予定地">
-                            <?php echo $dinner_name ?><br>
-                            <input class="time" type="number" value="<?php echo $making_plan[4][2]; ?>">分
-                            <button type="button" class="btn btn-light btn-outline-dark" value="" onclick="hidden_spot('plan_dinner_box')">削除</button>
+                        <li class="card" id="plan_dinner_box" value="<?php echo $making_plan[4][1]; ?>">
+                            <div class="card-body p-2">
+                                <img id="pin" width="20" height="20" src="./icons/pop_dinner.png" alt="夕食予定地のアイコン" title="夕食予定地">
+                                <?php echo $dinner_name ?><br>
+                                <input class="time" type="number" value="<?php echo $making_plan[4][2]; ?>">分
+                                <button type="button" class="btn btn-light btn-outline-dark" value="" onclick="hidden_spot('plan_dinner_box')">削除</button>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -171,11 +180,13 @@
                         <?php $count_d_g = 0; ?>
                         <?php foreach ($plan_d_g_spots as $date) { ?>
                             <?php $count_d_g += 1; ?>
-                            <li value=<?php echo $date[0] ?> id=<?php echo "plan_d_g_" . $count_d_g . "_box"; ?> draggable="true">
-                                <img class="pin_d_g" width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $count_d_g . ".png"; ?> alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
-                                <div class="d_g_name"><?php echo $date[2] ?></div>
-                                <input class="d_g_time" type="number" value="<?php echo $date[1]; ?>">分
-                                <button type="button" class="btn btn-light btn-outline-dark" value=<?php echo "plan_d_g_" . $count_d_g . "_box"; ?> onclick="hidden_spot(value)">削除</button>
+                            <li class="card" value=<?php echo $date[0] ?> id=<?php echo "plan_d_g_" . $count_d_g . "_box"; ?> draggable="true">
+                                <div class="card-body p-2">
+                                    <img class="pin_d_g" width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $count_d_g . ".png"; ?> alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
+                                    <div class="d_g_name"><?php echo $date[2] ?></div>
+                                    <input class="d_g_time" type="number" value="<?php echo $date[1]; ?>">分
+                                    <button type="button" class="btn btn-light btn-outline-dark" value=<?php echo "plan_d_g_" . $count_d_g . "_box"; ?> onclick="hidden_spot(value)">削除</button>
+                                </div>
                             </li>
                         <?php } ?>
                     </ul>
@@ -184,9 +195,11 @@
                 <div class="sortable">
                     終了駅<br>
                     <ul>
-                        <li id="plan_goal_box" value="<?php echo $making_plan[6][1] ?>">
-                            <img id="pin" width="20" height="20" src="./icons/pop_goal.png" alt="終了駅のアイコン" title="終了駅">
-                            <div class="plan_goal_name"><?php echo $goal_station_name ?></div>
+                        <li class="card" id="plan_goal_box" value="<?php echo $making_plan[6][1] ?>">
+                            <div class="card-body p-2">
+                                <img id="pin" width="20" height="20" src="./icons/pop_goal.png" alt="終了駅のアイコン" title="終了駅">
+                                <?php echo $goal_station_name ?><br>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -194,95 +207,6 @@
         </div>
     </div>
 
-    <div id="toggle_menu">
-        <label for="menu_label2">≡設定情報</label>
-        <input type="checkbox" id="menu_label2" />
-
-        <div id="menu">
-            <ul>
-                <li>
-                    <h2>会員情報</h2>
-                    <ul>
-                        <li><b>名前:</b> <?php echo htmlspecialchars($_SESSION["user_name"], ENT_QUOTES); ?></li>
-
-                        <li><b>年代:</b> <?php if (!$frameresult["age"]) { ?>未回答
-                            <?php } else {
-                                            echo htmlspecialchars($frameresult["age"], ENT_QUOTES); ?>代 <?php } ?></li>
-
-                        <li><b>性別:</b> <?php echo htmlspecialchars($frameresult["gender"], ENT_QUOTES); ?></li>
-                    </ul>
-                </li>
-
-                <li>
-                    <h2>現在の観光計画</h2>
-                    <ul>
-                        <li><b>開始駅:</b>
-                            <img id="pin" width="20" height="20" src="./icons/pop_start.png" alt="開始駅のアイコン" title="開始駅">
-                            <div id="start_name"><?php echo htmlspecialchars($start_station_name, ENT_QUOTES); ?></div>
-                        </li><br>
-
-                        <li>
-                            <b>昼食前に訪れる観光スポット:</b>
-                            <img id="pin" width="20" height="20" src="./markers/pop_icon1_f.png" alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
-                            <div id="toggle_s_l_spots_line">
-                                <?php display_frame($s_l_spots_name, 1) ?>
-                            </div>
-                        </li><br>
-
-                        <li><b>昼食予定地:</b>
-                            <img id="pin" width="20" height="20" src="./icons/pop_lunch.png" alt="昼食予定地のアイコン" title="昼食予定地">
-                            <div id="lunch_name"><?php echo htmlspecialchars($lunch_name, ENT_QUOTES); ?></div>
-                        </li><br>
-
-                        <li>
-                            <b>昼食後に訪れる観光スポット:</b>
-                            <img id="pin" width="20" height="20" src="./markers/pop_icon2_f.png" alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
-                            <div id="toggle_l_d_spots_line">
-                                <?php display_frame($l_d_spots_name, 2) ?>
-                            </div>
-                        </li><br>
-
-                        <li><b>夕食予定地:</b>
-                            <img id="pin" width="20" height="20" src="./icons/pop_dinner.png" alt="夕食予定地のアイコン" title="夕食予定地">
-                            <div id="dinner_name"><?php echo htmlspecialchars($dinner_name, ENT_QUOTES); ?></div>
-                        </li><br>
-
-                        <li>
-                            <b>夕食前に訪れる観光スポット:</b>
-                            <img id="pin" width="20" height="20" src="./markers/pop_icon3_f.png" alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
-                            <div id="toggle_d_g_spots_line">
-                                <?php display_frame($d_g_spots_name, 3) ?>
-                            </div>
-                        </li><br>
-
-                        <li><b>終了駅:</b>
-                            <img id="pin" width="20" height="20" src="./icons/pop_goal.png" alt="終了駅のアイコン" title="終了駅">
-                            <div id="goal_name"><?php echo htmlspecialchars($goal_station_name, ENT_QUOTES); ?></div>
-                        </li>
-                    </ul>
-                </li>
-
-                <li>
-                    <h2>アンケート</h2>
-                    <?php
-                    print "アンケートの回答を締め切りました。ご回答くださった方々、誠にありがとうございました。";
-                    /*
-                    if ($frameresult["survey"]) {
-                        print "<form action=\"\" method=\"POST\">";
-                        print "<input type=\"submit\" id=\"survey\" name=\"survey\" value=\"回答する\" onClick=\"window.open('https://forms.gle/amw8j1wJDPcAn29h7?openExternalBrowser=1','_blank')\"><br>";
-                        print "</form>";
-                        print "回答は<font color=\"red\">1回</font>のみです<br>";
-                        print "<b>システムを1度以上利用してからご回答ください</b>";
-                    } else {
-                        print "ご回答ありがとうございました";
-                    }
-                    */
-                    ?>
-                </li>
-
-            </ul>
-        </div>
-    </div>
 </body>
 
 <!-- ドラッグアンドドロップを実装する用 -->
@@ -358,8 +282,8 @@
                 s_l_post_box.push([element.value, element.querySelector('.s_l_time').value, element.querySelector('.s_l_name').textContent]);
             }
         });
-        if(s_l_post_box.length == 0){
-            s_l_post_box.push([-1,0,"設定されていません"]);
+        if (s_l_post_box.length == 0) {
+            s_l_post_box.push([-1, 0, "設定されていません"]);
         }
         var l_d_spots = document.getElementById('sort2').querySelectorAll('li');
         l_d_spots.forEach(function(element) {
@@ -367,8 +291,8 @@
                 l_d_post_box.push([element.value, element.querySelector('.l_d_time').value, element.querySelector('.l_d_name').textContent]);
             }
         });
-        if(l_d_post_box.length == 0){
-            l_d_post_box.push([-1,0,"設定されていません"]);
+        if (l_d_post_box.length == 0) {
+            l_d_post_box.push([-1, 0, "設定されていません"]);
         }
         var d_g_spots = document.getElementById('sort3').querySelectorAll('li');
         d_g_spots.forEach(function(element) {
@@ -376,8 +300,8 @@
                 d_g_post_box.push([element.value, element.querySelector('.d_g_time').value, element.querySelector('.d_g_name').textContent]);
             }
         });
-        if(d_g_post_box.length == 0){
-            d_g_post_box.push([-1,0,"設定されていません"]);
+        if (d_g_post_box.length == 0) {
+            d_g_post_box.push([-1, 0, "設定されていません"]);
         }
 
         jQuery(function($) {

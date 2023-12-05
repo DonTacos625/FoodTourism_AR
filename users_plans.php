@@ -75,7 +75,6 @@ $count = 0
             display: flex;              /* フレックスボックスにする */
             align-items:stretch;        /* 縦の位置指定 */
             flex-wrap: wrap;
-
         }
 
         .plan_text{

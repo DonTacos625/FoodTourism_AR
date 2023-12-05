@@ -43,6 +43,7 @@ if (!empty($_POST["login"])) {
                     $_SESSION["id"] = $result1["id"];
                     $_SESSION["age"] = $result1["age"];
                     $_SESSION["gender"] = $result1["gender"];
+                    $_SESSION["user_weight"] = $result1["user_weight"];
 
                     //ログイン成功でホームに移動
                     header("Location: home.php");

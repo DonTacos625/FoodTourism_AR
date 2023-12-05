@@ -6,6 +6,7 @@ $_SESSION["user_id"]
 $_SESSION["user_name"]
 $_SESSION["age"]
 $_SESSION["gender"]
+$_SESSION["user_weight"]
 
 $_SESSION["start_station_id"]
 $_SESSION["goal_station_id"]
@@ -286,6 +287,7 @@ function display_frame($name_row, $time)
 
     <link rel="stylesheet" type="text/css" href="css/copyright.css">
     <link rel="stylesheet" type="text/css" href="css/viewbox.css?<?php echo date('YmdHis'); ?>">
+    <link rel="stylesheet" type="text/css" href="css/stepbar.css?<?php echo date('YmdHis'); ?>">
 
 </head>
 

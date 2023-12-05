@@ -204,44 +204,6 @@ $keikaku[] = $goal_info;
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>作成した観光計画を見る</title>
     <style>
-        .icon_explain {
-            position: relative;
-            float: left;
-            width: 100%;
-            height: 15%;
-        }
-
-        .pin_list1 {
-            width: 315px;
-            height: 75px;
-        }
-
-        .pin_list2 {
-            width: 390px;
-            height: 75px;
-        }
-
-        .pin_list3 {
-            width: 192px;
-            height: 75px;
-        }
-
-        #viewbox #btn {
-            width: 80%;
-            height: 40px;
-            color: #fff;
-            background-color: #3399ff;
-            border-bottom: 5px solid #33ccff;
-            -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, .3);
-            box-shadow: 0 3px 5px rgba(0, 0, 0, .3);
-        }
-
-        #viewbox #btn:hover {
-            margin-top: 3px;
-            color: #fff;
-            background: #0099ff;
-            border-bottom: 2px solid #00ccff;
-        }
 
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
@@ -252,91 +214,8 @@ $keikaku[] = $goal_info;
                 font-size: 17px;
             }
 
-            .icon_explain {
-                width: 95vw;
-            }
-
-            .pin_list1 {
-                width: 100%;
-                height: 100%;
-            }
-
-            .pin_list2 {
-                width: 100%;
-                height: 100%;
-            }
-
-            .pin_list3 {
-                width: 100%;
-                height: 100%;
-            }
-
-            .container {
-                display: flex;
-                flex-direction: column;
-                min-height: 160vh;
-            }
         }
 
-        .flex_test-box {
-            background-color: #eee;
-            /* 背景色指定 */
-            padding: 10px;
-            /* 余白指定 */
-            display: flex;
-            /* フレックスボックスにする */
-            align-items: stretch;
-            /* 縦の位置指定 */
-        }
-
-        .flex_test-item {
-            padding: 10px;
-            color: #0a0000;
-            /* 文字色 */
-            margin: 10px;
-            /* 外側の余白 */
-            border-radius: 5px;
-            /* 角丸指定 */
-            width: 15%;
-            /* 幅指定 */
-        }
-
-        .flex_test-item #imgbox {
-            float: left;
-            display: flex;
-            width: 15vw;
-            height: 15vw;
-            margin-bottom: 15px;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .flex_test-item #imgbox img {
-            width: auto;
-            height: auto;
-            max-width: 100%;
-            max-height: 100%;
-        }
-
-        .flex_test-item:nth-child(1) {
-            background-color: #fff;
-            /* 背景色指定 */
-        }
-
-        .flex_test-item:nth-child(2) {
-            background-color: #fff;
-            /* 背景色指定 */
-        }
-
-        .flex_test-item:nth-child(3) {
-            background-color: #fff;
-            /* 背景色指定 */
-        }
-
-        .flex_test-item:nth-child(4) {
-            background-color: #fff;
-            /* 背景色指定 */
-        }
     </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
@@ -952,10 +831,19 @@ $keikaku[] = $goal_info;
             var hour = Math.trunc(time);
             var mini = 60 * decimalPart(time, 1);
             $time = "総歩行時間：" + hour + "時間" + mini + "分";
+
+            var user_weight = <?php echo json_encode($frameresult["user_weight"]); ?>;
+            if(user_weight > 0){
+                var cal = 3.5 * time * user_weight * 1.05;
+                $kcal = "消費カロリー：" + cal.toPrecision(4) + "kcal";
+            } else {
+                $kcal = "消費カロリー：計算できませんでした";
+            }
             //alert($time);
             //frameの関数
             update_frame($length, "length_km");
             update_frame($time, "time_h_m");
+            update_frame($kcal, "cal_k");
         }
 
         var plan_id = <?php echo json_encode($plan_id); ?>;
@@ -1109,7 +997,7 @@ $keikaku[] = $goal_info;
             <div class="icon_explain">
                 プラン名：<?php echo $result["plan_name"]; ?>
                 <b>
-                    <div id="calo_km">消費カロリー：1312.00 kcal</div>
+                    <div id="cal_k">消費カロリー：.00 kcal</div>
                 </b>
                 <b>
                     <div id="length_km">総歩行距離：0.00 km</div>
@@ -1139,7 +1027,7 @@ $keikaku[] = $goal_info;
             </div>
             <div id="viewbox">
                 <div id="viewDiv"></div>
-                <button type="button" id="btn" onclick="save_tourism_record()" title="観光計画を編集"><b>観光記録を保存します</b></button>
+                <button type="button" class="btn btn-secondary btn-lg" onclick="save_tourism_record()" title="観光計画を編集"><b>観光記録を保存します</b></button>
             </div>
         </main>
         <footer>

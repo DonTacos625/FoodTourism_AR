@@ -252,17 +252,6 @@ function set_selected($session_name, $value)
     }
 }
 
-//検索条件が初期の場合
-$all_foodLayer_Flag = 0;
-if (
-    $wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking == "0" && $lunch == "0"
-    && ($capacity == "0" || $capacity == "") && $search_word == ""
-    && $dinner_min == "0" && $dinner_max == "999999" && $lunch_min == "0" && $lunch_max == "999999"
-) {
-    $all_foodLayer_Flag = 1;
-}
-//var_dump($all_foodLayer_Flag);
-//$area_name = "hasune";
 ?>
 
 <html>
@@ -319,12 +308,6 @@ if (
             padding: 3px;
         }
 
-        #target1 {
-            width: 640px;
-            height: 500px;
-            font-size: 200%;
-        }
-
         .result_modals {
             display: none;
             position: fixed;
@@ -371,26 +354,6 @@ if (
             z-index: 999;
         }
 
-        #change {
-            z-index: 10;
-            /* This should be needed only if the #webgl container has already some z-index value*/
-        }
-
-        #searchform_btn {
-            z-index: 10;
-            /* This should be needed only if the #webgl container has already some z-index value*/
-        }
-
-        #change_display_btn {
-            z-index: 10;
-            /* This should be needed only if the #webgl container has already some z-index value*/
-        }
-
-        #result_list_btn {
-            z-index: 10;
-            /* This should be needed only if the #webgl container has already some z-index value*/
-        }
-
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
         @media screen and (max-width:768px) {
@@ -415,33 +378,33 @@ if (
         var current_longitude = 0;
 
         function test() {
-            navigator.geolocation.getCurrentPosition(
-                test2,
-                // 取得失敗した場合
-                function(error) {
-                    switch (error.code) {
-                        case 1: //PERMISSION_DENIED
-                            alert("位置情報の利用が許可されていません");
-                            break;
-                        case 2: //POSITION_UNAVAILABLE
-                            alert("現在位置が取得できませんでした");
-                            break;
-                        case 3: //TIMEOUT
-                            alert("タイムアウトになりました");
-                            break;
-                        default:
-                            alert("その他のエラー(エラーコード:" + error.code + ")");
-                            break;
-                    }
-                }
-            );
-        }
+            var options = {
+                timeout: 10000 // 10秒でタイムアウトするように設定する
+            };
+            navigator.geolocation.getCurrentPosition(test2, errorCallback, options);
+        };
 
+        // 取得失敗した場合
+        function errorCallback(error) {
+            switch (error.code) {
+                case 1: //PERMISSION_DENIED
+                    alert("位置情報の利用が許可されていません");
+                    break;
+                case 2: //POSITION_UNAVAILABLE
+                    alert("現在位置が取得できませんでした");
+                    break;
+                case 3: //TIMEOUT
+                    alert("タイムアウトになりました");
+                    break;
+                default:
+                    alert("その他のエラー(エラーコード:" + error.code + ")");
+                    break;
+            }
+        };
         function test2(position) {
             current_latitude = position.coords.latitude;
             current_longitude = position.coords.longitude;
             //alert(current_longitude);
-
         }
         test();
 
@@ -545,82 +508,16 @@ if (
                 actions: [detailAction]
             };
 
-
-            const station_template = {
-                title: "{Name}",
-                content: [{
-                    type: "fields",
-                    fieldInfos: [{
-                        fieldName: "ID",
-                        label: "ID",
-                        visible: true
-                    }, {
-                        fieldName: "X",
-                        label: "経度",
-                        visible: true
-                    }, {
-                        fieldName: "Y",
-                        label: "緯度",
-                        visible: true
-                    }]
-                }]
-            };
-
             //飲食店のIDから表示するスポットを決める
             var food_feature_sql = "";
             food_feature_sql = <?php echo json_encode($keywordCondition); ?>;
 
-
-            // スポット名を表示するラベルを定義
-            var labelClass = {
-                symbol: {
-                    type: "text",
-                    color: "white",
-                    haloColor: "black",
-                    haloSize: 1
-                },
-                font: {
-                    size: 15,
-                    widget: "bold"
-                },
-                labelPlacement: "above-center",
-                labelExpressionInfo: {
-                    expression: "$feature.name"
-                }
-            };
-
-            //spotLayer
-            //$map_stations,$map_restaurants,$map_sightseeing_spotsはframe.phpに
-            var foodLayer = new FeatureLayer({
-                url: <?php echo json_encode($map_restaurants); ?>,
-                id: "foodLayer",
-                popupTemplate: food_template,
-                definitionExpression: food_feature_sql,
-                labelingInfo: [labelClass]
-            });
-
-            var all_foodLayer = new FeatureLayer({
-                url: <?php echo json_encode($map_restaurants); ?>,
-                id: "all_foodLayer",
-                popupTemplate: food_template,
-                labelingInfo: [labelClass]
-            });
-
             //選択したスポットの表示レイヤー
             const resultsLayer = new GraphicsLayer();
 
-            //飲食店全体を表示するか検索結果を表示するか
-            var foodLayer_Flag = <?php echo json_encode($all_foodLayer_Flag); ?>;
-            if (foodLayer_Flag == 1) {
-                $food = all_foodLayer;
-            } else {
-                $food = foodLayer;
-            }
-
             const map = new Map({
                 basemap: "streets",
-                layers: [$food, resultsLayer]
-                //layers: [$food]
+                layers: [resultsLayer]
             });
 
             var center = [current_longitude, current_latitude];
@@ -634,13 +531,6 @@ if (
                     dockOptions: {
                         breakpoint: false
                     }
-                }
-            });
-
-            //ポップアップの処理
-            view.popup.on("trigger-action", function(event) {
-                if (event.action.id === "detail") {
-                    restaurant_detail();
                 }
             });
 
@@ -674,12 +564,10 @@ if (
                 }),
                 useHeadingEnabled: false
             });
-            view.ui.add(locate, "top-left");
+            //view.ui.add(locate, "top-left");
 
             var featureLayer = new FeatureLayer({
                 url: <?php echo json_encode($map_restaurants); ?>, //
-                //url: "https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_hasune_restaurants/FeatureServer",
-                //url :"https://services7.arcgis.com/rbNS7S9fqH4JaV7Y/arcgis/rest/services/gis_chofu_restaurants/FeatureServer",
                 id: "featureLayer",
                 popupTemplate: food_template,
                 definitionExpression: food_feature_sql
@@ -794,7 +682,7 @@ if (
                     //make_table(test_row, table_column);
                     make_little_table(test_row, table_column);
                     make_modal_table(test_row, table_column);
-                    make_name_table(test_row);
+                    //make_name_table(test_row);
                     make_image_table(test_row);
                     make_ar_object(test_row);
 
@@ -811,18 +699,6 @@ if (
 
 <script type="text/javascript">
     var area_name = <?php echo json_encode($area_name); ?>;
-
-    //画像の読み込みのためにリロード
-    function reload() {
-        if (window.name != "any") {
-            //alert("リロードします");
-            location.reload();
-            window.name = "any";
-        } else {
-            window.name = "";
-        }
-
-    }
 
     //セレクトボックスから選ばれたワードを検索ワードボックスに入れる　もっといい方法あるかも
     function input_search_name(word) {
@@ -1005,21 +881,6 @@ if (
         }
     }
 
-    //検索結果の名前を表示する
-    function make_name_table(array) {
-        $results_name_form = document.getElementById("result_name_table");
-        $results_name_form.innerHTML = "";
-        $results_name_form.className = 'tables';
-        for (var i = 0; i < array.length; i++) {
-            const a_name = array[i][3];
-            //表示するhtmlの作成
-            const newDiv = document.createElement("div");
-            newDiv.className = 'target_name';
-            newDiv.id = `info_name_box${i+1}`;
-            newDiv.textContent = a_name;
-            $results_name_form.appendChild(newDiv);
-        }
-    }
     //検索結果の写真を表示する
     function make_image_table(array) {
         $results_image_form = document.getElementById("result_image_table");
@@ -1046,7 +907,7 @@ if (
             for (var i = 0; i < array.length; i++) {
                 const target = document.getElementById(`planebox${i+1}`);
                 //const material = `shader:html;target: #namebox${i+1};`
-                const material = `src: ./markers/ar_icon3.png;`
+                const material = `src: ./markers/ar_icon${i+1}.png;`
                 target.setAttribute('geometry', "primitive: sphere");
                 target.setAttribute('scale', "3 3 3");
                 target.removeAttribute('material');
@@ -1081,7 +942,6 @@ if (
 
     //ARのオブジェクトを作成する
     function make_ar_object(array) {
-
         $AR_form = document.getElementById("ar_scene");
 
         for (var i = 0; i < array.length; i++) {
@@ -1117,7 +977,7 @@ if (
 
             newPlane.setAttribute('geometry', "primitive: plane");
 
-            newPlane.setAttribute('position', `0 ${-10 + i*5} 0`);
+            newPlane.setAttribute('position', `0 ${-10 + i*3} 0`);
             newPlane.setAttribute('width', "16");
             newPlane.setAttribute('height', "10");
             const material = `shader:html;target: #infobox${i+1};`
@@ -1128,14 +988,6 @@ if (
         }
     }
 
-    AFRAME.registerComponent('click', {
-        init: function() {
-            let name = this.el.getAttribute('data-text');
-            this.el.addEventListener('click', () => {
-                alert(name);
-            });
-        }
-    });
 </script>
 
 <body>
@@ -1151,13 +1003,14 @@ if (
     </a-scene>
 
     <div id="bottom_bar">
-        <select class="btn btn-primary w-15" id="change_display_btn" size="1" onchange="change_display(value)">
+        <button class="btn btn-primary w-15" onclick="location.reload()" type=button>再読み込み</button>
+        <select class="btn btn-primary w-15" size="1" onchange="change_display(value)">
             <option value="default"> 通常表示 </option>
             <option value="small"> オブジェクト表示 </option>
             <option value="image"> 写真だけ表示 </option>
         </select>
-        <button class="btn btn-primary w-15" id="searchform_btn" type=button popovertarget="mypopover">検索フォームを開く</button>
-        <button class="btn btn-primary w-15" id="change" type=button onclick="location.href='search_nearby_restaurants_map.php'">戻る</button>
+        <button class="btn btn-primary w-15" type=button popovertarget="mypopover">検索フォーム</button>
+        <button class="btn btn-primary w-15" type=button onclick="location.href='search_nearby_restaurants_map.php'">戻る</button>
     </div>
 
     <div class="container-fluid">
@@ -1308,7 +1161,7 @@ if (
         </main>
 
         <footer>
-            <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>
+            <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
         </footer>
     </div>
 

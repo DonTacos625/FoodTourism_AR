@@ -131,7 +131,8 @@ $keikaku[] = $goal_info;
         #editbox {
             position: relative;
             float: left;
-            width: 400px;
+            display: flex;
+            width: 40vw;
             margin-left: 5px;
         }
 
@@ -140,10 +141,6 @@ $keikaku[] = $goal_info;
         }
 
         #editbox #goal_box {
-            float: right;
-        }
-
-        #editbox #post_station {
             float: right;
         }
 
@@ -230,7 +227,7 @@ $keikaku[] = $goal_info;
                 id: "detail",
                 className: "esri-icon-documentation"
             };
-            
+
             const food_template = {
                 title: "{Name}",
                 content: [{
@@ -305,8 +302,8 @@ $keikaku[] = $goal_info;
                         label: "緯度",
                         visible: true
                     }]
-                }]
-                ,actions: [detailAction]
+                }],
+                actions: [detailAction]
             };
 
             // スポット名を表示するラベルを定義
@@ -530,6 +527,14 @@ $keikaku[] = $goal_info;
     <div class="container-fluid">
         <main class="row">
             <h3>開始・終了駅の設定</h3>
+            <div>
+                <ol class="stepBar">
+                    <li class="visited"><span>1</span><br>開始・終了駅</li>
+                    <li><span>2</span><br>飲食店</li>
+                    <li><span>3</span><br>観光スポット</li>
+                    <li><span>4</span><br>観光計画を保存</li>
+                </ol>
+            </div>
             <div id="editbox">
                 <div id="start_box">
                     開始駅を選択する：<br>
@@ -540,7 +545,6 @@ $keikaku[] = $goal_info;
                         <?php endforeach; ?>
                     </select>
                 </div>
-
                 <div id="goal_box">
                     終了駅を選択する：<br>
                     <select name="goal_station_id" size="1" onchange="jump(value)">
@@ -550,14 +554,11 @@ $keikaku[] = $goal_info;
                         <?php endforeach; ?>
                     </select>
                 </div>
-
-                <br><br><br>
-
-                <div class="move_box">
-                    <a class="prev_page" name="prev_explain" href="explain.php#set_station">使い方に戻る</a>
-                    <a class="next_page" name="next_search" href="search.php">飲食店の検索・決定へ</a>
-                </div><br>
             </div>
+            <div class="move_box">
+                <a class="prev_page" name="prev_explain" href="explain.php#set_station">使い方に戻る</a>
+                <a class="next_page" name="next_search" href="search.php">飲食店の検索・決定へ</a>
+            </div><br>
             <div id="viewbox">
                 <div id="viewDiv"></div>
             </div>

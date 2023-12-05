@@ -302,12 +302,6 @@ function set_checked($session_name, $value)
                 font-size: 13px;
             }
 
-            .container {
-                display: flex;
-                flex-direction: column;
-                min-height: 250vh;
-            }
-
         }
     </style>
 

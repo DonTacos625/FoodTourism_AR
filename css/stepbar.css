@@ -1,0 +1,65 @@
+
+.stepBar {
+    display: flex;
+    max-width: 50vw;
+    position: sticky;
+    top: 0;
+    margin: 20px auto;
+    text-align: center;
+}
+.stepBar li {
+    font-size: 1.5vw;
+    list-style: none;
+    position: relative;
+    width: 50%;
+}
+.stepBar li:after {
+    background: #D0E1F9;
+    content: "";
+    width: calc(104% - 36px);
+    height: 4px;
+    position: absolute;
+    left: calc(-50% + 18px);
+    top: 10px;
+}
+.stepBar li:first-child:after {
+    display: none;
+}
+
+.stepBar li span {
+    background: #D0E1F9;
+    color: #ffffff;
+    display: inline-block;
+    height: 36px;
+    margin-bottom: 5px;
+    line-height: 36px;
+    width: 36px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+}
+
+.stepBar .visited:after {
+    background: #4D648D;
+}
+.stepBar .visited span {
+    background: #4D648D;
+}
+
+@media screen and (min-width:769px) and (max-width:1366px) {
+    .stepBar {
+        max-width: 70vw;
+    }
+    .stepBar li {
+        font-size: 2vw;
+    }
+}
+
+@media screen and (max-width:768px) {
+    .stepBar {
+        max-width: 80vw;
+    }
+    .stepBar li {
+        font-size: 2.2vw;
+    }
+}

@@ -82,7 +82,6 @@ $count = 0
             display: flex;              /* フレックスボックスにする */
             align-items:stretch;        /* 縦の位置指定 */
             flex-wrap: wrap;
-
         }
 
         .plan_text{
@@ -144,8 +143,8 @@ $count = 0
                                 <h4 class="card-header"><?php echo $row["plan_name"]; ?></h4><br>
                                 <img class="card-img-top" src=<?php if($row["lunch"] != -1) {echo "images/minatomirai/restaurants/". $row["lunch"] .".jpg" ;} else {echo "images/minatomirai/restaurants/". $row["dinner"] .".jpg" ;}?> alt="">
                                 <div class="card-text">
-                                    <div class="plan_text">作成したユーザー：<?php echo $row["user_name"]; ?></div><br>
-                                    <div class="plan_text">メモ：<?php echo $row["memo"]; ?></div><br>
+                                    <div class="plan_text">作成したユーザー：<br><?php echo $row["user_name"]; ?></div><br>
+                                    <div class="plan_text">メモ：<br><?php echo $row["memo"]; ?></div><br>
                                 </div>
                                 <a href="user_plan_detail.php?plan_id=<?php echo $row["id"]; ?>">編集ページに移動する</a>
                             </div>

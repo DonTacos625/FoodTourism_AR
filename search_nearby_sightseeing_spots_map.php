@@ -214,12 +214,6 @@ if ($categoryName == "0") {
                 font-size: 12px;
             }
 
-            .container {
-                display: flex;
-                flex-direction: column;
-                min-height: 180vh;
-            }
-
         }
     </style>
 
@@ -688,8 +682,8 @@ if ($categoryName == "0") {
     <div class="container-fluid">
         <main class="row">
             <div id="detailbox">
-                <h3 id="search_start">飲食店の検索・決定</h3>
-                <a id="view_result" name="view_result" href="search_nearby_sightseein_ar.php">ARで結果を表示</a><br>
+                <h3 id="search_start">周辺観光スポットの検索</h3>
+                <a id="view_result" name="view_result" href="search_nearby_sightseeing_spots_ar.php">ARで結果を表示</a><br>
                 <a id="view_result2" name="view_result2" href="search_nearby_restaurants_map.php">飲食店</a><br>
                 <div class="search_form">
                     <form action="search_nearby_sightseeing_spots_map.php" method="post">
@@ -732,7 +726,7 @@ if ($categoryName == "0") {
                         <input type="submit" name="submit" value="検索する">
                     </form>
                 </div><br>
-                <button type="button" onclick="display_results()">再読み込み</button>
+                <button type="button" onclick="display_results()">再読み込み</button><br>
                 <?php
                 if (!$count) {
                     echo "検索条件に該当する飲食店はありませんでした";

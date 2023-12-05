@@ -222,23 +222,6 @@ function set_checked($session_name, $value)
             margin: 0px;
         }
 
-        #viewbox #btn {
-            width: 80%;
-            height: 40px;
-            color: #fff;
-            background-color: #3399ff;
-            border-bottom: 5px solid #33ccff;
-            -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, .3);
-            box-shadow: 0 3px 5px rgba(0, 0, 0, .3);
-        }
-
-        #viewbox #btn:hover {
-            margin-top: 3px;
-            color: #fff;
-            background: #0099ff;
-            border-bottom: 2px solid #00ccff;
-        }
-
         .move_box {
             position: relative;
             width: 76vw;
@@ -259,11 +242,6 @@ function set_checked($session_name, $value)
                 width: 100%;
             }
 
-            .container {
-                display: flex;
-                flex-direction: column;
-                min-height: 160vh;
-            }
         }
     </style>
 
@@ -388,11 +366,11 @@ function set_checked($session_name, $value)
                         label: "緯度",
                         visible: true
                     }]
-                }]
-                ,actions: [detailAction]
+                }],
+                actions: [detailAction]
             };
 
-            
+
             const station_template = {
                 title: "{Name}",
                 content: [{
@@ -921,6 +899,14 @@ function set_checked($session_name, $value)
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
             <h3>観光スポット選択</h3>
+            <div>
+                <ol class="stepBar">
+                    <li class="visited"><span>1</span><br>開始・終了駅</li>
+                    <li class="visited"><span>2</span><br>飲食店</li>
+                    <li class="visited"><span>3</span><br>観光スポット</li>
+                    <li><span>4</span><br>観光計画を保存</li>
+                </ol>
+            </div>
             <a id="list_result" name="list_result" href="keiro_list.php">一覧で結果を表示</a><br>
             <div class="search_form">
                 <form action="">
@@ -950,7 +936,7 @@ function set_checked($session_name, $value)
             <div id="result_table"></div>
             <div id="viewbox">
                 <div id="viewDiv"></div>
-                <button type="button" id="btn" onclick="kousin()" title="経路を更新し表示します"><b>経路再表示</b></button>
+                <button type="button" class="btn btn-secondary btn-lg" onclick="kousin()" title="経路を更新し表示します"><b>経路再表示</b></button>
             </div>
         </main>
         <footer>

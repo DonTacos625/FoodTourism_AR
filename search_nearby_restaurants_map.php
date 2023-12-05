@@ -346,12 +346,6 @@ if (
                 font-size: 12px;
             }
 
-            .container {
-                display: flex;
-                flex-direction: column;
-                min-height: 180vh;
-            }
-
         }
     </style>
 
@@ -364,7 +358,6 @@ if (
         var current_latitude = 0;
         var current_longitude = 0;
 
-        /*
         function test() {
             var options = {
                 timeout: 10000 // 10秒でタイムアウトするように設定する
@@ -389,11 +382,11 @@ if (
                     break;
             }
         };
-        */
+        /*
         function test() {
             navigator.geolocation.getCurrentPosition(test2);
         }
-
+        */
         function test2(position) {
             current_latitude = position.coords.latitude;
             current_longitude = position.coords.longitude;
@@ -864,7 +857,7 @@ if (
     <div class="container-fluid">
         <main class="row">
             <div id="detailbox">
-                <h3 id="search_start">飲食店の検索・決定</h3>
+                <h3 id="search_start">周辺飲食店の検索</h3>
                 <a id="view_result" name="view_result" href="search_nearby_restaurants_ar.php">ARで結果を表示</a><br>
                 <a id="view_result2" name="view_result2" href="search_nearby_sightseeing_spots_map.php">観光スポット</a><br>
                 <div class="search_form">
@@ -1017,7 +1010,7 @@ if (
                         <input type="submit" name="submit" value="検索する">
                     </form>
                 </div><br>
-                <button type="button" onclick="display_results()">再読み込み</button>
+                <button type="button" onclick="display_results()">再読み込み</button><br>
                 <?php
                 if (!$count) {
                     echo "検索条件に該当する飲食店はありませんでした";

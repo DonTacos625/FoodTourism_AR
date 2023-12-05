@@ -201,7 +201,7 @@ try {
 
     $keywordCondition = [];
     //posts = [["データベースのカラム名", "検索条件"]]
-    $posts = [["wifi", $wifi], ["private_room", $private_room], ["credit_card", $credit_card], ["non_smoking", $non_smoking], ["lunch", $lunch], ["capacity", $capacity] ];
+    $posts = [["wifi", $wifi], ["private_room", $private_room], ["credit_card", $credit_card], ["non_smoking", $non_smoking], ["lunch", $lunch], ["capacity", $capacity]];
 
     $search_word = strtr($search_name, [
         '\\' => '\\\\',
@@ -222,19 +222,19 @@ try {
         }
     }
     //予算範囲
-    if($lunch_min != 0){
+    if ($lunch_min != 0) {
         $keywordCondition[] =  " lunch_min >= $lunch_min";
         $keywordCondition[] =  " lunch_min <> -1";
     }
-    if($lunch_max != 999999){
+    if ($lunch_max != 999999) {
         $keywordCondition[] =  " lunch_max <= $lunch_max";
         $keywordCondition[] =  " lunch_max <> -1";
     }
-    if($dinner_min != 0){
+    if ($dinner_min != 0) {
         $keywordCondition[] =  " dinner_min >= $dinner_min";
         $keywordCondition[] =  " dinner_min <> -1";
     }
-    if($dinner_max != 999999){
+    if ($dinner_max != 999999) {
         $keywordCondition[] =  " dinner_max <= $dinner_max";
         $keywordCondition[] =  " dinner_max <> -1";
     }
@@ -263,7 +263,7 @@ try {
     //var_dump($keywordCondition);
 
     //sql文にする
-    $sql = 'SELECT * FROM ' . $database_restaurants .' WHERE ' . $keywordCondition . ' ';
+    $sql = 'SELECT * FROM ' . $database_restaurants . ' WHERE ' . $keywordCondition . ' ';
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
@@ -312,9 +312,11 @@ function set_selected($session_name, $value)
 
 //検索条件が初期の場合
 $all_foodLayer_Flag = 0;
-if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking == "0" && $lunch == "0" 
-    && ($capacity == "0" || $capacity == "") && $search_word == "" 
-    && $dinner_min == "0" && $dinner_max == "999999" && $lunch_min == "0" && $lunch_max == "999999") {
+if (
+    $wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking == "0" && $lunch == "0"
+    && ($capacity == "0" || $capacity == "") && $search_word == ""
+    && $dinner_min == "0" && $dinner_max == "999999" && $lunch_min == "0" && $lunch_max == "999999"
+) {
     $all_foodLayer_Flag = 1;
 }
 //var_dump($all_foodLayer_Flag);
@@ -346,12 +348,6 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             margin: 0px;
         }
 
-        #detailbox {
-            position: relative;
-            float: left;
-            margin-left: 0px;
-        }
-
         #detailbox #infobox {
             float: left;
             width: 75vw;
@@ -363,7 +359,7 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             border: solid 3px #ffffff;
         }
 
-        #detailbox #infobox #imgbox{
+        #detailbox #infobox #imgbox {
             float: left;
             display: flex;
             width: 20vw;
@@ -373,11 +369,11 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             align-items: center;
         }
 
-        #detailbox #infobox #imgbox img{
-            width:auto;
-            height:auto;
-            max-width:100%;
-            max-height:100%;
+        #detailbox #infobox #imgbox img {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
         }
 
         #detailbox #infobox table th {
@@ -437,42 +433,12 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
             }
 
         }
-
-        /*
-        .move_box {
-            position: relative;
-            width: 76vw;
-            float: left;
-        }
-
-        @media screen and (max-width:768px) {
-            h3 {
-                margin: 0px;
-                font-size: 17px;
-            }
-
-            .move_box {
-                width: 100%;
-            }
-
-            .search_form {
-                font-size: 12px;
-            }
-
-            .container {
-                display: flex;
-                flex-direction: column;
-                min-height: 180vh;
-            }
-
-        }
-        */
     </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
     <script src="https://js.arcgis.com/4.21/"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    
+
     <script>
         var pointpic = "";
         require([
@@ -565,11 +531,11 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
                         label: "緯度",
                         visible: true
                     }]
-                }]
-                ,actions: [detailAction]
+                }],
+                actions: [detailAction]
             };
 
-            
+
             const station_template = {
                 title: "{Name}",
                 content: [{
@@ -825,7 +791,6 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
 </head>
 
 <script type="text/javascript">
-
     //セレクトボックスから選ばれたワードを検索ワードボックスに入れる　もっといい方法あるかも
     function input_search_name(word) {
         const update = document.getElementById("search_name");
@@ -833,16 +798,16 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
     };
     //予算範囲が不適切な場合
     function right_range(word) {
-        if(word.match(/lunch/)){
+        if (word.match(/lunch/)) {
             const lunch_min = document.getElementById("lunch_min");
             const lunch_max = document.getElementById("lunch_max");
-            if(lunch_min.value - lunch_max.value > 0){
+            if (lunch_min.value - lunch_max.value > 0) {
                 alert("最小予算が最大予算を超えています！");
             }
-        } else if(word.match(/dinner/)){
+        } else if (word.match(/dinner/)) {
             const dinner_min = document.getElementById("dinner_min");
             const dinner_max = document.getElementById("dinner_max");
-            if(dinner_min.value - dinner_max.value > 0){
+            if (dinner_min.value - dinner_max.value > 0) {
                 alert("最小予算が最大予算を超えています！");
             }
         }
@@ -852,8 +817,16 @@ if ($wifi == "0" && $private_room == "0" && $credit_card == "0" && $non_smoking 
 <body>
     <div class="container-fluid">
         <main class="row">
-        <div id="detailbox">
+            <div id="detailbox">
                 <h3 id="search_start">飲食店の検索・決定</h3>
+                <div>
+                    <ol class="stepBar">
+                        <li class="visited"><span>1</span><br>開始・終了駅</li>
+                        <li class="visited"><span>2</span><br>飲食店</li>
+                        <li><span>3</span><br>観光スポット</li>
+                        <li><span>4</span><br>観光計画を保存</li>
+                    </ol>
+                </div>
                 <a id="view_result" name="view_result" href="search.php">一覧で結果を表示</a><br>
                 <div class="search_form">
                     <form action="search_map.php" method="post">

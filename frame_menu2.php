@@ -10,9 +10,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
 
     <style>
-        h1 {
-            margin: 0px;
-        }
 
         .search_form {
             line-height: 200%;
@@ -109,9 +106,6 @@
         }
 
         @media screen and (min-width:769px) and (max-width:1366px) {
-            h1 {
-                font-size: 25px;
-            }
 
             #dropmenu {
                 width: 77vw;
@@ -136,10 +130,6 @@
         }
 
         @media screen and (max-width:768px) {
-            h1 {
-                font-size: 22px;
-            }
-
             h2 {
                 margin: 0px;
                 font-size: 19px;
@@ -202,7 +192,6 @@
                 name_tag.className = "";
                 name_tag.querySelector(".btn").textContent = "削除";
             }
-
         };
     </script>
 
