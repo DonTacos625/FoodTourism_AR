@@ -209,6 +209,26 @@ $keikaku[] = $goal_info;
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>作成した観光計画を見る</title>
     <style>
+        #rightbox {
+            position: relative;
+            top: 0px;
+            float: right;
+            width: 20vw;
+            border-right: 3px solid #0099FF;
+            z-index: 2;
+        }
+
+        #rightbox h2 {
+            /*background: #0099FF;
+            color: #FFFFFF;*/
+            margin-right: 5px;
+            border-left: 5px solid #000080;
+        }
+
+        #rightbox p {
+            margin-left: 10px;
+        }
+
         #viewbox {
             position: relative;
             float: left;
@@ -225,7 +245,19 @@ $keikaku[] = $goal_info;
             width: 77vw;
         }
 
+        #side_rightbox {
+            display: none;
+        }
+
         @media screen and (min-width:769px) and (max-width:1366px) {
+            #rightbox h2 {
+                /*background: #0099FF;
+                color: #FFFFFF;*/
+                margin-right: 4px;
+                border-left: 4px solid #000080;
+                font-size: 17px;
+            }
+
             #viewbox {
                 width: 77vw;
                 height: 70vh;
@@ -233,6 +265,15 @@ $keikaku[] = $goal_info;
         }
 
         @media screen and (max-width:768px) {
+            #rightbox {
+                display: none;
+            }
+
+            #side_rightbox {
+                display: block;
+                float:right;
+            }
+
             #viewbox {
                 position: relative;
                 float: left;
@@ -245,7 +286,7 @@ $keikaku[] = $goal_info;
                 width: 100%;
                 height: 90%;
             }
-            
+
         }
     </style>
 
@@ -817,10 +858,9 @@ $keikaku[] = $goal_info;
 </head>
 
 <body>
-    <div id="leftbox">
+    <div id="rightbox">
 
         <h2>観光計画</h2>
-
         <div id="other_plan_box">
             <div class="sortable">
                 開始駅<br>
@@ -833,7 +873,6 @@ $keikaku[] = $goal_info;
                     </li>
                 </ul>
             </div>
-
             <?php if ($side_s_l_spots[0][2] != "設定されていません") { ?>
                 <div class="sortable">
                     昼食前に訪れる観光スポット<br>
@@ -853,7 +892,6 @@ $keikaku[] = $goal_info;
                     <input type="hidden" id="list-ids" name="list-ids" />
                 </div>
             <?php } ?>
-
             <?php if ($side_lunch_name != "設定されていません") { ?>
                 <div class="sortable">
                     昼食を食べる飲食店<br>
@@ -868,7 +906,6 @@ $keikaku[] = $goal_info;
                     </ul>
                 </div>
             <?php } ?>
-
             <?php if ($side_l_d_spots[0][2] != "設定されていません") { ?>
                 <div class="sortable">
                     昼食後に訪れる観光スポット<br>
@@ -888,7 +925,6 @@ $keikaku[] = $goal_info;
                     <input type="hidden" id="list-ids" name="list-ids" />
                 </div>
             <?php } ?>
-
             <?php if ($side_dinner_name != "設定されていません") { ?>
                 <div class="sortable">
                     夕食を食べる飲食店<br>
@@ -903,7 +939,6 @@ $keikaku[] = $goal_info;
                     </ul>
                 </div>
             <?php } ?>
-
             <?php if ($side_d_g_spots[0][2] != "設定されていません") { ?>
                 <div class="sortable">
                     夕食後に訪れる観光スポット<br>
@@ -923,7 +958,6 @@ $keikaku[] = $goal_info;
                     <input type="hidden" id="list-ids" name="list-ids" />
                 </div>
             <?php } ?>
-
             <div class="sortable">
                 終了駅<br>
                 <ul>
@@ -939,13 +973,136 @@ $keikaku[] = $goal_info;
 
     </div>
 
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasExampleLabel">観光計画</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div id="other_plan_box">
+                <div class="sortable">
+                    開始駅<br>
+                    <ul>
+                        <li class="card" id="other_plan_start_box" value="">
+                            <div class="card-body p-2">
+                                <img id="pin" width="20" height="20" src="./icons/pop_start.png" alt="開始駅のアイコン" title="開始駅">
+                                <?php echo $side_start_station_name ?><br>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <?php if ($side_s_l_spots[0][2] != "設定されていません") { ?>
+                    <div class="sortable">
+                        昼食前に訪れる観光スポット<br>
+                        <ul>
+                            <?php $side_count = 0; ?>
+                            <?php foreach ($side_s_l_spots as $date) { ?>
+                                <?php $side_count += 1; ?>
+                                <li class="card">
+                                    <div class="card-body p-2">
+                                        <img width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $side_count . ".png"; ?> alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
+                                        <div><?php echo $date[2] ?></div>
+                                        <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
+                                    </div>
+                                </li>
+                            <?php } ?>
+                        </ul>
+                        <input type="hidden" id="list-ids" name="list-ids" />
+                    </div>
+                <?php } ?>
+                <?php if ($side_lunch_name != "設定されていません") { ?>
+                    <div class="sortable">
+                        昼食を食べる飲食店<br>
+                        <ul>
+                            <li class="card" id="" value="">
+                                <div class="card-body p-2">
+                                    <img id="pin" width="20" height="20" src="./icons/pop_lunch.png" alt="昼食予定地のアイコン" title="昼食予定地">
+                                    <?php echo $side_lunch_name ?><br>
+                                    <input disabled class="time" type="number" value="<?php echo $side_lunch_time; ?>">分
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                <?php } ?>
+                <?php if ($side_l_d_spots[0][2] != "設定されていません") { ?>
+                    <div class="sortable">
+                        昼食後に訪れる観光スポット<br>
+                        <ul>
+                            <?php $side_count = 0; ?>
+                            <?php foreach ($side_l_d_spots as $date) { ?>
+                                <?php $side_count += 1; ?>
+                                <li class="card">
+                                    <div class="card-body p-2">
+                                        <img width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $side_count . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
+                                        <div><?php echo $date[2] ?></div>
+                                        <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
+                                    </div>
+                                </li>
+                            <?php } ?>
+                        </ul>
+                        <input type="hidden" id="list-ids" name="list-ids" />
+                    </div>
+                <?php } ?>
+                <?php if ($side_dinner_name != "設定されていません") { ?>
+                    <div class="sortable">
+                        夕食を食べる飲食店<br>
+                        <ul>
+                            <li class="card" id="" value="">
+                                <div class="card-body p-2">
+                                    <img id="pin" width="20" height="20" src="./icons/pop_dinner.png" alt="夕食予定地のアイコン" title="夕食予定地">
+                                    <?php echo $side_dinner_name ?><br>
+                                    <input disabled class="time" type="number" value="<?php echo $side_dinner_time; ?>">分
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                <?php } ?>
+                <?php if ($side_d_g_spots[0][2] != "設定されていません") { ?>
+                    <div class="sortable">
+                        夕食後に訪れる観光スポット<br>
+                        <ul>
+                            <?php $side_count = 0; ?>
+                            <?php foreach ($side_d_g_spots as $date) { ?>
+                                <?php $side_count += 1; ?>
+                                <li class="card">
+                                    <div class="card-body p-2">
+                                        <img width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $side_count . ".png"; ?> alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
+                                        <div><?php echo $date[2] ?></div>
+                                        <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
+                                    </div>
+                                </li>
+                            <?php } ?>
+                        </ul>
+                        <input type="hidden" id="list-ids" name="list-ids" />
+                    </div>
+                <?php } ?>
+                <div class="sortable">
+                    終了駅<br>
+                    <ul>
+                        <li class="card" id="plan_goal_box" value="">
+                            <div class="card-body p-2">
+                                <img id="pin" width="20" height="20" src="./icons/pop_goal.png" alt="終了駅のアイコン" title="終了駅">
+                                <div class="plan_goal_name"><?php echo $side_goal_station_name ?></div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container-fluid">
         <main class="row">
             <div>
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
-            <h3 class="px-0" >プラン詳細</h3>
-            <div class="icon_explain">
+            <h3 class="px-0">プラン詳細</h3>
+            <div id="side_rightbox" class="float-sm-right">
+                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                    観光計画
+                </button>
+            </div>
+            <div class="plan_explain">
                 プラン名：<?php echo $result["plan_name"]; ?>
                 <b>
                     <div id="cal_k">消費カロリー：0.00 kcal</div>

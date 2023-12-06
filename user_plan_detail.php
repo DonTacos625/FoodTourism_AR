@@ -965,7 +965,7 @@ $keikaku[] = $goal_info;
             </div>
 
             <h3 class="px-0" >プラン詳細</h3>
-            <div class="icon_explain">
+            <div class="plan_explain">
                 プラン名：<?php echo $result["plan_name"]; ?><br>
                 <b>
                     <div id="cal_k">消費カロリー：0.00 kcal</div>

@@ -141,6 +141,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="survey.php">アンケート</a>
                     </li>
+                    <li>
+                    <button class="btn btn-primary position-absolute end-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">現在作成中の観光計画</button>
+                    </li>
                 </ul>
             </div>
             <div id="userdata_box" class="mr-3">
