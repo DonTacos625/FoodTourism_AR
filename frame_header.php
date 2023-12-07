@@ -1,5 +1,11 @@
 <?php
-
+ if($area == 1){
+    $area_message = "みなとみらい";
+ } else if($area == 2){
+    $area_message = "蓮根";
+ } else if($area == 3){
+    $area_message = "調布";
+ }
 ?>
 
 <!doctype html>
@@ -73,14 +79,15 @@
             <h1>横浜みなとみらいフードツーリズム支援システム</h1>
         </div>
     </div>
-    <div id="changer" class="mr-3">
-        対象地域チェンジャー<br>
+    対象地域チェンジャー<br>
+    <div id="changer" class="d-flex">
         <select name="forbidden" size="1" onchange="change_area(value)">
             <option value="0"> スポットを選択してください </option>
             <option value="1"> みなとみらい </option>
             <option value="2"> 蓮根 </option>
             <option value="3"> 調布 </option>
         </select><br>
+        <div class="ml-3">　現在の対象地域：<?php echo htmlspecialchars($area_message, ENT_QUOTES); ?></div>
     </div>
 </body>
 
