@@ -138,13 +138,13 @@ try {
     }
 
     if (isset($_POST["search_genre"])) {
-        $search_genre = htmlspecialchars($_POST["search_genre"]);
+        $search_genre = $_POST["search_genre"];
         $_SESSION["search_genre"] = $search_genre;
     } else {
         $search_genre = $_SESSION["search_genre"];
     }
     if (isset($_POST["search_name"])) {
-        $search_name = htmlspecialchars($_POST["search_name"]);
+        $search_name = $_POST["search_name"];
         $_SESSION["search_name"] = $search_name;
     } else {
         $search_name = $_SESSION["search_name"];
@@ -286,7 +286,7 @@ function set_selected($session_name, $value)
 
 
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>飲食店の検索・決定（地図上表示）</title>
+    <title>周辺飲食店の検索（AR）</title>
     <style>
         .target #ar_tablebox table {
             float: left;
@@ -336,6 +336,7 @@ function set_selected($session_name, $value)
             position: fixed;
             top: 50%;
             left: 50%;
+            width: 70vw;
             transform: translate(-50%, -50%);
             background-color: white;
             border: 1px solid black;
@@ -760,7 +761,7 @@ function set_selected($session_name, $value)
         return newtr;
     }
 
-    //モーダルウィンドウを表示する
+    //モーダルウィンドウを作成する
     function make_modal_table(array, columns) {
         $result_modal_form = document.getElementById("result_modal_table");
         $result_modal_form.innerHTML = "";

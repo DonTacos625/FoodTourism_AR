@@ -229,7 +229,7 @@ function set_checked($session_name, $value)
         gtag('config', 'UA-214561408-1');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>観光スポット選択（地図上表示）</title>
+    <title>観光スポット選択（一覧表示）</title>
     <style>
         .move_box {
             position: relative;
@@ -302,7 +302,6 @@ function set_checked($session_name, $value)
 
             // Point the URL to a valid routing service
             const routeUrl = "https://utility.arcgis.com/usrsvcs/servers/4550df58672c4bc6b17607b947177b56/rest/services/World/Route/NAServer/Route_World";
-            const MY_API_KEY = "AAPKfe5fdd5be2744698a188fcc0c7b7b1d742vtC5TsStg94fpwkldrfNo3SJn2jl_VuCOEEdcBiwR7dKOKxejIP_3EDj9IPSPg";
             //popup
             var detailAction_station = {
                 title: "詳細",
@@ -799,6 +798,7 @@ function set_checked($session_name, $value)
                         spot_array.push($say);
                         return graphic;
                     });
+                    
                     //今回のクリックによる検索結果を、グラフィックスレイヤーに登録（マップに表示）
                     resultsLayer.addMany(features);
 
@@ -852,6 +852,7 @@ function set_checked($session_name, $value)
         }
 
         var area_name = <?php echo json_encode($area_name); ?>;
+
         function make_spots_table(array, columns) {
             $result_spots_form = document.getElementById("result_spots_table");
             $result_spots_form.innerHTML = "";
@@ -864,7 +865,7 @@ function set_checked($session_name, $value)
                 const a_urls = array[i][3];
 
                 if (a_urls == null) {
-                    $a_page =  "<a>なし</a>";
+                    $a_page = "<a>なし</a>";
                 } else {
                     $a_page = `<a href="${a_urls}" target=_blank>ホームページにアクセスする</a>`;
                 }
@@ -916,7 +917,7 @@ function set_checked($session_name, $value)
             <div>
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
-            <h3 class="px-0">観光スポット選択</h3>
+            <h3 class="px-0" id="search_start">観光スポット選択</h3>
             <div>
                 <ol class="stepBar">
                     <li class="visited" onclick="location.href='set_station.php'"><span>1</span><br>開始・終了駅</li>
@@ -949,15 +950,17 @@ function set_checked($session_name, $value)
                 </form>
                 <!--<button type="button" onclick="display_results()">観光スポットを絞り込む</button>-->
             </div><br>
+            <!--
             <div class="move_box">
                 <a class="prev_page" name="prev_search" href="search.php">飲食店検索・決定に戻る</a>
                 <a class="next_page" name="see_myroute" href="plan_edit.php">作成した観光経路を見るへ</a>
             </div><br>
+            -->
             <div id="result_table"></div><br>
             <div id="result_spots_table"></div>
         </main>
         <footer>
-            <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>
+            <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
         </footer>
     </div>
 </body>

@@ -165,7 +165,7 @@ if ($categoryName == "0") {
     <link rel="stylesheet" href="css/ar_style.css?<?php echo date('YmdHis'); ?>">
 
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>飲食店の検索・決定（地図上表示）</title>
+    <title>周辺観光スポットの検索（AR）</title>
     <style>
         .target #ar_tablebox table {
             float: left;
@@ -215,6 +215,7 @@ if ($categoryName == "0") {
             position: fixed;
             top: 50%;
             left: 50%;
+            width: 70vw;
             transform: translate(-50%, -50%);
             background-color: white;
             border: 1px solid black;
@@ -628,8 +629,13 @@ if ($categoryName == "0") {
             const a_longitude = array[i][2];
             const a_name = array[i][3];
             const a_category = array[i][4];
-            const a_url = array[i][5];
+            const a_urls = array[i][5];
 
+            if (a_urls == null) {
+                $a_page = "<a>なし</a>";
+            } else {
+                $a_page = `<a href="${a_urls}" target=_blank>ホームページにアクセスする</a>`;
+            }
             //表示するhtmlの作成
             const newDiv = document.createElement("div");
             newDiv.id = `modal_box${i+1}`;
@@ -653,7 +659,7 @@ if ($categoryName == "0") {
                             </tr>
                             <tr>
                                 <th>ホームページ</th>
-                                <td class="modal_change">${a_url}</td>
+                                <td class="modal_change">${$a_page}</td>
                             </tr>
                         </table>
                     </div>

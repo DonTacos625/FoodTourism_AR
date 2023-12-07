@@ -48,7 +48,7 @@ try {
         gtag('config', 'UA-214561408-1');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>作成した観光計画を見る</title>
+    <title>ナビゲーション(地図上表示)</title>
     <style>
 
         @media screen and (min-width:769px) and (max-width:1366px) {}
@@ -68,8 +68,29 @@ try {
         var current_longitude = 0;
 
         function test() {
-            navigator.geolocation.getCurrentPosition(test2);
-        }
+            var options = {
+                timeout: 10000 // 10秒でタイムアウトするように設定する
+            };
+            navigator.geolocation.getCurrentPosition(test2, errorCallback, options);
+        };
+
+        // 取得失敗した場合
+        function errorCallback(error) {
+            switch (error.code) {
+                case 1: //PERMISSION_DENIED
+                    alert("位置情報の利用が許可されていません");
+                    break;
+                case 2: //POSITION_UNAVAILABLE
+                    alert("現在位置が取得できませんでした");
+                    break;
+                case 3: //TIMEOUT
+                    alert("タイムアウトになりました");
+                    break;
+                default:
+                    alert("その他のエラー(エラーコード:" + error.code + ")");
+                    break;
+            }
+        };
 
         function test2(position) {
             current_latitude = position.coords.latitude;
@@ -112,7 +133,6 @@ try {
 
             // Point the URL to a valid routing service
             const routeUrl = "https://utility.arcgis.com/usrsvcs/servers/4550df58672c4bc6b17607b947177b56/rest/services/World/Route/NAServer/Route_World";
-            const MY_API_KEY = "AAPKfe5fdd5be2744698a188fcc0c7b7b1d742vtC5TsStg94fpwkldrfNo3SJn2jl_VuCOEEdcBiwR7dKOKxejIP_3EDj9IPSPg";
             //popup
             var detailAction = {
                 title: "詳細",
@@ -499,7 +519,7 @@ try {
                                 if (mode_change == 1) {
                                     pointpic = "./markers/start_and_goal.png";
                                 } else {
-                                    pointpic = "./markers/goal.png";
+                                    pointpic = "./markers/destination.png";
                                 }
                             } else if (plan[j][2] == 11) {
                                 pointpic = "./markers/s_l_spot1.png";
@@ -554,7 +574,31 @@ try {
                 doc();
                 //alert($totalLength);
             }
-
+            //アイコンは表示できるが向いている方向が分からなくなる
+            /*
+            var current_Symbol = new PictureMarkerSymbol({
+                url: "./markers/current_location_pin.png",
+                width: "30px",
+                height: "46.5px"
+            });
+            const current_template = {
+                title: "現在地",
+                content: [{
+                    type: "text",
+                    text: `緯度：${current_latitude}`
+                }, {
+                    type: "text",
+                    text: `経度：${current_longitude}`
+                }]
+            };
+            const track = new Track({
+                view: view,
+                graphic: new Graphic({
+                    symbol: current_Symbol,
+                    popupTemplate: current_template
+                })
+            });
+            */
             const track = new Track({
                 view: view
             });
@@ -631,7 +675,7 @@ try {
 
         function doc() {
             var km = $totalLength.toPrecision(3);
-            $length = "総歩行距離：" + km + " km";
+            $length = "目的地までの歩行距離：" + km + " km";
             //alert($length);
             var time = ($totalLength / 4.8);
             var hour = Math.trunc(time);
@@ -675,11 +719,14 @@ try {
 
             <div class="icon_explain">
                 <b>
-                    <div id="length_km">総歩行距離：0.00 km</div>
+                    <div id="length_km">目的地までの歩行距離：0.00 km</div>
                 </b>
                 <b>
                     <div id="time_h_m">総歩行時間：0時間0分</div>
                 </b><br>
+            </div>
+            <div class="icon_explain">
+                <img class="pin_list4" src="./markers/icon_explain_c_de.png" alt="現在地と目的地のアイコン" title="アイコン説明３">
             </div>
 
             <div id="viewbox">

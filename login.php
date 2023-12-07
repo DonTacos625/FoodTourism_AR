@@ -1,5 +1,6 @@
 <?php
 //require_once(__DIR__ . "/../config/cfg.php");
+require "frame_define_bl.php";
 
 session_start();
 
@@ -89,11 +90,12 @@ if (!empty($_POST["login"])) {
     <style>
 
         #loginbox {
-            width: 768px;
-            height: 500px;
+            width: 70%;
+            height: 50%;
             margin: auto;
             border: 1px solid #aaa;
             text-align: center;
+            font-size: 1.1vw;
         }
 
         #loginbox table {
@@ -121,19 +123,21 @@ if (!empty($_POST["login"])) {
 
             #loginbox {
                 width: 90%;
+                font-size: 2.3vw;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <main>
+    <div class="container-fluid">
+        <main class="row justify-content-center">
             <div id="loginbox"><br><br><br>
                 <h2>横浜みなとみらいフードツーリズム計画作成支援システム</h2>
                 <p>
-                    こちらは横浜みなとみらい近隣でのフードツーリズム計画の作成を支援するシステムです。<br>
+                    こちらは横浜みなとみらい近隣でのフードツーリズムを支援するシステムです。<br>
                     本システムは、PC・スマートフォン・タブレット端末でご利用可能です。<br>
+                    ※位置情報の取得、ARを利用した機能がありますのでブラウザ「Chrome」でのご利用を推奨しております。<br><br>
                     利用には<a href="signup.php">利用者登録</a>が必要となります。<br>
                     利用方法につきましては、ログイン後に使い方をご覧になるか、<a href="https://drive.google.com/file/d/1mlQpnjmVcnnn_Qqt2BwjwZzFUHGAplDD/view?usp=sharing" target="blank">こちら</a>のマニュアルからご覧ください<br>
                 </p>
@@ -170,8 +174,8 @@ if (!empty($_POST["login"])) {
                 </div>
             </div>
         </main>
-        <footer>
-            <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>
+        <footer class="fixed-bottom">
+            <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
         </footer>
     </div>
 </body>

@@ -23,7 +23,7 @@ require "frame_rightmenu.php";
         gtag('config', 'UA-214561408-1');
     </script>
 
-    <title>ホーム</title>
+    <title>アンケート</title>
 
     <style>
         #homebox {

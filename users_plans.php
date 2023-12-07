@@ -3,7 +3,7 @@
 require "frame_define.php";
 require "frame_header.php";
 require "frame_menu.php";
-//require "frame_rightmenu.php";
+require "frame_rightmenu.php";
 
 try {
 
@@ -36,7 +36,7 @@ $count = 0
         gtag('config', 'UA-214561408-1');
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <title>飲食店の検索・決定（一覧表示）</title>
+    <title>他のユーザーが作成した観光計画</title>
     <style>
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
@@ -74,7 +74,7 @@ $count = 0
             /* 外側の余白 */
         }
 
-        h4 {
+        .card-header h4 {
             border-left: 5px solid #000080;
             margin: 0px;
         }
@@ -114,15 +114,15 @@ $count = 0
                 <?php foreach ($stmt as $row) : ?>
                     <?php $count += 1; ?>
                     <div class="card" style="width: 18rem;" value=<?php echo $row["id"]; ?>>
-                        <h4 class="card-header"><?php echo $row["plan_name"]; ?></h4><br>
+                        <h4 class="card-header"><?php echo htmlspecialchars($row["plan_name"], ENT_QUOTES); ?></h4><br>
                         <img class="card-img-top" src=<?php if ($row["lunch"] != -1) {
                                                             echo "images/minatomirai/restaurants/" . $row["lunch"] . ".jpg";
                                                         } else {
                                                             echo "images/minatomirai/restaurants/" . $row["dinner"] . ".jpg";
                                                         } ?> alt="">
                         <div class="card-text">
-                            <div class="plan_text">作成したユーザー：<br><?php echo $row["user_name"]; ?></div><br>
-                            <div class="plan_text">メモ：<br><?php echo $row["memo"]; ?></div>
+                            <div class="plan_text">作成したユーザー：<br><?php echo htmlspecialchars($row["user_name"], ENT_QUOTES); ?></div><br>
+                            <div class="plan_text">メモ：<br><?php echo htmlspecialchars($row["memo"], ENT_QUOTES); ?></div>
                         </div>
                         <br><a href="users_plan_detail.php?plan_id=<?php echo $row["id"]; ?>">詳細ページに移動する</a>
                     </div>

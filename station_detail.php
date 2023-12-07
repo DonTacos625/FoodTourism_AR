@@ -574,7 +574,7 @@ try {
             </div>
         </main>
         <footer>
-            <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>
+            <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
         </footer>
     </div>
 </body>

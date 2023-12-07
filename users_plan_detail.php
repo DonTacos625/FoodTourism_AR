@@ -207,7 +207,7 @@ $keikaku[] = $goal_info;
         gtag('config', 'UA-214561408-1');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>作成した観光計画を見る</title>
+    <title>観光計画</title>
     <style>
         #rightbox {
             position: relative;
@@ -232,7 +232,7 @@ $keikaku[] = $goal_info;
         #viewbox {
             position: relative;
             float: left;
-            width: 77vw;
+            width: 100vw;
             height: 60vh;
             margin-left: 5px;
         }
@@ -271,19 +271,21 @@ $keikaku[] = $goal_info;
 
             #side_rightbox {
                 display: block;
-                float:right;
+                position: relative;
+                top: 0px;
+                float: right;
             }
 
             #viewbox {
                 position: relative;
                 float: left;
-                width: 100vw;
+                width: 100%;
                 height: 60vh;
                 margin: 0px;
             }
 
             #viewbox #viewDiv {
-                width: 100%;
+                width: 100vw;
                 height: 90%;
             }
 
@@ -326,7 +328,6 @@ $keikaku[] = $goal_info;
 
             // Point the URL to a valid routing service
             const routeUrl = "https://utility.arcgis.com/usrsvcs/servers/4550df58672c4bc6b17607b947177b56/rest/services/World/Route/NAServer/Route_World";
-            const MY_API_KEY = "AAPKfe5fdd5be2744698a188fcc0c7b7b1d742vtC5TsStg94fpwkldrfNo3SJn2jl_VuCOEEdcBiwR7dKOKxejIP_3EDj9IPSPg";
 
             var detailAction_station = {
                 title: "詳細",
@@ -858,8 +859,13 @@ $keikaku[] = $goal_info;
 </head>
 
 <body>
-    <div id="rightbox">
+    <div id="side_rightbox" class="float-sm-right">
+        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+            観光計画
+        </button>
+    </div>
 
+    <div id="rightbox">
         <h2>観光計画</h2>
         <div id="other_plan_box">
             <div class="sortable">
@@ -970,7 +976,6 @@ $keikaku[] = $goal_info;
                 </ul>
             </div>
         </div>
-
     </div>
 
     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
@@ -1091,19 +1096,14 @@ $keikaku[] = $goal_info;
         </div>
     </div>
 
-    <div class="container-fluid">
+    <div class="container-fluid px-0">
         <main class="row">
             <div>
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
             <h3 class="px-0">プラン詳細</h3>
-            <div id="side_rightbox" class="float-sm-right">
-                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-                    観光計画
-                </button>
-            </div>
             <div class="plan_explain">
-                プラン名：<?php echo $result["plan_name"]; ?>
+                プラン名：<?php echo htmlspecialchars($result["plan_name"], ENT_QUOTES); ?>
                 <b>
                     <div id="cal_k">消費カロリー：0.00 kcal</div>
                 </b>
@@ -1116,7 +1116,7 @@ $keikaku[] = $goal_info;
                 <b>
                     <div>
                         説明：<br>
-                        <?php echo $result["memo"]; ?>
+                        <?php echo htmlspecialchars($result["memo"], ENT_QUOTES); ?>
                     </div>
                 </b>
             </div>
@@ -1131,7 +1131,7 @@ $keikaku[] = $goal_info;
             </div>
         </main>
         <footer>
-            <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>
+            <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
         </footer>
     </div>
 </body>

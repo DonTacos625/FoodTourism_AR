@@ -5,6 +5,13 @@ require "frame_header.php";
 require "frame_menu.php";
 require "frame_rightmenu.php";
 
+$message = "";
+if (!isset($_SESSION["start_station_id"]) || !isset($_SESSION["goal_station_id"])) {
+    $message = "開始・終了駅が設定されていません";
+} else if (!isset($_SESSION["lunch_id"]) && !isset($_SESSION["dinner_id"])) {
+    $message = "昼食または夕食予定地が設定されていません";
+}
+
 try {
 
     //SESSION変数初期値設定
@@ -114,13 +121,13 @@ try {
     }
 
     if (isset($_POST["search_genre"])) {
-        $search_genre = htmlspecialchars($_POST["search_genre"]);
+        $search_genre = $_POST["search_genre"];
         $_SESSION["search_genre"] = $search_genre;
     } else {
         $search_genre = $_SESSION["search_genre"];
     }
     if (isset($_POST["search_name"])) {
-        $search_name = htmlspecialchars($_POST["search_name"]);
+        $search_name = $_POST["search_name"];
         $_SESSION["search_name"] = $search_name;
     } else {
         $search_name = $_SESSION["search_name"];
@@ -297,7 +304,9 @@ $count = 0;
 <body>
     <div class="container-fluid">
         <maisn class="row">
-
+            <div>
+                <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
+            </div>
             <h3 class="px-0" id="search_start">飲食店の検索・決定</h3>
             <div>
                 <ol class="stepBar">
@@ -426,11 +435,12 @@ $count = 0;
                     <input type="submit" name="submit" value="検索する">
                 </form>
             </div><br>
+            <!--
             <div class="move_box">
                 <a class="prev_page" name="prev_station" href="set_station.php">開始・終了駅選択に戻る</a>
                 <a class="next_page" name="next_keiro" href="sightseeing_spots_selection_map.php">観光スポット選択へ</a><br>
             </div><br>
-
+            -->
             <?php foreach ($stmt as $row) : ?>
                 <?php $count += 1; ?>
                 <div class="card bg-light mb-3" style="width: 80rem;" id="infobox" value=<?php echo $row["id"]; ?>>

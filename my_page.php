@@ -123,7 +123,7 @@ if (!empty($_POST["editopt"])) {
         gtag('config', 'UA-214561408-1');
     </script>
 
-    <title>パスワード変更</title>
+    <title>登録情報変更</title>
 
     <style>
         h2 {
@@ -233,8 +233,8 @@ if (!empty($_POST["editopt"])) {
                 <form id="editform" name="editform" action="" method="POST">
                 <table>
                         <tr>
-                            <th rowspan="2" scope="rowgroup"><label for="user_weight">　　　　体重　　　　</label></th>
-                            <td scope="row"><small>体重を入力してください　　　　　　　　　　　</small></td>
+                            <th rowspan="2" scope="rowgroup"><label for="user_weight">体重</label></th>
+                            <td scope="row"><small>体重を入力してください</small></td>
                         </tr>
                         <tr>
                             <td scope="row"><input type="number" id="user_weight" name="user_weight" placeholder="体重を入力" value="<?php echo $now_weight; ?>">kg</td>
@@ -277,7 +277,7 @@ if (!empty($_POST["editopt"])) {
             </div>
         </main>
         <footer>
-            <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>
+            <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
         </footer>
     </div>
 </body>

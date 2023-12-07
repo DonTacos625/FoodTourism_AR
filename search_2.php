@@ -114,13 +114,13 @@ try {
     }
 
     if (isset($_POST["search_genre"])) {
-        $search_genre = htmlspecialchars($_POST["search_genre"]);
+        $search_genre = $_POST["search_genre"];
         $_SESSION["search_genre"] = $search_genre;
     } else {
         $search_genre = $_SESSION["search_genre"];
     }
     if (isset($_POST["search_name"])) {
-        $search_name = htmlspecialchars($_POST["search_name"]);
+        $search_name = $_POST["search_name"];
         $_SESSION["search_name"] = $search_name;
     } else {
         $search_name = $_SESSION["search_name"];
@@ -511,11 +511,12 @@ $count = 0;
                         <input type="submit" name="submit" value="検索する">
                     </form>
                 </div><br>
+                <!--
                 <div class="move_box">
                     <a class="prev_page" name="prev_station" href="set_station.php">開始・終了駅選択に戻る</a>
                     <a class="next_page" name="next_keiro" href="sightseeing_spots_selection_map.php">観光スポット選択へ</a><br>
                 </div>
-
+                -->
                 <?php foreach ($stmt as $row) : ?>
                     <?php $count += 1; ?>
                     <div id="infobox" value=<?php echo $row["id"]; ?>>

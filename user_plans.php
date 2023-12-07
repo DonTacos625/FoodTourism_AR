@@ -3,7 +3,13 @@
 require "frame_define.php";
 require "frame_header.php";
 require "frame_menu.php";
-//require "frame_rightmenu.php";
+require "frame_rightmenu.php";
+
+$from_current = $_GET["from_current"];
+$message = "";
+if ($from_current == 1) {
+    $message = "使用する観光計画を選択してください";
+}
 
 try {
 
@@ -37,9 +43,8 @@ $count = 0
         gtag('config', 'UA-214561408-1');
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <title>飲食店の検索・決定（一覧表示）</title>
+    <title>保存した観光計画</title>
     <style>
-
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
         @media screen and (max-width:768px) {
@@ -76,7 +81,7 @@ $count = 0
             /* 外側の余白 */
         }
 
-        h4 {
+        .card-header h4 {
             border-left: 5px solid #000080;
             margin: 0px;
         }
@@ -111,20 +116,24 @@ $count = 0
     <div class="container-fluid">
         <main class="row">
             <h3 class="px-0" id="search_start">保存した観光計画</h3>
-
+            <div>
+                <font color="#ff0000">
+                    <h4><?php echo htmlspecialchars($message, ENT_QUOTES); ?><h4>
+                </font>
+            </div>
             <div class="flex_test-box">
                 <?php foreach ($stmt as $row) : ?>
                     <?php $count += 1; ?>
                     <div class="card" style="width: 18rem;" value=<?php echo $row["id"]; ?>>
-                        <h4 class="card-header"><?php echo $row["plan_name"]; ?></h4><br>
+                        <h4 class="card-header"><?php echo htmlspecialchars($row["plan_name"], ENT_QUOTES); ?></h4><br>
                         <img class="card-img-top" src=<?php if ($row["lunch"] != -1) {
                                                             echo "images/minatomirai/restaurants/" . $row["lunch"] . ".jpg";
                                                         } else {
                                                             echo "images/minatomirai/restaurants/" . $row["dinner"] . ".jpg";
                                                         } ?> alt="">
                         <div class="card-text">
-                            <div class="plan_text">作成したユーザー：<br><?php echo $row["user_name"]; ?></div><br>
-                            <div class="plan_text">メモ：<br><?php echo $row["memo"]; ?></div><br>
+                            <div class="plan_text">作成したユーザー：<br><?php echo htmlspecialchars($row["user_name"], ENT_QUOTES); ?></div><br>
+                            <div class="plan_text">メモ：<br><?php echo htmlspecialchars($row["memo"], ENT_QUOTES); ?></div><br>
                         </div>
                         <a href="user_plan_detail.php?plan_id=<?php echo $row["id"]; ?>">編集ページに移動する</a>
                     </div>

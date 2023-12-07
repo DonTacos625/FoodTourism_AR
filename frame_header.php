@@ -11,6 +11,10 @@
             margin: 0px;
         }
 
+        #footer {
+            font-size: 1vw;
+        }
+
         #header {
             display: flex;
             padding-bottom: 20px;
@@ -49,6 +53,10 @@
                 font-size: 3vw;
             }
 
+            #footer {
+                font-size: 1.7vw;
+            }
+
             h2 {
                 margin: 0px;
                 font-size: 19px;
@@ -65,12 +73,19 @@
             <h1>横浜みなとみらいフードツーリズム支援システム</h1>
         </div>
     </div>
-
+    <div id="changer" class="mr-3">
+        対象地域チェンジャー<br>
+        <select name="forbidden" size="1" onchange="change_area(value)">
+            <option value="0"> スポットを選択してください </option>
+            <option value="1"> みなとみらい </option>
+            <option value="2"> 蓮根 </option>
+            <option value="3"> 調布 </option>
+        </select><br>
+    </div>
 </body>
-<!-- 
-<footer class="position-absolute top-100 start-50 translate-middle">
+
+<footer id="footer" class="fixed-bottom d-flex justify-content-end">
     <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
 </footer>
--->
 
 </html>

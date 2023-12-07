@@ -286,7 +286,6 @@ function set_checked($session_name, $value)
 
             // Point the URL to a valid routing service
             const routeUrl = "https://utility.arcgis.com/usrsvcs/servers/4550df58672c4bc6b17607b947177b56/rest/services/World/Route/NAServer/Route_World";
-            const MY_API_KEY = "AAPKfe5fdd5be2744698a188fcc0c7b7b1d742vtC5TsStg94fpwkldrfNo3SJn2jl_VuCOEEdcBiwR7dKOKxejIP_3EDj9IPSPg";
             //popup
             var detailAction_station = {
                 title: "詳細",
@@ -929,10 +928,12 @@ function set_checked($session_name, $value)
                 </form>
                 <!--<button type="button" onclick="display_results()">観光スポットを絞り込む</button>-->
             </div><br>
+            <!--
             <div class="move_box">
                 <a class="prev_page" name="prev_search" href="search.php">飲食店検索・決定に戻る</a>
                 <a class="next_page" name="see_myroute" href="plan_edit.php">作成した観光経路を見るへ</a>
             </div><br>
+            -->
             <div id="result_table"></div>
             <div id="viewbox">
                 <div id="viewDiv"></div>
@@ -940,7 +941,7 @@ function set_checked($session_name, $value)
             </div>
         </main>
         <footer>
-            <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>
+            <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
         </footer>
     </div>
 </body>

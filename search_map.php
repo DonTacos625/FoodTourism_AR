@@ -5,6 +5,13 @@ require "frame_header.php";
 require "frame_menu.php";
 require "frame_rightmenu.php";
 
+$message = "";
+if (!isset($_SESSION["start_station_id"]) || !isset($_SESSION["goal_station_id"])) {
+    $message = "開始・終了駅が設定されていません";
+} else if (!isset($_SESSION["lunch_id"]) && !isset($_SESSION["dinner_id"])) {
+    $message = "昼食または夕食予定地が設定されていません";
+}
+
 //stations_id設定
 if (isset($_SESSION["start_station_id"])) {
     $start_station_id = $_SESSION["start_station_id"];
@@ -187,13 +194,13 @@ try {
     }
 
     if (isset($_POST["search_genre"])) {
-        $search_genre = htmlspecialchars($_POST["search_genre"]);
+        $search_genre = $_POST["search_genre"];
         $_SESSION["search_genre"] = $search_genre;
     } else {
         $search_genre = $_SESSION["search_genre"];
     }
     if (isset($_POST["search_name"])) {
-        $search_name = htmlspecialchars($_POST["search_name"]);
+        $search_name = $_POST["search_name"];
         $_SESSION["search_name"] = $search_name;
     } else {
         $search_name = $_SESSION["search_name"];
@@ -343,7 +350,6 @@ if (
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>飲食店の検索・決定（地図上表示）</title>
     <style>
-
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
         @media screen and (max-width:768px) {
@@ -740,6 +746,9 @@ if (
 <body>
     <div class="container-fluid">
         <main class="row">
+            <div>
+                <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
+            </div>
             <h3 class="px-0" id="search_start">飲食店の検索・決定</h3>
             <div>
                 <ol class="stepBar">
@@ -868,10 +877,12 @@ if (
                     <input type="submit" name="submit" value="検索する">
                 </form>
             </div><br>
+            <!--
             <div class="move_box">
                 <a class="prev_page" name="prev_station" href="set_station.php">開始・終了駅選択に戻る</a>
                 <a class="next_page" name="next_keiro" href="sightseeing_spots_selection_map.php">観光スポット選択へ</a><br>
             </div>
+            -->
             <?php
             if (!$count) {
                 echo "検索条件に該当する飲食店はありませんでした";
@@ -882,7 +893,7 @@ if (
             </div>
         </main>
         <footer>
-            <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>
+            <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
         </footer>
     </div>
 </body>

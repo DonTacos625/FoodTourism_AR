@@ -3,7 +3,7 @@
 require "frame_define.php";
 require "frame_header.php";
 require "frame_menu.php";
-//require "frame_rightmenu.php";
+require "frame_rightmenu.php";
 
 try {
 
@@ -142,13 +142,13 @@ try {
     }
 
     if (isset($_POST["search_genre"])) {
-        $search_genre = htmlspecialchars($_POST["search_genre"]);
+        $search_genre = $_POST["search_genre"];
         $_SESSION["search_genre"] = $search_genre;
     } else {
         $search_genre = $_SESSION["search_genre"];
     }
     if (isset($_POST["search_name"])) {
-        $search_name = htmlspecialchars($_POST["search_name"]);
+        $search_name = $_POST["search_name"];
         $_SESSION["search_name"] = $search_name;
     } else {
         $search_name = $_SESSION["search_name"];
@@ -287,7 +287,7 @@ if (
         gtag('config', 'UA-214561408-1');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>飲食店の検索・決定（地図上表示）</title>
+    <title>周辺飲食店の検索（地図上表示）</title>
     <style>
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
@@ -299,17 +299,7 @@ if (
 
         }
 
-        .move_box {
-            position: relative;
-            width: 76vw;
-            float: left;
-        }
-
         @media screen and (max-width:768px) {
-
-            .move_box {
-                width: 100%;
-            }
 
             .search_form {
                 font-size: 12px;
@@ -770,7 +760,7 @@ if (
                             return graphic[1];
                         }
                     });
-                    //検索結果が0件だったら、何もしない
+                    //検索結果が0件だったら、アナウンス
                     if (result_fs.length === 0) {
                         alert("検索条件に該当する飲食店はありませんでした");
                     }
@@ -977,19 +967,22 @@ if (
                     <br>
                     <input type="submit" name="submit" value="検索する">
                 </form>
-                <button type="button" class="btn btn-secondary btn-lg" onclick="display_results()">再読み込み</button><br>
+                <button type="button" class="btn btn-secondary btn-lg mb-2" onclick="display_results()">再読み込み</button><br>
             </div><br>
             <?php
             if (!$count) {
                 echo "検索条件に該当する飲食店はありませんでした";
             }
             ?>
+            <div class="icon_explain">
+                <img class="pin_list5" src="./markers/icon_explain_c.png" alt="現在地のアイコン" title="アイコン説明４">
+            </div>
             <div id="viewbox">
                 <div id="viewDiv"></div>
             </div>
         </main>
         <footer>
-            <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>
+            <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
         </footer>
     </div>
 </body>

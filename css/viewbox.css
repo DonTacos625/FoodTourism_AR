@@ -25,6 +25,16 @@
             height: 75px;
         }
 
+        .pin_list4 {
+            width: 108px;
+            height: 75px;
+        }
+
+        .pin_list5 {
+            width: 50px;
+            height: 75px;
+        }
+
         #viewbox {
             position: relative;
             float: left;

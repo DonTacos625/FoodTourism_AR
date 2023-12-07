@@ -12,7 +12,6 @@ if (!isset($_SESSION["input_plan_name"])) {
 $input_plan_name = $_SESSION["input_plan_name"];
 if (!isset($_SESSION["input_plan_memo"])) {
     $_SESSION["input_plan_memo"] = "";
-} else {
 }
 $input_plan_memo = $_SESSION["input_plan_memo"];
 
@@ -218,7 +217,7 @@ $keikaku[] = $goal_info;
         gtag('config', 'UA-214561408-1');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>作成した観光計画を見る</title>
+    <title>観光計画の保存</title>
     <style>
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
@@ -263,7 +262,6 @@ $keikaku[] = $goal_info;
 
             // Point the URL to a valid routing service
             const routeUrl = "https://utility.arcgis.com/usrsvcs/servers/4550df58672c4bc6b17607b947177b56/rest/services/World/Route/NAServer/Route_World";
-            const MY_API_KEY = "AAPKfe5fdd5be2744698a188fcc0c7b7b1d742vtC5TsStg94fpwkldrfNo3SJn2jl_VuCOEEdcBiwR7dKOKxejIP_3EDj9IPSPg";
 
             const food_template = {
                 title: "{Name}",
@@ -855,7 +853,7 @@ $keikaku[] = $goal_info;
             <div>
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
-            <h3 class="px-0">作成した観光計画</h3>
+            <h3 class="px-0">観光計画を保存</h3>
             <div>
                 <ol class="stepBar">
                     <li class="visited" onclick="location.href='set_station.php'"><span>1</span><br>開始・終了駅</li>
@@ -875,10 +873,11 @@ $keikaku[] = $goal_info;
                     <div id="time_h_m">総歩行時間：0時間0分</div>
                 </b><br>
             </div>
-
+            <!--
             <div class="move_box">
                 <a class="prev_page" name="prev_keiro" href="sightseeing_spots_selection_map.php">観光スポット選択に戻る</a>
             </div><br>
+            -->
             <div class="icon_explain">
                 <img class="pin_list1" src="./markers/icon_explain_s_f.png" alt="昼食予定地のアイコン" title="アイコン説明１">
                 <img class="pin_list2" src="./markers/icon_explain_spots.png" alt="昼食予定地のアイコン" title="アイコン説明２">
@@ -886,10 +885,10 @@ $keikaku[] = $goal_info;
             <div id="viewbox">
                 <div id="viewDiv"></div>
                 <p>プラン名：<br>
-                    <input type="text" id="plan_name" size="15" value="<?php echo $input_plan_name; ?>">
+                    <input type="text" id="plan_name" size="15" value="<?php echo htmlspecialchars($input_plan_name, ENT_QUOTES); ?>">
                 </p>
                 <p>メモ：<br>
-                    <textarea class="form-control" rows="5" id="plan_comment"><?php echo $input_plan_memo; ?></textarea><br>
+                    <textarea class="form-control" rows="5" id="plan_comment"><?php echo htmlspecialchars($input_plan_memo, ENT_QUOTES); ?></textarea><br>
                 <p>観光計画を公開しますか？：<br>
                     <input type="radio" id="plan_show" name="plan_show" value="1" <?php set_checked("plan_show", "1"); ?>>公開する
                     <input type="radio" id="plan_show" name="plan_show" value="0" <?php set_checked("plan_show", "0"); ?>>公開しない<br>
@@ -897,7 +896,7 @@ $keikaku[] = $goal_info;
             </div>
         </main>
         <footer>
-            <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>
+            <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
         </footer>
     </div>
 </body>

@@ -202,15 +202,11 @@ $keikaku[] = $goal_info;
         gtag('config', 'UA-214561408-1');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>作成した観光計画を見る</title>
+    <title>観光記録</title>
     <style>
-
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
-        @media screen and (max-width:768px) {
-
-        }
-
+        @media screen and (max-width:768px) {}
     </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
@@ -267,7 +263,6 @@ $keikaku[] = $goal_info;
 
             // Point the URL to a valid routing service
             const routeUrl = "https://utility.arcgis.com/usrsvcs/servers/4550df58672c4bc6b17607b947177b56/rest/services/World/Route/NAServer/Route_World";
-            const MY_API_KEY = "AAPKfe5fdd5be2744698a188fcc0c7b7b1d742vtC5TsStg94fpwkldrfNo3SJn2jl_VuCOEEdcBiwR7dKOKxejIP_3EDj9IPSPg";
 
             var detailAction_station = {
                 title: "詳細",
@@ -829,7 +824,7 @@ $keikaku[] = $goal_info;
             $time = "総歩行時間：" + hour + "時間" + mini + "分";
 
             var user_weight = <?php echo json_encode($frameresult["user_weight"]); ?>;
-            if(user_weight > 0){
+            if (user_weight > 0) {
                 var cal = 3.5 * time * user_weight * 1.05;
                 $kcal = "消費カロリー：" + cal.toPrecision(4) + "kcal";
             } else {
@@ -989,9 +984,9 @@ $keikaku[] = $goal_info;
             <div>
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
-            <h3 class="px-0" >プラン詳細</h3>
+            <h3 class="px-0">プラン詳細</h3>
             <div class="icon_explain">
-                プラン名：<?php echo $result["plan_name"]; ?>
+                プラン名：<?php echo htmlspecialchars($result["plan_name"], ENT_QUOTES); ?>
                 <b>
                     <div id="cal_k">消費カロリー：0.00 kcal</div>
                 </b>
@@ -1004,19 +999,21 @@ $keikaku[] = $goal_info;
             </div>
             <div>
                 説明：<br>
-                <?php echo $result["memo"]; ?>
+                <?php echo htmlspecialchars($result["memo"], ENT_QUOTES); ?>
             </div>
 
             <p>摂取カロリー：<br>
-	            昼：</textarea><input type="text" id="" size="15" value="">:kcal<br>
+                昼：</textarea><input type="text" id="" size="15" value="">:kcal<br>
                 夜：</textarea><input type="text" id="" size="15" value="">:kcal<br></p>
             <p>感想：<br>
-	            <textarea class="form-control" rows="5" id="">テスト</textarea><br></p>
-                <button type="button" id="btn" onclick="up_session()" title=""><b>下書き保存</b></button>
-
+                <textarea class="form-control" rows="5" id="">テスト</textarea><br>
+            </p>
+            <button type="button" id="btn" onclick="up_session()" title=""><b>下書き保存</b></button>
+            <!--
             <div class="move_box">
                 <a class="prev_page" name="prev_keiro" href="sightseeing_spots_selection_map.php">観光スポット選択に戻る</a>
             </div><br>
+            -->
             <div class="icon_explain">
                 <img class="pin_list1" src="./markers/icon_explain_s_f.png" alt="昼食予定地のアイコン" title="アイコン説明１">
                 <img class="pin_list2" src="./markers/icon_explain_spots.png" alt="昼食予定地のアイコン" title="アイコン説明２">

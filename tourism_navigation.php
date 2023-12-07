@@ -202,28 +202,8 @@ $keikaku[] = $goal_info;
         gtag('config', 'UA-214561408-1');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>観光計画</title>
+    <title>観光記録の作成</title>
     <style>
-        #rightbox {
-            position: relative;
-            top: 0px;
-            float: right;
-            width: 20vw;
-            border-right: 3px solid #0099FF;
-            z-index: 2;
-        }
-
-        #rightbox h2 {
-            /*background: #0099FF;
-            color: #FFFFFF;*/
-            margin-right: 5px;
-            border-left: 5px solid #000080;
-        }
-
-        #rightbox p {
-            margin-left: 10px;
-        }
-
         #viewbox {
             position: relative;
             float: left;
@@ -245,14 +225,6 @@ $keikaku[] = $goal_info;
         }
 
         @media screen and (min-width:769px) and (max-width:1366px) {
-            #rightbox h2 {
-                /*background: #0099FF;
-                color: #FFFFFF;*/
-                margin-right: 4px;
-                border-left: 4px solid #000080;
-                font-size: 17px;
-            }
-
             #viewbox {
                 width: 77vw;
                 height: 70vh;
@@ -260,17 +232,6 @@ $keikaku[] = $goal_info;
         }
 
         @media screen and (max-width:768px) {
-            #rightbox {
-                display: none;
-            }
-
-            #side_rightbox {
-                display: block;
-                position: relative;
-                top: 0px;
-                float: right;
-            }
-
             #viewbox {
                 position: relative;
                 float: left;
@@ -284,6 +245,13 @@ $keikaku[] = $goal_info;
                 height: 90%;
             }
 
+            #side_rightbox {
+                display: block;
+                position: relative;
+                top: 0px;
+                float: right;
+            }
+
         }
     </style>
 
@@ -293,11 +261,27 @@ $keikaku[] = $goal_info;
 
     <script>
         var pointpic = "";
+        var current_latitude = 0;
+        var current_longitude = 0;
+
+        function test() {
+            navigator.geolocation.getCurrentPosition(test2);
+        }
+
+        function test2(position) {
+            current_latitude = position.coords.latitude;
+            current_longitude = position.coords.longitude;
+            //alert(current_longitude);
+        }
+        test();
+
         require([
             "esri/Map",
             "esri/views/MapView",
             "esri/layers/WebTileLayer",
             "esri/layers/FeatureLayer",
+            "esri/widgets/Locate",
+            "esri/widgets/Track",
             "esri/Graphic",
             "esri/layers/GraphicsLayer",
             "esri/rest/support/Query",
@@ -311,6 +295,8 @@ $keikaku[] = $goal_info;
             MapView,
             WebTileLayer,
             FeatureLayer,
+            Locate,
+            Track,
             Graphic,
             GraphicsLayer,
             Query,
@@ -338,6 +324,16 @@ $keikaku[] = $goal_info;
                 title: "詳細",
                 id: "spot_detail",
                 className: "esri-icon-documentation"
+            };
+            var navigationAction_restaurant = {
+                title: "ナビゲーション",
+                id: "restaurant_navigation",
+                className: "esri-icon-navigation"
+            };
+            var navigationAction_spot = {
+                title: "ナビゲーション",
+                id: "spot_navigation",
+                className: "esri-icon-navigation"
             };
 
             const food_template = {
@@ -394,7 +390,7 @@ $keikaku[] = $goal_info;
                         visible: true
                     }]
                 }],
-                actions: [detailAction_restaurant]
+                actions: [detailAction_restaurant, navigationAction_restaurant]
             };
 
 
@@ -445,7 +441,7 @@ $keikaku[] = $goal_info;
                         visible: true
                     }]
                 }],
-                actions: [detailAction_spot]
+                actions: [detailAction_spot, navigationAction_spot]
             };
 
             //スタートとゴールの駅を決める
@@ -660,9 +656,11 @@ $keikaku[] = $goal_info;
                 }
             });
 
+            const currentLayer = new GraphicsLayer();
+
             const map = new Map({
                 basemap: "streets",
-                layers: [stationLayer, foodLayer, spotsLayer, routeLayer]
+                layers: [stationLayer, foodLayer, spotsLayer, routeLayer, currentLayer]
             });
 
             //frameの変数
@@ -769,6 +767,67 @@ $keikaku[] = $goal_info;
                 doc();
             }
 
+            //アイコンは表示できるが向いている方向が分からなくなる
+            /*
+            var current_Symbol = new PictureMarkerSymbol({
+                url: "./markers/current_location_pin.png",
+                width: "30px",
+                height: "46.5px"
+            });
+            const current_template = {
+                title: "現在地",
+                content: [{
+                    type: "text",
+                    text: `緯度：${current_latitude}`
+                }, {
+                    type: "text",
+                    text: `経度：${current_longitude}`
+                }]
+            };
+            const track = new Track({
+                view: view,
+                graphic: new Graphic({
+                    symbol: current_Symbol,
+                    popupTemplate: current_template
+                })
+            });
+            */
+            const track = new Track({
+                view: view
+            });
+            track.on("track", ({
+                position
+            }) => {
+                /*
+                const {
+                    longitude,
+                    latitude
+                } = position.coords;
+                const goal_point = <?php //echo json_encode($navi_goal_info); 
+                                    ?>;
+                var new_keikaku = [
+                    [longitude.toFixed(4), latitude.toFixed(4), "start"],
+                    [goal_point[0], goal_point[1], "goal"]
+                ]
+                display_route(new_keikaku);
+                */
+                currentLayer.removeAll();
+                var stopSymbol = new PictureMarkerSymbol({
+                    url: "./markers/current_location_pin.png",
+                    width: "30px",
+                    height: "46.5px"
+                });
+                var stop = new Graphic({
+                    geometry: point,
+                    symbol: stopSymbol
+                });
+                currentLayer.add(stop);
+            });
+            view.ui.add(track, "top-left");
+            view.when(() => {
+                track.start();
+            });
+
             //ポップアップの処理
             view.popup.on("trigger-action", function(event) {
                 if (event.action.id === "station_detail") {
@@ -783,9 +842,34 @@ $keikaku[] = $goal_info;
                     var id = view.popup.selectedFeature.attributes.id;
                     srs_detail(id, "spot");
                 }
+                if (event.action.id === "restaurant_navigation") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    spot_navigation(id, 2);
+                }
+                if (event.action.id === "spot_navigation") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    spot_navigation(id, 3);
+                }
             });
 
         });
+
+        //スポットのナビゲーションページに飛ぶときに送信するデータ
+        function spot_navigation(id, type) {
+            var form = document.createElement('form');
+            form.method = 'GET';
+            form.action = './navigation_map.php';
+            var reqElm = document.createElement('input');
+            var reqElm2 = document.createElement('input');
+            reqElm.name = 'navi_spot_id';
+            reqElm.value = id;
+            reqElm2.name = 'navi_spot_type';
+            reqElm2.value = type;
+            form.appendChild(reqElm);
+            form.appendChild(reqElm2);
+            document.body.appendChild(form);
+            form.submit();
+        };
 
         //観光経路表示を更新する
         function kousin() {
@@ -822,7 +906,7 @@ $keikaku[] = $goal_info;
 
         var plan_id = <?php echo json_encode($plan_id); ?>;
 
-        function copy_plan() {
+        function save_tourism_record() {
             var mode = 1;
             if (window.confirm('現在作成している観光計画を上書きしますがよろしいですか？')) {
                 jQuery(function($) {
@@ -847,30 +931,6 @@ $keikaku[] = $goal_info;
 
             }
         };
-
-        function delete_plan() {
-            if (window.confirm('この観光計画を削除しますがよろしいですか？')) {
-                jQuery(function($) {
-                    $.ajax({
-                        url: "ajax_delete_plan.php",
-                        type: "POST",
-                        dataType: "json",
-                        data: {
-                            post_data_1: plan_id
-                        },
-                        error: function(XMLHttpRequest, textStatus, errorThrown) {
-                            alert("ajax通信に失敗しました");
-                        },
-                        success: function(response) {
-                            alert(response);
-                            window.location.href = "user_plans.php";
-                        }
-                    });
-                });
-            } else {
-
-            }
-        };
     </script>
 
 
@@ -883,17 +943,16 @@ $keikaku[] = $goal_info;
             観光計画
         </button>
     </div>
-    <div id="rightbox">
+
+    <div id="leftbox">
         <h2>観光計画</h2>
         <div id="other_plan_box">
             <div class="sortable">
                 開始駅<br>
                 <ul>
-                    <li class="card" id="other_plan_start_box" value="">
-                        <div class="card-body p-2">
-                            <img id="pin" width="20" height="20" src="./icons/pop_start.png" alt="開始駅のアイコン" title="開始駅">
-                            <?php echo $side_start_station_name ?><br>
-                        </div>
+                    <li id="other_plan_start_box" value="<?php echo $making_plan[0][1]; ?>">
+                        <img id="pin" width="20" height="20" src="./icons/pop_start.png" alt="開始駅のアイコン" title="開始駅">
+                        <?php echo $side_start_station_name ?><br>
                     </li>
                 </ul>
             </div>
@@ -905,12 +964,11 @@ $keikaku[] = $goal_info;
                         <?php $side_count = 0; ?>
                         <?php foreach ($side_s_l_spots as $date) { ?>
                             <?php $side_count += 1; ?>
-                            <li class="card">
-                                <div class="card-body p-2">
-                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $side_count . ".png"; ?> alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
-                                    <div><?php echo $date[2] ?></div>
-                                    <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
-                                </div>
+                            <li>
+                                <img width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $side_count . ".png"; ?> alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
+                                <div><?php echo $date[2] ?></div>
+                                <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
+                                <button type="button" class="btn btn-light btn-outline-dark" value="<?php echo $date[0]; ?>" onclick="spot_navigation(value,'3')">ここに行く</button>
                             </li>
                         <?php } ?>
                     </ul>
@@ -922,12 +980,11 @@ $keikaku[] = $goal_info;
                 <div class="sortable">
                     昼食を食べる飲食店<br>
                     <ul>
-                        <li class="card" id="" value="">
-                            <div class="card-body p-2">
-                                <img id="pin" width="20" height="20" src="./icons/pop_lunch.png" alt="昼食予定地のアイコン" title="昼食予定地">
-                                <?php echo $side_lunch_name ?><br>
-                                <input disabled class="time" type="number" value="<?php echo $side_lunch_time; ?>">分
-                            </div>
+                        <li id="" value="">
+                            <img id="pin" width="20" height="20" src="./icons/pop_lunch.png" alt="昼食予定地のアイコン" title="昼食予定地">
+                            <?php echo $side_lunch_name ?><br>
+                            <input disabled class="time" type="number" value="<?php echo $side_lunch_time; ?>">分
+                            <button type="button" class="btn btn-light btn-outline-dark" value="<?php echo $lunch_shop_id; ?>" onclick="spot_navigation(value,'2')">ここに行く</button>
                         </li>
                     </ul>
                 </div>
@@ -940,12 +997,11 @@ $keikaku[] = $goal_info;
                         <?php $side_count = 0; ?>
                         <?php foreach ($side_l_d_spots as $date) { ?>
                             <?php $side_count += 1; ?>
-                            <li class="card">
-                                <div class="card-body p-2">
-                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $side_count . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
-                                    <div><?php echo $date[2] ?></div>
-                                    <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
-                                </div>
+                            <li>
+                                <img width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $side_count . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
+                                <div><?php echo $date[2] ?></div>
+                                <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
+                                <button type="button" class="btn btn-light btn-outline-dark" value="<?php echo $date[0]; ?>" onclick="spot_navigation(value,'3')">ここに行く</button>
                             </li>
                         <?php } ?>
                     </ul>
@@ -957,12 +1013,11 @@ $keikaku[] = $goal_info;
                 <div class="sortable">
                     夕食を食べる飲食店<br>
                     <ul>
-                        <li class="card" id="" value="">
-                            <div class="card-body p-2">
-                                <img id="pin" width="20" height="20" src="./icons/pop_dinner.png" alt="夕食予定地のアイコン" title="夕食予定地">
-                                <?php echo $side_dinner_name ?><br>
-                                <input disabled class="time" type="number" value="<?php echo $side_dinner_time; ?>">分
-                            </div>
+                        <li id="" value="">
+                            <img id="pin" width="20" height="20" src="./icons/pop_dinner.png" alt="夕食予定地のアイコン" title="夕食予定地">
+                            <?php echo $side_dinner_name ?><br>
+                            <input disabled class="time" type="number" value="<?php echo $side_dinner_time; ?>">分
+                            <button type="button" class="btn btn-light btn-outline-dark" value="<?php echo $dinner_shop_id; ?>" onclick="spot_navigation(value,'2')">ここに行く</button>
                         </li>
                     </ul>
                 </div>
@@ -975,12 +1030,11 @@ $keikaku[] = $goal_info;
                         <?php $side_count = 0; ?>
                         <?php foreach ($side_d_g_spots as $date) { ?>
                             <?php $side_count += 1; ?>
-                            <li class="card">
-                                <div class="card-body p-2">
-                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $side_count . ".png"; ?> alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
-                                    <div><?php echo $date[2] ?></div>
-                                    <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
-                                </div>
+                            <li>
+                                <img width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $side_count . ".png"; ?> alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
+                                <div><?php echo $date[2] ?></div>
+                                <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
+                                <button type="button" class="btn btn-light btn-outline-dark" value="<?php echo $date[0]; ?>" onclick="spot_navigation(value,'3')">ここに行く</button>
                             </li>
                         <?php } ?>
                     </ul>
@@ -991,11 +1045,9 @@ $keikaku[] = $goal_info;
             <div class="sortable">
                 終了駅<br>
                 <ul>
-                    <li class="card" id="plan_goal_box" value="">
-                        <div class="card-body p-2">
-                            <img id="pin" width="20" height="20" src="./icons/pop_goal.png" alt="終了駅のアイコン" title="終了駅">
-                            <div class="plan_goal_name"><?php echo $side_goal_station_name ?></div>
-                        </div>
+                    <li id="plan_goal_box" value="<?php echo $making_plan[6][1] ?>">
+                        <img id="pin" width="20" height="20" src="./icons/pop_goal.png" alt="終了駅のアイコン" title="終了駅">
+                        <div class="plan_goal_name"><?php echo $side_goal_station_name ?></div>
                     </li>
                 </ul>
             </div>
@@ -1012,14 +1064,13 @@ $keikaku[] = $goal_info;
                 <div class="sortable">
                     開始駅<br>
                     <ul>
-                        <li class="card" id="other_plan_start_box" value="">
-                            <div class="card-body p-2">
-                                <img id="pin" width="20" height="20" src="./icons/pop_start.png" alt="開始駅のアイコン" title="開始駅">
-                                <?php echo $side_start_station_name ?><br>
-                            </div>
+                        <li id="other_plan_start_box" value="<?php echo $making_plan[0][1]; ?>">
+                            <img id="pin" width="20" height="20" src="./icons/pop_start.png" alt="開始駅のアイコン" title="開始駅">
+                            <?php echo $side_start_station_name ?><br>
                         </li>
                     </ul>
                 </div>
+
                 <?php if ($side_s_l_spots[0][2] != "設定されていません") { ?>
                     <div class="sortable">
                         昼食前に訪れる観光スポット<br>
@@ -1027,32 +1078,32 @@ $keikaku[] = $goal_info;
                             <?php $side_count = 0; ?>
                             <?php foreach ($side_s_l_spots as $date) { ?>
                                 <?php $side_count += 1; ?>
-                                <li class="card">
-                                    <div class="card-body p-2">
-                                        <img width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $side_count . ".png"; ?> alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
-                                        <div><?php echo $date[2] ?></div>
-                                        <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
-                                    </div>
+                                <li>
+                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $side_count . ".png"; ?> alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
+                                    <div><?php echo $date[2] ?></div>
+                                    <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
+                                    <button type="button" class="btn btn-light btn-outline-dark" value="<?php echo $date[0]; ?>" onclick="spot_navigation(value,'3')">ここに行く</button>
                                 </li>
                             <?php } ?>
                         </ul>
                         <input type="hidden" id="list-ids" name="list-ids" />
                     </div>
                 <?php } ?>
+
                 <?php if ($side_lunch_name != "設定されていません") { ?>
                     <div class="sortable">
                         昼食を食べる飲食店<br>
                         <ul>
-                            <li class="card" id="" value="">
-                                <div class="card-body p-2">
-                                    <img id="pin" width="20" height="20" src="./icons/pop_lunch.png" alt="昼食予定地のアイコン" title="昼食予定地">
-                                    <?php echo $side_lunch_name ?><br>
-                                    <input disabled class="time" type="number" value="<?php echo $side_lunch_time; ?>">分
-                                </div>
+                            <li id="" value="">
+                                <img id="pin" width="20" height="20" src="./icons/pop_lunch.png" alt="昼食予定地のアイコン" title="昼食予定地">
+                                <?php echo $side_lunch_name ?><br>
+                                <input disabled class="time" type="number" value="<?php echo $side_lunch_time; ?>">分
+                                <button type="button" class="btn btn-light btn-outline-dark" value="<?php echo $lunch_shop_id; ?>" onclick="spot_navigation(value,'2')">ここに行く</button>
                             </li>
                         </ul>
                     </div>
                 <?php } ?>
+
                 <?php if ($side_l_d_spots[0][2] != "設定されていません") { ?>
                     <div class="sortable">
                         昼食後に訪れる観光スポット<br>
@@ -1060,32 +1111,32 @@ $keikaku[] = $goal_info;
                             <?php $side_count = 0; ?>
                             <?php foreach ($side_l_d_spots as $date) { ?>
                                 <?php $side_count += 1; ?>
-                                <li class="card">
-                                    <div class="card-body p-2">
-                                        <img width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $side_count . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
-                                        <div><?php echo $date[2] ?></div>
-                                        <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
-                                    </div>
+                                <li>
+                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $side_count . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
+                                    <div><?php echo $date[2] ?></div>
+                                    <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
+                                    <button type="button" class="btn btn-light btn-outline-dark" value="<?php echo $date[0]; ?>" onclick="spot_navigation(value,'3')">ここに行く</button>
                                 </li>
                             <?php } ?>
                         </ul>
                         <input type="hidden" id="list-ids" name="list-ids" />
                     </div>
                 <?php } ?>
+
                 <?php if ($side_dinner_name != "設定されていません") { ?>
                     <div class="sortable">
                         夕食を食べる飲食店<br>
                         <ul>
-                            <li class="card" id="" value="">
-                                <div class="card-body p-2">
-                                    <img id="pin" width="20" height="20" src="./icons/pop_dinner.png" alt="夕食予定地のアイコン" title="夕食予定地">
-                                    <?php echo $side_dinner_name ?><br>
-                                    <input disabled class="time" type="number" value="<?php echo $side_dinner_time; ?>">分
-                                </div>
+                            <li id="" value="">
+                                <img id="pin" width="20" height="20" src="./icons/pop_dinner.png" alt="夕食予定地のアイコン" title="夕食予定地">
+                                <?php echo $side_dinner_name ?><br>
+                                <input disabled class="time" type="number" value="<?php echo $side_dinner_time; ?>">分
+                                <button type="button" class="btn btn-light btn-outline-dark" value="<?php echo $dinner_shop_id; ?>" onclick="spot_navigation(value,'2')">ここに行く</button>
                             </li>
                         </ul>
                     </div>
                 <?php } ?>
+
                 <?php if ($side_d_g_spots[0][2] != "設定されていません") { ?>
                     <div class="sortable">
                         夕食後に訪れる観光スポット<br>
@@ -1093,26 +1144,24 @@ $keikaku[] = $goal_info;
                             <?php $side_count = 0; ?>
                             <?php foreach ($side_d_g_spots as $date) { ?>
                                 <?php $side_count += 1; ?>
-                                <li class="card">
-                                    <div class="card-body p-2">
-                                        <img width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $side_count . ".png"; ?> alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
-                                        <div><?php echo $date[2] ?></div>
-                                        <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
-                                    </div>
+                                <li>
+                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $side_count . ".png"; ?> alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
+                                    <div><?php echo $date[2] ?></div>
+                                    <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
+                                    <button type="button" class="btn btn-light btn-outline-dark" value="<?php echo $date[0]; ?>" onclick="spot_navigation(value,'3')">ここに行く</button>
                                 </li>
                             <?php } ?>
                         </ul>
                         <input type="hidden" id="list-ids" name="list-ids" />
                     </div>
                 <?php } ?>
+
                 <div class="sortable">
                     終了駅<br>
                     <ul>
-                        <li class="card" id="plan_goal_box" value="">
-                            <div class="card-body p-2">
-                                <img id="pin" width="20" height="20" src="./icons/pop_goal.png" alt="終了駅のアイコン" title="終了駅">
-                                <div class="plan_goal_name"><?php echo $side_goal_station_name ?></div>
-                            </div>
+                        <li id="plan_goal_box" value="<?php echo $making_plan[6][1] ?>">
+                            <img id="pin" width="20" height="20" src="./icons/pop_goal.png" alt="終了駅のアイコン" title="終了駅">
+                            <div class="plan_goal_name"><?php echo $side_goal_station_name ?></div>
                         </li>
                     </ul>
                 </div>
@@ -1120,16 +1169,14 @@ $keikaku[] = $goal_info;
         </div>
     </div>
 
-    <div class="container-fluid px-0">
+    <div class="container-fluid px-0 mb-4">
         <main class="row">
             <div>
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
-
-            <h3 class="px-0">プラン詳細</h3>
-            <div class="plan_explain">
-            <button type="button" class="btn btn-secondary" onclick=<?php echo "location.href='tourism_navigation.php?plan_id={$plan_id}'"?> title="この計画で観光する"><b>この計画で観光する</b></button><br>
-                プラン名：<?php echo htmlspecialchars($result["plan_name"], ENT_QUOTES); ?><br>
+            <h3 class="px-0">観光を行う</h3>
+            <div class="icon_explain">
+                プラン名：<?php echo htmlspecialchars($result["plan_name"], ENT_QUOTES); ?>
                 <b>
                     <div id="cal_k">消費カロリー：0.00 kcal</div>
                 </b>
@@ -1138,26 +1185,23 @@ $keikaku[] = $goal_info;
                 </b>
                 <b>
                     <div id="time_h_m">総歩行時間：0時間0分</div>
-                </b><br>
-                <b>
-                    <div>
-                        説明：<br>
-                        <?php echo htmlspecialchars($result["memo"], ENT_QUOTES); ?>
-                    </div>
                 </b>
+            </div>
+            <div>
+                説明：<br>
+                <?php echo htmlspecialchars($result["memo"], ENT_QUOTES); ?>
             </div>
 
             <div class="icon_explain">
                 <img class="pin_list1" src="./markers/icon_explain_s_f.png" alt="昼食予定地のアイコン" title="アイコン説明１">
                 <img class="pin_list2" src="./markers/icon_explain_spots.png" alt="昼食予定地のアイコン" title="アイコン説明２">
+                <img class="pin_list5" src="./markers/icon_explain_c.png" alt="現在地と目的地のアイコン" title="アイコン説明３">
             </div>
             <div id="viewbox">
                 <div id="viewDiv"></div>
-                <button type="button" class="btn btn-secondary btn-lg" onclick="copy_plan()" title="観光計画を編集"><b>観光計画を編集します</b></button>
-                <button type="button" class="btn btn-secondary btn-lg" onclick="delete_plan()" title="観光計画を編集"><b>観光計画を削除します</b></button>
             </div>
         </main>
-        <footer>
+        <footer class="fixed-bottom">
             <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
         </footer>
     </div>

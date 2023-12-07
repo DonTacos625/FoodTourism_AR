@@ -8,6 +8,7 @@ DB userdata
 */
 
 //session_start();
+require "frame_define_bl.php";
 
 $errormessage = "";
 $signupmessage = "";
@@ -175,34 +176,34 @@ if (!empty($_POST["signup"])) {
         gtag('config', 'UA-214561408-1');
     </script>
 
-    <title>サインアップ</title>
+    <title>新規登録</title>
 
     <link rel="stylesheet" type="text/css" href="css/copyright.css">
     <style>
 
         #signupbox {
-            width: 768px;
-            height: 700px;
+            width: 70%;
+            height: 50%;
             margin: auto;
             border: 1px solid #aaa;
             text-align: center;
         }
 
-        #signupbox table {
+        .signup_table {
             margin: auto;
         }
 
-        #signupbox table th {
+        .signup_table tr th {
             background: #0099FF;
             color: #fff;
             white-space: nowrap;
             border-left: 5px solid #000080;
-            width: 12vw;
+            width: 135px;
         }
 
-        #signupbox table td {
+        .signup_table tr td {
             text-align: left;
-            width: 12vw;
+            width: 15px;
         }
 
         @media screen and (max-width: 768px) {
@@ -225,44 +226,43 @@ if (!empty($_POST["signup"])) {
     <div class="container">
         <main>
             <div id="signupbox">
-                <h2>横浜みなとみらいフードツーリズム計画作成支援システム</h2>
+                <h2 class="m-4">横浜みなとみらいフードツーリズム計画作成支援システム</h2>
 
                 <h3>利用者登録</h3>
                 <form id="signupform" name="signupForm" action="" method="POST" autocomplete="off">
-                    <table>
+                    <table class="signup_table mb-4">
                         <tr>
                             <th rowspan="2" scope="rowgroup"><label for="user_name">ユーザーネーム</label></th>
-                            <td scope="row"><small>半角英数字4~10文字</small></td>
+                            <td scope="row"><small>半角英数字4~10文字<font color="#ff0000">*</font></small></td>
                         </tr>
                         <tr>
-                            <td scope="row"><input type="text" id="user_name" name="user_name" placeholder="ユーザーネームを入力" value="<?php echo $user_name_f; ?>" required></td>
+                            <td scope="row"><input type="text" id="user_name" name="user_name" placeholder="ユーザーネームを入力" value="<?php echo htmlspecialchars($user_name_f, ENT_QUOTES); ?>" required></td>
                         </tr>
 
                         <tr>
                             <th rowspan="2" scope="rowgroup"><label for="pass">パスワード</label></th>
-                            <td scope="row"><small>半角英数字をそれぞれ1種類以上含む6~15文字</small></td>
+                            <td scope="row"><small>半角英数字をそれぞれ1種類以上含む6~15文字<font color="#ff0000">*</font></small></td>
                         </tr>
                         <tr>
-                            <td scope="row"><input type="password" id="pass" name="pass" placeholder="パスワードを入力" value="<?php echo $pass_f; ?>" required></td>
+                            <td scope="row"><input type="password" id="pass" name="pass" placeholder="パスワードを入力" value="<?php echo htmlspecialchars($pass_f, ENT_QUOTES); ?>" required></td>
                         </tr>
                         <tr>
                             <th rowspan="2" scope="rowgroup"><label for="pass2">パスワード再入力</label></th>
-                            <td scope="row"><small>パスワードを再入力して下さい</small></td>
+                            <td scope="row"><small>パスワードを再入力して下さい<font color="#ff0000">*</font></small></td>
                         </tr>
                         <tr>
-                            <td scope="row"><input type="password" id="pass2" name="pass2" placeholder="パスワードを再入力" value="<?php echo $pass2_f; ?>" required></td>
+                            <td scope="row"><input type="password" id="pass2" name="pass2" placeholder="パスワードを再入力" value="<?php echo htmlspecialchars($pass2_f, ENT_QUOTES); ?>" required></td>
                         </tr>
-
                     </table>
 
                 <h3>任意登録</h3>
-                    <table>
+                    <table class="signup_table">
                         <tr>
                             <th rowspan="2" scope="rowgroup"><label for="user_weight">体重</label></th>
                             <td scope="row"><small>体重を入力してください</small></td>
                         </tr>
                         <tr>
-                            <td scope="row"><input type="number" id="user_weight" name="user_weight" placeholder="体重を入力" value="<?php echo $user_weight_f; ?>">kg</td>
+                            <td scope="row" class="text-nowrap"><input type="number" style="width:203.47px;" id="user_weight" name="user_weight" placeholder="体重を入力" value="<?php echo htmlspecialchars($user_weight_f, ENT_QUOTES); ?>">kg</td>
                         </tr>
 
                         <tr>
@@ -289,7 +289,7 @@ if (!empty($_POST["signup"])) {
 
                         <tr>
                             <td></td>
-                            <td><input type="submit" id="signup" name="signup" value="登録"><br><br>
+                            <td><input type="submit" class="btn btn-secondary" id="signup" name="signup" value="登録"><br><br>
                             <a href="login.php">ログイン画面</a></td>
                         </tr>
                     </table>
@@ -303,7 +303,7 @@ if (!empty($_POST["signup"])) {
             </div>
         </main>
         <footer>
-            <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>
+            <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
         </footer>
     </div>
 </body>

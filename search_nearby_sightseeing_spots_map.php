@@ -3,7 +3,7 @@
 require "frame_define.php";
 require "frame_header.php";
 require "frame_menu.php";
-//require "frame_rightmenu.php";
+require "frame_rightmenu.php";
 
 try {
 
@@ -155,12 +155,9 @@ if ($categoryName == "0") {
         gtag('config', 'UA-214561408-1');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>飲食店の検索・決定（地図上表示）</title>
+    <title>周辺観光スポットの検索（地図上表示）</title>
     <style>
-
-        @media screen and (min-width:769px) and (max-width:1366px) {
-
-        }
+        @media screen and (min-width:769px) and (max-width:1366px) {}
 
         @media screen and (max-width:768px) {
 
@@ -170,18 +167,7 @@ if ($categoryName == "0") {
 
         }
 
-
-        .move_box {
-            position: relative;
-            width: 76vw;
-            float: left;
-        }
-
         @media screen and (max-width:768px) {
-
-            .move_box {
-                width: 100%;
-            }
 
             .search_form {
                 font-size: 12px;
@@ -200,27 +186,29 @@ if ($categoryName == "0") {
         var current_longitude = 0;
 
         function test() {
-            navigator.geolocation.getCurrentPosition(
-                test2,
-                // 取得失敗した場合
-                function(error) {
-                    switch (error.code) {
-                        case 1: //PERMISSION_DENIED
-                            alert("位置情報の利用が許可されていません");
-                            break;
-                        case 2: //POSITION_UNAVAILABLE
-                            alert("現在位置が取得できませんでした");
-                            break;
-                        case 3: //TIMEOUT
-                            alert("タイムアウトになりました");
-                            break;
-                        default:
-                            alert("その他のエラー(エラーコード:" + error.code + ")");
-                            break;
-                    }
-                }
-            );
-        }
+            var options = {
+                timeout: 10000 // 10秒でタイムアウトするように設定する
+            };
+            navigator.geolocation.getCurrentPosition(test2, errorCallback, options);
+        };
+
+        // 取得失敗した場合
+        function errorCallback(error) {
+            switch (error.code) {
+                case 1: //PERMISSION_DENIED
+                    alert("位置情報の利用が許可されていません");
+                    break;
+                case 2: //POSITION_UNAVAILABLE
+                    alert("現在位置が取得できませんでした");
+                    break;
+                case 3: //TIMEOUT
+                    alert("タイムアウトになりました");
+                    break;
+                default:
+                    alert("その他のエラー(エラーコード:" + error.code + ")");
+                    break;
+            }
+        };
 
         function test2(position) {
             current_latitude = position.coords.latitude;
@@ -654,62 +642,65 @@ if ($categoryName == "0") {
 <body>
     <div class="container-fluid">
         <main class="row">
-                <h3 class="px-0"  id="search_start">周辺観光スポットの検索</h3>
-                <a id="view_result" name="view_result" href="search_nearby_sightseeing_spots_ar.php">ARで結果を表示</a><br>
-                <a id="view_result2" name="view_result2" href="search_nearby_restaurants_map.php">飲食店</a><br>
-                <div class="search_form">
-                    <form action="search_nearby_sightseeing_spots_map.php" method="post">
-                        観光スポットの検索範囲：<br>
-                        <input type="radio" id="spots_around_distance" name="spots_around_distance" value="300" <?php set_checked("spots_around_distance", "300"); ?>>周囲300m
-                        <input type="radio" id="spots_around_distance" name="spots_around_distance" value="400" <?php set_checked("spots_around_distance", "400"); ?>>周囲400m
-                        <input type="radio" id="spots_around_distance" name="spots_around_distance" value="500" <?php set_checked("spots_around_distance", "500"); ?>>周囲500m
-                        <input type="radio" id="spots_around_distance" name="spots_around_distance" value="600" <?php set_checked("spots_around_distance", "600"); ?>>周囲600m
-                        <input type="radio" id="spots_around_distance" name="spots_around_distance" value="700" <?php set_checked("spots_around_distance", "700"); ?>>周囲700m
-                        <input type="radio" id="spots_around_distance" name="spots_around_distance" value="800" <?php set_checked("spots_around_distance", "800"); ?>>周囲800m<br>
+            <h3 class="px-0" id="search_start">周辺観光スポットの検索</h3>
+            <a id="view_result" name="view_result" href="search_nearby_sightseeing_spots_ar.php">ARで結果を表示</a><br>
+            <a id="view_result2" name="view_result2" href="search_nearby_restaurants_map.php">飲食店</a><br>
+            <div class="search_form">
+                <form action="search_nearby_sightseeing_spots_map.php" method="post">
+                    観光スポットの検索範囲：<br>
+                    <input type="radio" id="spots_around_distance" name="spots_around_distance" value="300" <?php set_checked("spots_around_distance", "300"); ?>>周囲300m
+                    <input type="radio" id="spots_around_distance" name="spots_around_distance" value="400" <?php set_checked("spots_around_distance", "400"); ?>>周囲400m
+                    <input type="radio" id="spots_around_distance" name="spots_around_distance" value="500" <?php set_checked("spots_around_distance", "500"); ?>>周囲500m
+                    <input type="radio" id="spots_around_distance" name="spots_around_distance" value="600" <?php set_checked("spots_around_distance", "600"); ?>>周囲600m
+                    <input type="radio" id="spots_around_distance" name="spots_around_distance" value="700" <?php set_checked("spots_around_distance", "700"); ?>>周囲700m
+                    <input type="radio" id="spots_around_distance" name="spots_around_distance" value="800" <?php set_checked("spots_around_distance", "800"); ?>>周囲800m<br>
 
-                        並び替え条件：
-                        <select size="1" id="spots_sort_conditions" name="spots_sort_conditions" onchange="">
-                            <option value="distance_nearest" <?php set_selected("spots_sort_conditions", "distance_nearest"); ?>> 距離が近い順 </option>
-                            <option value="distance_farthest" <?php set_selected("spots_sort_conditions", "distance_farthest"); ?>> 距離が遠い順 </option>
-                        </select><br>
+                    並び替え条件：
+                    <select size="1" id="spots_sort_conditions" name="spots_sort_conditions" onchange="">
+                        <option value="distance_nearest" <?php set_selected("spots_sort_conditions", "distance_nearest"); ?>> 距離が近い順 </option>
+                        <option value="distance_farthest" <?php set_selected("spots_sort_conditions", "distance_farthest"); ?>> 距離が遠い順 </option>
+                    </select><br>
 
-                        表示数：
-                        <select size="1" id="spots_around_count" name="spots_around_count" onchange="">
-                            <option value="1" <?php set_selected("spots_around_count", "1"); ?>> 1 </option>
-                            <option value="2" <?php set_selected("spots_around_count", "2"); ?>> 2 </option>
-                            <option value="3" <?php set_selected("spots_around_count", "3"); ?>> 3 </option>
-                            <option value="4" <?php set_selected("spots_around_count", "4"); ?>> 4 </option>
-                            <option value="5" <?php set_selected("spots_around_count", "5"); ?>> 5 </option>
-                            <option value="6" <?php set_selected("spots_around_count", "6"); ?>> 6 </option>
-                            <option value="7" <?php set_selected("spots_around_count", "7"); ?>> 7 </option>
-                            <option value="8" <?php set_selected("spots_around_count", "8"); ?>> 8 </option>
-                            <option value="9" <?php set_selected("spots_around_count", "9"); ?>> 9 </option>
-                            <option value="10" <?php set_selected("spots_around_count", "10"); ?>> 10 </option>
-                        </select><br>
+                    表示数：
+                    <select size="1" id="spots_around_count" name="spots_around_count" onchange="">
+                        <option value="1" <?php set_selected("spots_around_count", "1"); ?>> 1 </option>
+                        <option value="2" <?php set_selected("spots_around_count", "2"); ?>> 2 </option>
+                        <option value="3" <?php set_selected("spots_around_count", "3"); ?>> 3 </option>
+                        <option value="4" <?php set_selected("spots_around_count", "4"); ?>> 4 </option>
+                        <option value="5" <?php set_selected("spots_around_count", "5"); ?>> 5 </option>
+                        <option value="6" <?php set_selected("spots_around_count", "6"); ?>> 6 </option>
+                        <option value="7" <?php set_selected("spots_around_count", "7"); ?>> 7 </option>
+                        <option value="8" <?php set_selected("spots_around_count", "8"); ?>> 8 </option>
+                        <option value="9" <?php set_selected("spots_around_count", "9"); ?>> 9 </option>
+                        <option value="10" <?php set_selected("spots_around_count", "10"); ?>> 10 </option>
+                    </select><br>
 
-                        観光スポットのカテゴリー：<br>
-                        <input type="radio" id="category" name="category" value="0" <?php set_checked("search_spots_category", "0"); ?>>指定なし
-                        <input type="radio" id="category" name="category" value="名所・史跡" <?php set_checked("search_spots_category", "名所・史跡"); ?>>名所・史跡
-                        <input type="radio" id="category" name="category" value="ショッピング" <?php set_checked("search_spots_category", "ショッピング"); ?>>ショッピング
-                        <input type="radio" id="category" name="category" value="芸術・博物館" <?php set_checked("search_spots_category", "芸術・博物館"); ?>>芸術・博物館
-                        <input type="radio" id="category" name="category" value="テーマパーク・公園" <?php set_checked("search_spots_category", "テーマパーク・公園"); ?>>テーマパーク・公園
-                        <input type="radio" id="category" name="category" value="その他" <?php set_checked("search_spots_category", "その他"); ?>>その他<br>
+                    観光スポットのカテゴリー：<br>
+                    <input type="radio" id="category" name="category" value="0" <?php set_checked("search_spots_category", "0"); ?>>指定なし
+                    <input type="radio" id="category" name="category" value="名所・史跡" <?php set_checked("search_spots_category", "名所・史跡"); ?>>名所・史跡
+                    <input type="radio" id="category" name="category" value="ショッピング" <?php set_checked("search_spots_category", "ショッピング"); ?>>ショッピング
+                    <input type="radio" id="category" name="category" value="芸術・博物館" <?php set_checked("search_spots_category", "芸術・博物館"); ?>>芸術・博物館
+                    <input type="radio" id="category" name="category" value="テーマパーク・公園" <?php set_checked("search_spots_category", "テーマパーク・公園"); ?>>テーマパーク・公園
+                    <input type="radio" id="category" name="category" value="その他" <?php set_checked("search_spots_category", "その他"); ?>>その他<br>
 
-                        <input type="submit" name="submit" value="検索する">
-                    </form>
-                    <button type="button" class="btn btn-secondary btn-lg" onclick="display_results()">再読み込み</button><br>
-                </div><br>
-                <?php
-                if (!$count) {
-                    echo "検索条件に該当する飲食店はありませんでした";
-                }
-                ?>
-                <div id="viewbox">
-                    <div id="viewDiv"></div>
-                </div>
+                    <input type="submit" name="submit" value="検索する">
+                </form>
+                <button type="button" class="btn btn-secondary btn-lg mb-2" onclick="display_results()">再読み込み</button><br>
+            </div><br>
+            <?php
+            if (!$count) {
+                echo "検索条件に該当する飲食店はありませんでした";
+            }
+            ?>
+            <div class="icon_explain">
+                <img class="pin_list5" src="./markers/icon_explain_c.png" alt="現在地のアイコン" title="アイコン説明４">
+            </div>
+            <div id="viewbox">
+                <div id="viewDiv"></div>
+            </div>
         </main>
         <footer>
-            <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>
+            <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
         </footer>
     </div>
 </body>

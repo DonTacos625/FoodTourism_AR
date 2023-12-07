@@ -82,7 +82,7 @@ if (!empty($_POST["login"])) {
         gtag('config', 'UA-214561408-1');
     </script>
 
-    <title>ログイン</title>
+    <title>管理者画面</title>
 
     <link rel="stylesheet" type="text/css" href="css/copyright.css">
     <style>
@@ -166,7 +166,7 @@ if (!empty($_POST["login"])) {
             </div>
         </main>
         <footer>
-            <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>
+            <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
         </footer>
     </div>
 </body>

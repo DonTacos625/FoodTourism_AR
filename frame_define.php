@@ -332,6 +332,34 @@ function display_frame($name_row, $time)
             document.body.appendChild(form);
             form.submit();
         };
+
+        function change_area(area) {
+            if (area != 0) {
+                if (window.confirm('現在作成している観光計画をリセットしますがよろしいですか？')) {
+                    jQuery(function($) {
+                        $.ajax({
+                            url: "ajax_change_area.php",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                post_data_1: area
+                            },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                alert("ajax通信に失敗しました");
+                            },
+                            success: function(response) {
+                                alert(response);
+                                window.location.reload();
+                            }
+                        });
+                    });
+                } else {
+
+                }
+            }
+        };
+        
+        const MY_API_KEY = "AAPKfe5fdd5be2744698a188fcc0c7b7b1d742vtC5TsStg94fpwkldrfNo3SJn2jl_VuCOEEdcBiwR7dKOKxejIP_3EDj9IPSPg";
     </script>
 
 </body>

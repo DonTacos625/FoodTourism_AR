@@ -90,8 +90,6 @@
 
 <body>
 
-   
-
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
         <div class="offcanvas-header">
             <h2 class="offcanvas-title" id="offcanvasRightLabel">現在の観光計画</h2>
@@ -211,7 +209,7 @@
 
 <!-- ドラッグアンドドロップを実装する用 -->
 <script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-<script src="Sortable.min.js"></script>
+<!--<script src="Sortable.min.js"></script>-->
 <script>
     var el = document.getElementById('sort');
     var sortable = Sortable.create(el, {

@@ -566,10 +566,12 @@ $keikaku[] = $goal_info;
                     </select>
                 </div>
             </div>
+            <!--
             <div class="move_box">
                 <a class="prev_page" name="prev_explain" href="explain.php#set_station">使い方に戻る</a>
                 <a class="next_page" name="next_search" href="search.php">飲食店の検索・決定へ</a>
             </div><br>
+            -->
             <div id="viewbox">
                 <div id="viewDiv"></div>
             </div>

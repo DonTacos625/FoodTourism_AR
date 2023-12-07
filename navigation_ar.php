@@ -11,9 +11,8 @@ try {
     if ($navi_spot_type == 1) {
         $database = $database_stations;
     } else if ($navi_spot_type == 2) {
-        //$database = $database_restaurants;
-        $database = "hasune_restaurants";
-    } else {
+        $database = $database_restaurants;
+    } else if ($navi_spot_type == 3) {
         $database = $database_sightseeing_spots;
     }
     $stmt1 = $pdo->prepare("SELECT * FROM $database WHERE id = :id");
@@ -21,6 +20,15 @@ try {
     $stmt1->execute();
     $result1 = $stmt1->fetch(PDO::FETCH_ASSOC);
     $navi_goal_info = [$result1["x"], $result1["y"], "goal"];
+
+    if ($navi_spot_type == 1) {
+        $navi_goal_detail = [$result1["id"], $result1["y"], $result1["x"]];
+    } else if ($navi_spot_type == 2) {
+        $navi_goal_detail = [$result1["id"], $result1["y"], $result1["x"], $result1["name"], [$result1["genre"], $result1["genre_sub"]], $result1["open_time"], $result1["close_time"], $result1["lunch_budget"], $result1["dinner_budget"]];
+    } else if ($navi_spot_type == 3) {
+        $navi_goal_detail = [$result1["id"], $result1["y"], $result1["x"], $result1["name"], $result1["category"], $result1["urls"]];
+    }
+
     //var_dump($navi_goal_info);
 } catch (PDOException $e) {
 }
@@ -57,7 +65,7 @@ try {
     <link rel="stylesheet" href="css/ar_style.css?<?php echo date('YmdHis'); ?>">
 
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>作成した観光計画を見る</title>
+    <title>ナビゲーション(AR)</title>
     <style>
         #viewbox {
             position: fixed;
@@ -77,6 +85,18 @@ try {
             width: 95%;
         }
 
+        .modal-body table th {
+            text-align: left;
+            white-space: nowrap;
+            background: #EEEEEE;
+            width: 5vw;
+        }
+
+        .modal-body table td {
+            background: #EEEEEE;
+            padding: 3px;
+        }
+
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
         @media screen and (max-width:768px) {}
@@ -92,8 +112,29 @@ try {
         var current_longitude = 0;
 
         function test() {
-            navigator.geolocation.getCurrentPosition(test2);
-        }
+            var options = {
+                timeout: 10000 // 10秒でタイムアウトするように設定する
+            };
+            navigator.geolocation.getCurrentPosition(test2, errorCallback, options);
+        };
+
+        // 取得失敗した場合
+        function errorCallback(error) {
+            switch (error.code) {
+                case 1: //PERMISSION_DENIED
+                    alert("位置情報の利用が許可されていません");
+                    break;
+                case 2: //POSITION_UNAVAILABLE
+                    alert("現在位置が取得できませんでした");
+                    break;
+                case 3: //TIMEOUT
+                    alert("タイムアウトになりました");
+                    break;
+                default:
+                    alert("その他のエラー(エラーコード:" + error.code + ")");
+                    break;
+            }
+        };
 
         function test2(position) {
             current_latitude = position.coords.latitude;
@@ -136,7 +177,6 @@ try {
 
             // Point the URL to a valid routing service
             const routeUrl = "https://utility.arcgis.com/usrsvcs/servers/4550df58672c4bc6b17607b947177b56/rest/services/World/Route/NAServer/Route_World";
-            const MY_API_KEY = "AAPKfe5fdd5be2744698a188fcc0c7b7b1d742vtC5TsStg94fpwkldrfNo3SJn2jl_VuCOEEdcBiwR7dKOKxejIP_3EDj9IPSPg";
 
             const food_template = {
                 title: "{Name}",
@@ -317,7 +357,6 @@ try {
                 directionsLengthUnits: "kilometers"
             });
             routeParams.returnDirections = true;
-
             // Define the symbology used to display the stops
             const CheckSymbol = {
                 type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
@@ -328,14 +367,12 @@ try {
                     width: 4
                 }
             };
-
             // Define the symbology used to display the route
             const routeSymbol = {
                 type: "simple-line", // autocasts as SimpleLineSymbol()
                 color: [0, 0, 255, 0.5],
                 width: 3
             };
-
             const routeArrowSymbol = new CIMSymbol({
                 data: {
                     type: "CIMSymbolReference",
@@ -635,7 +672,7 @@ try {
                     longitude: a_longitude
                 });
                 newEntity.setAttribute('data-text', a_name);
-                newEntity.setAttribute('scale', "20 20 20");
+                newEntity.setAttribute('scale', "15 15 15");
                 newEntity.setAttribute('popovertarget', `modalbox${i+1}`);
 
                 newEntity.onclick = () => {
@@ -648,8 +685,10 @@ try {
                 */
 
                 //球を追加
-                const newSphere = document.createElement("a-sphere");
-                newSphere.setAttribute('radius', '1.25');
+                //const newSphere = document.createElement("a-sphere");
+                //newSphere.setAttribute('radius', '1.25');
+                const newSphere = document.createElement("a-cone");
+                newSphere.setAttribute('height', '-2');
                 const animation = `
                             property:rotation;
                             dur:10000;
@@ -659,7 +698,7 @@ try {
                             easing:linear;`
                 newSphere.setAttribute('animation', animation);
                 //newSphere.setAttribute('src', `images/${area_name}/restaurants/${to_id}.jpg`);
-                newSphere.setAttribute('src', `https://cdn.glitch.com/6668328a-fbb0-4645-8a4e-7a21aac2ab17%2Fearth.jpg?v=1606211796642`);
+                newSphere.setAttribute('src', `./markers/navigation_pin_skin.png`);
                 newSphere.setAttribute('color', 'color="#EF2D5E"');
                 newEntity.appendChild(newSphere);
 
@@ -707,15 +746,6 @@ try {
                 newEntity.setAttribute('scale', "20 20 20");
                 newEntity.setAttribute('position', "0 30 0");
 
-                //newEntity.setAttribute('popovertarget', `modalbox${i+1}`);
-                /*
-                newEntity.onclick = () => {
-                    alert($totalLength);
-                }
-                */
-                //newEntity.setAttribute('material', 'color: blue');
-                //newEntity.setAttribute('geometry', 'primitive: box');
-
                 const newText = document.createElement("a-text");
                 newText.id = 'ar_text';
                 newText.setAttribute('value', "100 M");
@@ -725,9 +755,127 @@ try {
             }
         }
 
+        var area_name = <?php echo json_encode($area_name); ?>;
+        var modal_array = [<?php echo json_encode($navi_goal_detail); ?>];
+        var modal_type = <?php echo json_encode($navi_spot_type); ?>;
+        //alert(modal_type);
+        //モーダルウィンドウを作成する
+        function make_modal_table(array, type) {
+            $result_modal_form = document.getElementById("result_modal_table");
+            $result_modal_form.innerHTML = "";
+            $result_modal_form.className = 'tables';
+
+            if (type == 2) {
+                for (var i = 0; i < array.length; i++) {
+                    const a_id = array[i][0];
+                    const a_lattitude = array[i][1];
+                    const a_longitude = array[i][2];
+                    const a_name = array[i][3];
+                    const a_genre = array[i][4][0];
+                    const a_genre_sub = array[i][4][1];
+                    const a_open_time = array[i][5];
+                    const a_close_time = array[i][6];
+                    const a_lunch_budget = array[i][7];
+                    const a_dinner_budget = array[i][8];
+
+                    //表示するhtmlの作成
+                    const newDiv = document.createElement("div");
+                    newDiv.id = `modal_box${i+1}`;
+                    newDiv.className = 'modal fade';
+                    newDiv.setAttribute('tabindex', "-1");
+                    newDiv.setAttribute('aria-labelledby', `modal_box_label${i+1}`);
+                    newDiv.setAttribute('aria-hidden', "true");
+                    newDiv.innerHTML = `
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="modal_box_Label${i+1}">${a_name}</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <img class="modal_img" src="images/${area_name}/restaurants/${a_id}.jpg" alt="">
+                                <table class="table text-wrap">
+                                    <tr>
+                                        <th>ジャンル</th>
+                                        <td class="modal_change">${a_genre},${a_genre_sub}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>営業時間</th>
+                                        <td class="modal_change">${a_open_time}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>定休日</th>
+                                        <td class="modal_change">${a_close_time}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>予算</th>
+                                        <td>昼：${a_lunch_budget}　　夜：${a_dinner_budget}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+                                <a class="btn btn-primary" href="restaurant_detail.php?restaurant_id=${a_id}">詳細ページへ</a>
+                            </div>
+                        </div>
+                    </div>`;
+                    $result_modal_form.appendChild(newDiv);
+                }
+            } else if (type == 3) {
+                for (var i = 0; i < array.length; i++) {
+                    const a_id = array[i][0];
+                    const a_lattitude = array[i][1];
+                    const a_longitude = array[i][2];
+                    const a_name = array[i][3];
+                    const a_category = array[i][4];
+                    const a_urls = array[i][5];
+
+                    if (a_urls == null) {
+                        $a_page = "<a>なし</a>";
+                    } else {
+                        $a_page = `<a href="${a_urls}" target=_blank>ホームページにアクセスする</a>`;
+                    }
+                    //表示するhtmlの作成
+                    const newDiv = document.createElement("div");
+                    newDiv.id = `modal_box${i+1}`;
+                    newDiv.className = 'modal fade';
+                    newDiv.setAttribute('tabindex', "-1");
+                    newDiv.setAttribute('aria-labelledby', `modal_box_label${i+1}`);
+                    newDiv.setAttribute('aria-hidden', "true");
+                    newDiv.innerHTML = `
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="modal_box_Label${i+1}">${a_name}</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <img class="modal_img" src="images/${area_name}/sightseeing_spots/${a_id}.jpg" alt="">
+                                <table class="table text-wrap">
+                                    <tr>
+                                        <th>カテゴリー</th>
+                                        <td class="modal_change">${a_category}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>ホームページ</th>
+                                        <td>${$a_page}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+                                <a class="btn btn-primary" href="sightseeing_spot_detail.php?spot_id=${a_id}">詳細ページへ</a>
+                            </div>
+                        </div>
+                    </div>`;
+                    $result_modal_form.appendChild(newDiv);
+                }
+            }
+
+        }
+
+
         var array = [<?php echo json_encode($navi_goal_info); ?>];
-        //alert(array);
-        //var array = [[139.6787332, 35.78268538, "goal"]];
 
         function decimalPart(num, decDigits) {
             var decPart = num - ((num >= 0) ? Math.floor(num) : Math.ceil(num));
@@ -785,19 +933,16 @@ try {
                 目的地まで<h1 id="ar_distance">0M</h1>
             </div>
             <div id="bottom_bar">
-                <button id="result_list_btn" popovertarget="mypopover" type=button>ボタン</button>
-                <button id="searchform_btn" type=button onclick="change_distance()">検索フォームを開く</button>
                 <select id="change_display_btn" size="1" onchange="change_display(value)">
                     <option value="default"> 通常表示 </option>
                     <option value="small"> 店名だけ表示 </option>
                     <option value="image"> 写真だけ表示 </option>
                 </select>
+                <button id="result_list_btn" data-bs-toggle="modal" data-bs-target="#modal_box1" type=button>目的地の情報</button>
                 <button id="change" type=button onclick="navigation_map()">戻る</button>
             </div>
         </main>
-        <footer>
-            <p>Copyright(c) 2021 山本佳世子研究室 All Rights Reserved.</p>
-        </footer>
+        <div id="result_modal_table"></div>
     </div>
 </body>
 <script>
@@ -810,6 +955,7 @@ try {
     }
     make_ar_object(array);
     make_ar_distance(array);
+    make_modal_table(modal_array, modal_type)
 </script>
 
 </html>

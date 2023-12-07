@@ -68,35 +68,6 @@ require "frame_rightmenu.php";
     </style>
 </head>
 
-<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-<script>
-    function change_area(area) {
-        if (area != 0) {
-            if (window.confirm('現在作成している観光計画をリセットしますがよろしいですか？')) {
-                jQuery(function($) {
-                    $.ajax({
-                        url: "ajax_change_area.php",
-                        type: "POST",
-                        dataType: "json",
-                        data: {
-                            post_data_1: area
-                        },
-                        error: function(XMLHttpRequest, textStatus, errorThrown) {
-                            alert("ajax通信に失敗しました");
-                        },
-                        success: function(response) {
-                            alert(response);
-                            window.location.reload();
-                        }
-                    });
-                });
-            } else {
-
-            }
-        }
-    };
-</script>
-
 <body>
     <div class="container-fluid">
         <main class="row">
@@ -131,20 +102,12 @@ require "frame_rightmenu.php";
                     ページ上部の観光計画作成から情報を登録することで観光計画を作成することが可能です。<br>
                     地図上のアイコンを押すことでポップアップが表示されます。<br>
                     詳しい使い方は<a href="explain.php#set_station">こちら</a><br><br>
-                    <font color=#000080><big>アンケートの回答を締め切りました。ご回答くださった方々、誠にありがとうございました。</big></font>
                     <!--
-                    <font color=#000080><big>利用後、アンケートへのご回答をお願いします。</big>></font>
-                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link" target="blank">回答する</a>
+                    <font color=#000080><big>アンケートの回答を締め切りました。ご回答くださった方々、誠にありがとうございました。</big></font>
                     -->
-                </p><br>
+                    <font color=#000080><big><a href="survey.php">利用後、アンケートへのご回答をお願いします。</a></big></font>
 
-                対象地域チェンジャー<br>
-                <select name="forbidden" size="1" onchange="change_area(value)">
-                    <option value="0"> スポットを選択してください </option>
-                    <option value="1"> みなとみらい </option>
-                    <option value="2"> 蓮根 </option>
-                    <option value="3"> 調布 </option>
-                </select><br>
+                </p><br>
 
                 <h3>連絡先</h3>
                 <p>
