@@ -103,12 +103,16 @@ require "frame_rightmenu.php";
                 <h3 class="px-0" >アンケートのご協力をお願いいたします。</h3>
                 <p>
                     本システムの利用後、ご利用いただいた機能に応じて以下のアンケートへのご回答をよろしくお願いいたします。<br>
+                    試験運用のアンケート<br>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfMJvh44Jx_t_EKmWqyb8eGyGfFAetVmiDxitJj3Gocse6EkQ/viewform?usp=sf_link" target="blank">https://docs.google.com/forms/d/e/1FAIpQLSfMJvh44Jx_t_EKmWqyb8eGyGfFAetVmiDxitJj3Gocse6EkQ/viewform?usp=sf_link</a><br>
+                    <!--
                     (1)観光計画作成機能に関するアンケート<br>
-                    (2)みなとみらい現地で利用することができるARを活用した機能に関するアンケート<br>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link" target="blank">https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link</a><br><br>
+                    (2)現地で利用することができるARを活用した機能に関するアンケート<br>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link" target="blank">https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link</a>
+                    -->
                     <!--<font color=#000080><big>アンケートの回答を締め切りました。ご回答くださった方々、誠にありがとうございました。</big></font>-->
-                    <font color=#000080><big>アンケートのURLはこちらです</big>></font><br>
-                    (1)<a href="https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link" target="blank">https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link</a><br>
-                    (2)<a href="https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link" target="blank">https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link</a>
+
                 </p><br>
 
                 <h3 class="px-0" >連絡先</h3>

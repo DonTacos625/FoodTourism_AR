@@ -286,6 +286,7 @@ function display_frame($name_row, $time)
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="css/copyright.css">
+    <link rel="stylesheet" type="text/css" href="css/background.css?<?php echo date('YmdHis'); ?>">
     <link rel="stylesheet" type="text/css" href="css/viewbox.css?<?php echo date('YmdHis'); ?>">
     <link rel="stylesheet" type="text/css" href="css/stepbar.css?<?php echo date('YmdHis'); ?>">
 
