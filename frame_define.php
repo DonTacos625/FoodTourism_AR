@@ -293,7 +293,7 @@ function display_frame($name_row, $time)
 </head>
 
 <body>
-    <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script>
         //leftの情報を上書きする
         function update_frame(data, id) {
