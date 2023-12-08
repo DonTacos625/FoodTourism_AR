@@ -90,9 +90,9 @@
         <div class="ml-3">　現在の対象地域：<?php echo htmlspecialchars($area_message, ENT_QUOTES); ?></div>
     </div>
 </body>
-
+<!--
 <footer id="footer" class="fixed-bottom d-flex justify-content-end">
     <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
 </footer>
-
+-->
 </html>
