@@ -217,7 +217,7 @@ function set_checked($session_name, $value)
 <head>
     <meta charset="utf-8" />
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -226,17 +226,11 @@ function set_checked($session_name, $value)
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>観光スポット選択（一覧表示）</title>
     <style>
-        .move_box {
-            position: relative;
-            width: 76vw;
-            float: left;
-        }
-
         .search_result .table th {
             text-align: left;
             white-space: nowrap;
@@ -249,20 +243,25 @@ function set_checked($session_name, $value)
             padding: 3px;
         }
 
+
+
+        #result_spots_table {
+            max-width: 100vw;
+        }
+
         @media screen and (max-width:768px) {
 
             .search_form {
-                font-size: 12px;
+                font-size: 13px;
             }
 
             .search_result {
                 font-size: 12px;
             }
 
-            .move_box {
-                width: 100%;
+            .infobox {
+                width: 20rem;
             }
-
         }
     </style>
 
@@ -546,7 +545,6 @@ function set_checked($session_name, $value)
                 directionsLengthUnits: "kilometers"
             });
             routeParams.returnDirections = true;
-
             // Define the symbology used to display the stops
             const CheckSymbol = {
                 type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
@@ -557,14 +555,12 @@ function set_checked($session_name, $value)
                     width: 4
                 }
             };
-
             // Define the symbology used to display the route
             const routeSymbol = {
                 type: "simple-line", // autocasts as SimpleLineSymbol()
                 color: [0, 0, 255, 0.5],
                 width: 3
             };
-
             const routeArrowSymbol = new CIMSymbol({
                 data: {
                     type: "CIMSymbolReference",
@@ -798,7 +794,7 @@ function set_checked($session_name, $value)
                         spot_array.push($say);
                         return graphic;
                     });
-                    
+
                     //今回のクリックによる検索結果を、グラフィックスレイヤーに登録（マップに表示）
                     resultsLayer.addMany(features);
 
@@ -842,8 +838,9 @@ function set_checked($session_name, $value)
             var km = $totalLength.toPrecision(3);
             alert("総歩行距離" + km + " km");
             var time = ($totalLength / 4.8);
-            var hour = Math.trunc(time);
-            var mini = 60 * decimalPart(time, 1);
+            var hour = Math.floor((time * 60) / 60);
+            var mini = Math.floor((time * 60) % 60);
+            $time = `総歩行時間：${hour}時間${mini}分`
             alert("総歩行時間" + hour + "時間" + mini + "分");
         }
 
@@ -873,7 +870,7 @@ function set_checked($session_name, $value)
                 const newDiv = document.createElement("div");
                 newDiv.className = 'search_result';
                 newDiv.innerHTML = `
-                <div class="card bg-light mb-3" style="width: 80rem;" id="infobox" value=${a_id}>
+                <div class="card bg-light mb-3" class="infobox" value=${a_id}>
                     <div class="row g-0">
                         <div class="col-md-5">
                             <img class="img-fluid rounded-start" src="images/${area_name}/sightseeing_spots/${a_id}.jpg" alt="">

@@ -11,7 +11,7 @@ require "frame_rightmenu.php";
 <head>
     <meta charset="UTF-8">
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -20,7 +20,7 @@ require "frame_rightmenu.php";
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
 
     <title>アンケート</title>
@@ -97,20 +97,22 @@ require "frame_rightmenu.php";
                 <h2>アンケート</h2>
 
                 <h2>
-                    <font color=#000080>&emsp;試験運用中</font>
+                    <font color=#000080>&emsp;本運用中</font>
                 </h2>
 
                 <h3 class="px-0" >アンケートのご協力をお願いいたします。</h3>
                 <p>
                     本システムの利用後、ご利用いただいた機能に応じて以下のアンケートへのご回答をよろしくお願いいたします。<br>
+                    <!--
                     試験運用のアンケート<br>
                     <a href="https://docs.google.com/forms/d/e/1FAIpQLSfMJvh44Jx_t_EKmWqyb8eGyGfFAetVmiDxitJj3Gocse6EkQ/viewform?usp=sf_link" target="blank">https://docs.google.com/forms/d/e/1FAIpQLSfMJvh44Jx_t_EKmWqyb8eGyGfFAetVmiDxitJj3Gocse6EkQ/viewform?usp=sf_link</a><br>
-                    <!--
-                    (1)観光計画作成機能に関するアンケート<br>
-                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link" target="blank">https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link</a><br><br>
-                    (2)現地で利用することができるARを活用した機能に関するアンケート<br>
-                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link" target="blank">https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link</a>
                     -->
+
+                    (1)「観光計画作成」機能に関するアンケート<br>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link" target="blank">https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link</a><br><br>
+                    (2)「現地での観光支援」機能に関するアンケート<br>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link" target="blank">https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link</a>
+
                     <!--<font color=#000080><big>アンケートの回答を締め切りました。ご回答くださった方々、誠にありがとうございました。</big></font>-->
 
                 </p><br>

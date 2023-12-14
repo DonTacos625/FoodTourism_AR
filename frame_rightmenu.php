@@ -111,14 +111,14 @@
                     </ul>
                 </div>
                 <div class="sortable">
-                    昼食前に訪れる観光スポット<br>
+                    昼食前に訪問する観光スポット<br>
                     <ul id="sort">
                         <?php $count_s_l = 0; ?>
                         <?php foreach ($plan_s_l_spots as $date) { ?>
                             <?php $count_s_l += 1; ?>
                             <li class="card" value=<?php echo $date[0] ?> id=<?php echo "plan_s_l_" . $count_s_l . "_box"; ?> draggable="true">
                                 <div class="card-body p-2">
-                                    <img class="pin_s_l" width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $count_s_l . ".png"; ?> alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
+                                    <img class="pin_s_l" width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $count_s_l . ".png"; ?> alt="昼食前に訪問する観光スポットのアイコン" title="昼食前に訪問する観光スポット">
                                     <div class="s_l_name"><?php echo $date[2] ?></div>
                                     <input class="s_l_time" type="number" value="<?php echo $date[1]; ?>">分
                                     <button type="button" class="btn btn-light btn-outline-dark" value=<?php echo "plan_s_l_" . $count_s_l . "_box"; ?> onclick="hidden_spot(value)">削除</button>
@@ -142,14 +142,14 @@
                     </ul>
                 </div>
                 <div class="sortable">
-                    昼食後に訪れる観光スポット<br>
+                    昼食後に訪問する観光スポット<br>
                     <ul id="sort2">
                         <?php $count_l_d = 0; ?>
                         <?php foreach ($plan_l_d_spots as $date) { ?>
                             <?php $count_l_d += 1; ?>
                             <li class="card" value=<?php echo $date[0] ?> id=<?php echo "plan_l_d_" . $count_l_d . "_box"; ?> draggable="true">
                                 <div class="card-body p-2">
-                                    <img class="pin_l_d" width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $count_l_d . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
+                                    <img class="pin_l_d" width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $count_l_d . ".png"; ?> alt="昼食後に訪問する観光スポットのアイコン" title="昼食後に訪問する観光スポット">
                                     <div class="l_d_name"><?php echo $date[2] ?></div>
                                     <input class="l_d_time" type="number" value="<?php echo $date[1]; ?>">分
                                     <button type="button" class="btn btn-light btn-outline-dark" value=<?php echo "plan_l_d_" . $count_l_d . "_box"; ?> onclick="hidden_spot(value)">削除</button>
@@ -173,14 +173,14 @@
                     </ul>
                 </div>
                 <div class="sortable">
-                    夕食後に訪れる観光スポット<br>
+                    夕食後に訪問する観光スポット<br>
                     <ul id="sort3">
                         <?php $count_d_g = 0; ?>
                         <?php foreach ($plan_d_g_spots as $date) { ?>
                             <?php $count_d_g += 1; ?>
                             <li class="card" value=<?php echo $date[0] ?> id=<?php echo "plan_d_g_" . $count_d_g . "_box"; ?> draggable="true">
                                 <div class="card-body p-2">
-                                    <img class="pin_d_g" width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $count_d_g . ".png"; ?> alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
+                                    <img class="pin_d_g" width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $count_d_g . ".png"; ?> alt="夕食後に訪問する観光スポットのアイコン" title="夕食後に訪問する観光スポット">
                                     <div class="d_g_name"><?php echo $date[2] ?></div>
                                     <input class="d_g_time" type="number" value="<?php echo $date[1]; ?>">分
                                     <button type="button" class="btn btn-light btn-outline-dark" value=<?php echo "plan_d_g_" . $count_d_g . "_box"; ?> onclick="hidden_spot(value)">削除</button>

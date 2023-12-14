@@ -275,7 +275,7 @@ if (
 <head>
     <meta charset="UTF-8">
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -284,7 +284,7 @@ if (
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>周辺飲食店の検索（地図上表示）</title>
@@ -294,7 +294,7 @@ if (
         @media screen and (max-width:768px) {
 
             .search_form {
-                font-size: 12px;
+                font-size: 14px;
             }
 
         }
@@ -302,9 +302,12 @@ if (
         @media screen and (max-width:768px) {
 
             .search_form {
-                font-size: 12px;
+                font-size: 13px;
             }
 
+            .icon_explain {
+                width: 100vw;
+            }
         }
     </style>
 
@@ -334,7 +337,7 @@ if (
                     alert("現在位置が取得できませんでした");
                     break;
                 case 3: //TIMEOUT
-                    alert("タイムアウトになりました");
+                    alert("申し訳ございませんが、タイムアウトになりました。再読み込みするか、少し間を置いてご利用ください。");
                     break;
                 default:
                     alert("その他のエラー(エラーコード:" + error.code + ")");
@@ -852,7 +855,7 @@ if (
                         <option value="10" <?php set_selected("restaurants_around_count", "10"); ?>> 10 </option>
                     </select><br>
 
-                    WIFI：
+                    Wi-Fi：
                     <input type="radio" id="wifi" name="wifi" value="0" <?php set_checked("wifi", "0"); ?>>指定なし
                     <input type="radio" id="wifi" name="wifi" value="あり" <?php set_checked("wifi", "あり"); ?>>あり
                     <input type="radio" id="wifi" name="wifi" value="なし" <?php set_checked("wifi", "なし"); ?>>なし<br>
@@ -967,7 +970,6 @@ if (
                     <br>
                     <input type="submit" name="submit" value="検索する">
                 </form>
-                <button type="button" class="btn btn-secondary btn-lg mb-2" onclick="display_results()">再読み込み</button><br>
             </div><br>
             <?php
             if (!$count) {
@@ -976,6 +978,7 @@ if (
             ?>
             <div class="icon_explain">
                 <img class="pin_list5" src="./markers/icon_explain_c.png" alt="現在地のアイコン" title="アイコン説明４">
+                <button type="button" class="btn btn-secondary btn-lg position-absolute end-0 m-2" onclick="display_results()">再読み込み</button><br>
             </div>
             <div id="viewbox">
                 <div id="viewDiv"></div>

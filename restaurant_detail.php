@@ -57,7 +57,7 @@ try {
 <head>
     <meta charset="utf-8" />
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -66,104 +66,12 @@ try {
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
+
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="css/detailbox.css?<?php echo date('YmdHis'); ?>">
     <title>飲食店詳細</title>
-    <style>
-        #detailbox {
-            position: relative;
-            float: left;
-            margin-left: 5px;
-        }
-
-        #detailbox #imgbox #viewbox {
-            position: relative;
-            float: left;
-            width: 75vw;
-            height: 40vw;
-            margin-bottom: 15px;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #detailbox #imgbox #viewbox #viewDiv {
-            position: relative;
-            padding: 0;
-            margin: 0;
-            height: 100%;
-            width: 100%;
-        }
-
-        #detailbox #infobox {
-            float: left;
-            width: 75vw;
-            margin-left: 5px;
-        }
-
-        .clearfix:after {
-            display: block;
-            clear: both;
-            height: 0px;
-            visibility: hidden;
-            content: ".";
-        }
-
-        #detailbox #infobox table {
-            width: 100%;
-            border: solid 3px #FFFFFF;
-        }
-
-        #detailbox #infobox table th {
-            text-align: left;
-            white-space: nowrap;
-            background: #EEEEEE;
-        }
-
-        #detailbox #infobox table td {
-            background: #EEEEEE;
-            padding: 3px;
-        }
-
-        #detailbox #infobox table td ul {
-            margin: 0px;
-        }
-
-        #detailbox #infobox table td ul li {
-            display: inline-block;
-        }
-
-        @media screen and (min-width:769px) and (max-width:1366px) {}
-
-        @media screen and (max-width:768px) {
-
-            #detailbox {
-                width: auto;
-                margin: 0px;
-                float: none;
-            }
-
-            #detailbox #imgbox #viewbox {
-                position: relative;
-                float: left;
-                width: 95%;
-                height: 50vh;
-                margin-bottom: 15px;
-                justify-content: center;
-                align-items: center;
-            }
-
-            #detailbox #infobox {
-                width: 95%;
-                float: none;
-            }
-
-            #detailbox #infobox table {
-                font-size: 13px;
-            }
-
-        }
-    </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
     <script src="https://js.arcgis.com/4.21/"></script>
@@ -266,8 +174,8 @@ try {
                         label: "緯度",
                         visible: true
                     }]
-                }]
-                ,actions: [detailAction_restaurant]
+                }],
+                actions: [detailAction_restaurant]
             };
 
             const station_template = {
@@ -287,8 +195,8 @@ try {
                         label: "緯度",
                         visible: true
                     }]
-                }]
-                ,actions: [detailAction_station]
+                }],
+                actions: [detailAction_station]
             };
 
             //スタートとゴールの駅を決める
@@ -498,7 +406,8 @@ try {
                             } else {
                                 alert("「" + response[0] + "」を夕食に設定しました");
                             }
-                            window.location.href = "search.php";
+                            //window.location.href = "search.php";
+                            window.history.back();
                         }
                     });
                 });
@@ -529,14 +438,12 @@ try {
     <div class="container-fluid">
         <main class="row">
             <div id="detailbox">
-                <h3 class="px-0">観光スポットの詳細情報</h3>
+                <h3 class="px-0">飲食店の詳細情報</h3>
 
                 <div id="box" class="clearfix">
 
-                    <div id="imgbox">
-                        <div id="viewbox">
-                            <div id="viewDiv"></div>
-                        </div>
+                    <div id="viewbox">
+                        <div id="viewDiv"></div>
                     </div>
 
                     <div id="infobox">
@@ -551,32 +458,38 @@ try {
                                 <th>店舗名</th>
                                 <td><?php echo $result1["name"]; ?></td>
                             </tr>
-
                             <tr>
                                 <th>ジャンル</th>
                                 <td><?php echo $result1["genre"]; ?>、<?php echo $result1["genre_sub"]; ?></td>
                             </tr>
-
                             <tr>
                                 <th>住所</th>
                                 <td><?php echo $result1["address"]; ?></td>
                             </tr>
-
                             <tr>
                                 <th>アクセス</th>
                                 <td><?php echo $result1["access"]; ?></td>
                             </tr>
-
+                            <tr>
+                                <th>Wi-Fi</th>
+                                <td><?php echo nl2br($result1["wifi"]); ?></td>
+                            </tr>
+                            <tr>
+                                <th>個室</th>
+                                <td><?php echo nl2br($result1["private_room"]); ?></td>
+                            </tr>
+                            <tr>
+                                <th>カード決済</th>
+                                <td><?php echo nl2br($result1["credit_card"]); ?></td>
+                            </tr>
                             <tr>
                                 <th>営業時間</th>
                                 <td><?php echo nl2br($result1["open_time"]); ?></td>
                             </tr>
-
                             <tr>
                                 <th>定休日</th>
                                 <td><?php echo nl2br($result1["close_time"]); ?></td>
                             </tr>
-
                             <tr>
                                 <th>予算</th>
                                 <td>昼：<?php if ($result1["lunch_budget"]) {
@@ -585,27 +498,22 @@ try {
                                             echo "不明";
                                         } ?>　　夜：<?php echo $result1["dinner_budget"]; ?></td>
                             </tr>
-
                             <tr>
                                 <th>総席数</th>
                                 <td><?php echo nl2br($result1["capacity"]); ?>席</td>
                             </tr>
-
                             <tr>
                                 <th>禁煙席</th>
                                 <td><?php echo nl2br($result1["non_smoking"]); ?>席</td>
                             </tr>
-
                             <tr>
                                 <th>ランチメニュー</th>
                                 <td><?php echo $result1["lunch"]; ?></td>
                             </tr>
-
                             <tr>
                                 <th>説明</th>
                                 <td><?php echo nl2br($result1["catch_comment"]); ?></td>
                             </tr>
-
                             <tr>
                                 <th>ホームページURL</th>
                                 <td>
@@ -619,10 +527,12 @@ try {
                             <tr>
                                 <th>観光計画に組み込みますか？</th>
                                 <td>
-                                    <input type="radio" id="lunch_or_dinner" name="lunch_or_dinner" value="1">昼食
+                                <img id="pin" width="18" height="20" src="./icons/pop_lunch.png" alt="昼食予定地のアイコン" title="昼食予定地">
+                                    <input type="radio" id="lunch_or_dinner" name="lunch_or_dinner" value="1">昼食　
+                                    <img id="pin" width="18" height="20" src="./icons/pop_dinner.png" alt="夕食予定地のアイコン" title="夕食予定地">
                                     <input type="radio" id="lunch_or_dinner" name="lunch_or_dinner" value="2">夕食<br>
-                                    <input type="number" value="30" id="food_time" name="food_time">分
-                                    <button type="button" value=<?php echo $result1["id"]; ?> onclick="post_restaurant(value)">設定する</button>
+                                    滞在時間：<input type="number" value="30" id="food_time" name="food_time">分
+                                    <button type="button" class="btn btn-secondary" value=<?php echo $result1["id"]; ?> onclick="post_restaurant(value)">設定する</button>
                                 </td>
                             </tr>
                         </table>

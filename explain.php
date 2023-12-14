@@ -11,7 +11,7 @@ require "frame_rightmenu.php";
 <head>
     <meta charset="UTF-8">
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -20,7 +20,7 @@ require "frame_rightmenu.php";
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
 
     <title>使い方</title>
@@ -94,7 +94,7 @@ require "frame_rightmenu.php";
                     <li>一覧</li>
                     <ul>
                         <li><a href="#view_all_spots">スポット一覧</a></li>
-                        <li><a href="#view_other_plans">他のユーザーが作成した観光計画</a></li>
+                        <li><a href="#view_other_plans">他のユーザが作成した観光計画</a></li>
                     </ul>
                     <li>マイページ</li>
                     <ul>
@@ -142,7 +142,7 @@ require "frame_rightmenu.php";
                     各種項目を設定することで表示する観光スポットを絞り込むことができます。
                     その中から訪れたい観光スポットのマーカーをクリック(タップ)し、
                     詳細ページから、「昼食前」、「昼食後」、「夕食後」の
-                    どの時間に訪れるか選択することができます。
+                    どの時間に訪問するか選択することができます。
                     観光スポットは各時間帯でそれぞれ3地点まで設定することができます。
                     観光スポットを計画から削除、または順番を変更したい場合はページ右部の「現在の観光計画」
                     から各ボタンを押すことで変更することができます。
@@ -151,7 +151,7 @@ require "frame_rightmenu.php";
                     <b id="save_plan">(4)観光計画の保存</b><br>
                     &emsp;作成した観光計画の観光経路が地図上に表示されます。
                     その他の情報として総歩行距離と歩行時間（歩行速度を時速4.8kmと想定）が表示されます。
-                    観光計画のプラン名とメモを記載し、他のユーザーに公開するか選択することで観光計画を保存することができます。<br><br>
+                    観光計画のプラン名とメモを記載し、他のユーザに公開するか選択することで観光計画を保存することができます。<br><br>
                     保存した観光計画は「マイページ＞保存した観光計画」で閲覧・編集することができます。<br>
 
                     <a href="set_station.php">観光計画を作成する>>></a><br><br>
@@ -191,7 +191,7 @@ require "frame_rightmenu.php";
                     また、スポットのマーカーをクリック（タップ）し、各詳細ページから観光計画に組み込むこともできます。<br><br>
 
                     <b id="view_other_plans">保存した観光計画</b><br>
-                    &emsp;他のユーザーが作成した公開されている観光計画を閲覧することができます。
+                    &emsp;他のユーザが作成した公開されている観光計画を閲覧することができます。
                     また、個別の詳細ページから観光計画をコピーすることができます。<br><br>
                     <a href="#index">▲ページ上部に戻る</a>
                 </p><br>
@@ -205,7 +205,7 @@ require "frame_rightmenu.php";
                     個別の詳細ページから観光計画の編集を行うことができます。<br><br>
 
                     <b id="password">登録情報変更</b><br>
-                    &emsp;ユーザーの登録情報の変更を行います。以下の情報を変更することができます。
+                    &emsp;ユーザの登録情報の変更を行います。以下の情報を変更することができます。
                 <ul>
                     <li>パスワード</li>
                     <li>体重</li>

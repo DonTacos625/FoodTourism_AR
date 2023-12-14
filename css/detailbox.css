@@ -1,0 +1,91 @@
+#detailbox {
+    position: relative;
+    float: left;
+    margin-left: 5px;
+}
+
+#detailbox #viewbox {
+    position: relative;
+    float: left;
+    width: 75vw;
+    height: 40vw;
+    margin-bottom: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+#detailbox #viewbox #viewDiv {
+    position: relative;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+}
+
+#infobox {
+    float: left;
+    width: 75vw;
+    margin-left: 5px;
+}
+
+#infobox table {
+    width: 100%;
+    border: solid 3px #FFFFFF;
+}
+
+#infobox table tr {
+    border: solid 1px #0e0b0b;
+}
+
+#infobox table th {
+    text-align: left;
+    white-space: nowrap;
+    background: #EEEEEE;
+}
+
+#infobox table td {
+    background: #EEEEEE;
+    padding: 3px;
+}
+
+#infobox table td ul {
+    margin: 0px;
+}
+
+#infobox table td ul li {
+    display: inline-block;
+}
+
+#imgbox {
+    max-width: 20vw;
+}
+@media screen and (min-width:769px) and (max-width:1366px) {}
+
+@media screen and (max-width:768px) {
+
+    #detailbox {
+        width: auto;
+        margin: 0px;
+        float: none;
+    }
+
+    #detailbox #viewbox {
+        position: relative;
+        float: left;
+        width: 95%;
+        height: 50vh;
+        margin-bottom: 15px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #infobox {
+        width: 95%;
+        float: none;
+    }
+
+    #infobox table {
+        font-size: 13px;
+    }
+
+}

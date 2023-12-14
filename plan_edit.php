@@ -88,10 +88,8 @@ if (!isset($_SESSION["d_g_spots"])) {
 }
 $spots_id = array_merge($s_l_ids, $l_d_ids, $d_g_ids);
 
-//デバッグ用
-//$_SESSION["s_l_spots"] = [1,2];
-//$_SESSION["l_d_spots"] = [3,4];
-//$_SESSION["d_g_spots"] = [5,6];
+//総滞在時間
+$total_minute = 0;
 
 //DB接続
 try {
@@ -113,6 +111,7 @@ try {
         $stmt2->execute();
         $result2 = $stmt2->fetch(PDO::FETCH_ASSOC);
         $lunch_info = [$result2["x"], $result2["y"], "lunch"];
+        $total_minute += $_SESSION["lunch_time"];//
     }
 
     if (!isset($_SESSION["dinner_id"])) {
@@ -123,6 +122,7 @@ try {
         $stmt3->execute();
         $result3 = $stmt3->fetch(PDO::FETCH_ASSOC);
         $dinner_info = [$result3["x"], $result3["y"], "dinner"];
+        $total_minute += $_SESSION["dinner_time"];//
     }
 
     if (!isset($_SESSION["goal_station_id"])) {
@@ -146,6 +146,7 @@ try {
             $result5 = $stmt5->fetch(PDO::FETCH_ASSOC);
             $spot_count += 1;
             $s_l_spots[] = [$result5["x"], $result5["y"], $spot_count];
+            $total_minute += $s_l[1];//
         }
     }
     $spot_count = 20;
@@ -159,6 +160,7 @@ try {
             $result6 = $stmt6->fetch(PDO::FETCH_ASSOC);
             $spot_count += 1;
             $l_d_spots[] = [$result6["x"], $result6["y"], $spot_count];
+            $total_minute += $l_d[1];//
         }
     }
     $spot_count = 30;
@@ -172,6 +174,7 @@ try {
             $result7 = $stmt7->fetch(PDO::FETCH_ASSOC);
             $spot_count += 1;
             $d_g_spots[] = [$result7["x"], $result7["y"], $spot_count];
+            $total_minute += $d_g[1];//
         }
     }
 } catch (PDOException $e) {
@@ -193,7 +196,7 @@ foreach ($d_g_spots as $d_g_add) {
 }
 $keikaku[] = $goal_info;
 
-//var_dump($start_info);
+//var_dump($total_minute);
 //var_dump($_SESSION["s_l_spots"]);
 //var_dump($s_l_ids);
 //var_dump($keikaku);
@@ -205,7 +208,7 @@ $keikaku[] = $goal_info;
 <head>
     <meta charset="utf-8" />
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -214,16 +217,14 @@ $keikaku[] = $goal_info;
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>観光計画の保存</title>
     <style>
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
-        @media screen and (max-width:768px) {
-
-        }
+        @media screen and (max-width:768px) {}
     </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
@@ -262,7 +263,22 @@ $keikaku[] = $goal_info;
 
             // Point the URL to a valid routing service
             const routeUrl = "https://utility.arcgis.com/usrsvcs/servers/4550df58672c4bc6b17607b947177b56/rest/services/World/Route/NAServer/Route_World";
-
+            //popup
+            var detailAction_station = {
+                title: "詳細",
+                id: "station_detail",
+                className: "esri-icon-documentation"
+            };
+            var detailAction_restaurant = {
+                title: "詳細",
+                id: "restaurant_detail",
+                className: "esri-icon-documentation"
+            };
+            var detailAction_spot = {
+                title: "詳細",
+                id: "spot_detail",
+                className: "esri-icon-documentation"
+            };
             const food_template = {
                 title: "{Name}",
                 content: [{
@@ -316,10 +332,9 @@ $keikaku[] = $goal_info;
                         label: "緯度",
                         visible: true
                     }]
-                }]
+                }],
+                actions: [detailAction_restaurant]
             };
-
-
             const station_template = {
                 title: "{Name}",
                 content: [{
@@ -337,9 +352,9 @@ $keikaku[] = $goal_info;
                         label: "緯度",
                         visible: true
                     }]
-                }]
+                }],
+                actions: [detailAction_station]
             };
-
             const spots_template = {
                 title: "{Name}",
                 content: [{
@@ -365,7 +380,8 @@ $keikaku[] = $goal_info;
                         label: "緯度",
                         visible: true
                     }]
-                }]
+                }],
+                actions: [detailAction_spot]
             };
 
             //スタートとゴールの駅を決める
@@ -482,7 +498,6 @@ $keikaku[] = $goal_info;
                 directionsLengthUnits: "kilometers"
             });
             routeParams.returnDirections = true;
-
             // Define the symbology used to display the stops
             const CheckSymbol = {
                 type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
@@ -493,14 +508,12 @@ $keikaku[] = $goal_info;
                     width: 4
                 }
             };
-
             // Define the symbology used to display the route
             const routeSymbol = {
                 type: "simple-line", // autocasts as SimpleLineSymbol()
                 color: [0, 0, 255, 0.5],
                 width: 3
             };
-
             const routeArrowSymbol = new CIMSymbol({
                 data: {
                     type: "CIMSymbolReference",
@@ -597,6 +610,22 @@ $keikaku[] = $goal_info;
                     dockOptions: {
                         breakpoint: false
                     }
+                }
+            });
+
+            //ポップアップの処理
+            view.popup.on("trigger-action", function(event) {
+                if (event.action.id === "station_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "station");
+                }
+                if (event.action.id === "restaurant_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "restaurant");
+                }
+                if (event.action.id === "spot_detail") {
+                    var id = view.popup.selectedFeature.attributes.id;
+                    srs_detail(id, "spot");
                 }
             });
 
@@ -729,9 +758,9 @@ $keikaku[] = $goal_info;
             $length = "総歩行距離：" + km + " km";
             //alert($length);
             var time = ($totalLength / 4.8);
-            var hour = Math.trunc(time);
-            var mini = 60 * decimalPart(time, 1);
-            $time = "総歩行時間：" + hour + "時間" + mini + "分";
+            var hour = Math.floor((time * 60) / 60);
+            var mini = Math.floor((time * 60) % 60);
+            $time = `総歩行時間：${hour}時間${mini}分`
 
             var user_weight = <?php echo json_encode($frameresult["user_weight"]); ?>;
             if (user_weight > 0) {
@@ -742,9 +771,12 @@ $keikaku[] = $goal_info;
             }
             //alert($time);
             //frameの関数
+            var total_minute = 60 * time + <?php echo json_encode($total_minute); ?>;
+            var total_time = `総所要時間：${Math.floor(total_minute / 60)}時間${ Math.floor(total_minute % 60) }分`;
             update_frame($length, "length_km");
             update_frame($time, "time_h_m");
             update_frame($kcal, "cal_k");
+            update_frame(total_time, "total_time");
         }
 
         //データベースに観光計画を保存する
@@ -786,6 +818,7 @@ $keikaku[] = $goal_info;
                                 updating_plan(response[1], response[2]);
                             } else {
                                 alert(response[0]);
+                                window.location.href = "user_plans.php?from_current=0";
                             }
                         }
                     });
@@ -798,7 +831,6 @@ $keikaku[] = $goal_info;
             //}
 
         };
-
         function updating_plan(same_plan_name, same_plan_id) {
             if (window.confirm(`「${same_plan_name}」の内容を上書きしますがよろしいですか？`)) {
                 var radios = document.getElementsByName("plan_show");
@@ -832,15 +864,14 @@ $keikaku[] = $goal_info;
                             },
                             success: function(response) {
                                 alert(response);
+                                window.location.href = "user_plans.php?from_current=0";
                             }
                         });
                     });
                 } else {
                     alert("プラン名を登録してください");
                 }
-
             } else {
-
             }
         };
     </script>
@@ -871,6 +902,9 @@ $keikaku[] = $goal_info;
                 </b>
                 <b>
                     <div id="time_h_m">総歩行時間：0時間0分</div>
+                </b>
+                <b>
+                    <div id="total_time">総所要時間：0時間0分</div>
                 </b><br>
             </div>
             <!--

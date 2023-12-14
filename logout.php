@@ -35,16 +35,10 @@ $_SESSION = array();
         }
 
         @media screen and (max-width: 768px) {
-            h2 {
-                font-size: 19px;
-            }
-
-            h3 {
-                font-size: 17px;
-            }
 
             #logoutbox {
                 width: 90%;
+                font-size: 20px;
             }
         }
     </style>

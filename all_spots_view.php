@@ -206,7 +206,7 @@ $keikaku[] = $goal_info;
 <head>
     <meta charset="utf-8" />
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -215,7 +215,7 @@ $keikaku[] = $goal_info;
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>スポット一覧</title>
@@ -713,7 +713,7 @@ $keikaku[] = $goal_info;
                 //$route_result_data = routeResult.geometry;
                 //総距離
                 $totalLength = data.routeResults[0].directions.totalLength;
-                doc();
+                //doc();
             }
 
             var area_name = <?php echo json_encode($area_name); ?>;
@@ -760,9 +760,9 @@ $keikaku[] = $goal_info;
             $length = "総歩行距離：" + km + " km";
             //alert($length);
             var time = ($totalLength / 4.8);
-            var hour = Math.trunc(time);
-            var mini = 60 * decimalPart(time, 1);
-            $time = "総歩行時間：" + hour + "時間" + mini + "分";
+            var hour = Math.floor((time * 60) / 60);
+            var mini = Math.floor((time * 60) % 60);
+            $time = `総歩行時間：${hour}時間${mini}分`
 
             var user_weight = <?php echo json_encode($frameresult["user_weight"]); ?>;
             if (user_weight > 0) {

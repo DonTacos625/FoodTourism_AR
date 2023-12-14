@@ -217,7 +217,7 @@ function set_checked($session_name, $value)
 <head>
     <meta charset="utf-8" />
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -226,7 +226,7 @@ function set_checked($session_name, $value)
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>観光スポット選択（地図上表示）</title>
@@ -240,7 +240,7 @@ function set_checked($session_name, $value)
         @media screen and (max-width:768px) {
 
             .search_form {
-                font-size: 12px;
+                font-size: 13px;
             }
 
             .move_box {
@@ -862,8 +862,9 @@ function set_checked($session_name, $value)
             var km = $totalLength.toPrecision(3);
             alert("総歩行距離" + km + " km");
             var time = ($totalLength / 4.8);
-            var hour = Math.trunc(time);
-            var mini = 60 * decimalPart(time, 1);
+            var hour = Math.floor((time * 60) / 60);
+            var mini = Math.floor((time * 60) % 60);
+            $time = `総歩行時間：${hour}時間${mini}分`
             alert("総歩行時間" + hour + "時間" + mini + "分");
         }
 
@@ -937,7 +938,7 @@ function set_checked($session_name, $value)
             <div id="result_table"></div>
             <div id="viewbox">
                 <div id="viewDiv"></div>
-                <button type="button" class="btn btn-secondary btn-lg" onclick="display_results()" title="経路を更新し表示します"><b>経路再表示</b></button>
+                <button type="button" class="btn btn-secondary btn-lg" onclick="display_results()" title="経路を更新し表示します" hidden><b>経路再表示</b></button>
             </div>
         </main>
         <footer>

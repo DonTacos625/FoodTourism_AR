@@ -113,7 +113,7 @@ try {
         if($save_plan_start != -1 && $save_plan_goal != -1){
             if($save_lunch != -1 || $save_dinner != -1){
                 //ID,Pass書き込み
-                //ユーザー情報書き込み
+                //ユーザ情報書き込み
                 $stmt3 = $pdo->prepare("UPDATE userplan SET
                     maker_id = :maker_id, 
                     show = :show, 

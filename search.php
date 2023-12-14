@@ -235,7 +235,7 @@ $count = 0;
 <head>
     <meta charset="UTF-8">
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -244,7 +244,7 @@ $count = 0;
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <title>飲食店の検索・決定（一覧表示）</title>
@@ -266,7 +266,7 @@ $count = 0;
         @media screen and (max-width:768px) {
 
             .search_form {
-                font-size: 12px;
+                font-size: 14px;
             }
 
             .search_result {
@@ -303,7 +303,7 @@ $count = 0;
 
 <body>
     <div class="container-fluid">
-        <maisn class="row">
+        <main class="row">
             <div>
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
@@ -319,7 +319,7 @@ $count = 0;
             <a id="view_result" name="view_result" href="search_map.php">地図上で結果を表示</a><br>
             <div class="search_form">
                 <form action="search.php" method="post">
-                    WIFI：
+                    Wi-Fi：
                     <input type="radio" id="wifi" name="wifi" value="0" <?php set_checked("wifi", "0"); ?>>指定なし
                     <input type="radio" id="wifi" name="wifi" value="あり" <?php set_checked("wifi", "あり"); ?>>あり
                     <input type="radio" id="wifi" name="wifi" value="なし" <?php set_checked("wifi", "なし"); ?>>なし<br>
@@ -514,10 +514,10 @@ $count = 0;
             }
             ?>
             <br>
-            </main>
-            <footer>
-                <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
-            </footer>
+        </main>
+        <footer>
+            <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
+        </footer>
     </div>
 </body>
 

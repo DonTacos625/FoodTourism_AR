@@ -28,6 +28,10 @@
 
             /* 背景色などは割愛します */
         }
+
+        footer>p {
+            display: none;
+        }
         
         @media screen and (min-width:769px) and (max-width:1366px) {
             .container {

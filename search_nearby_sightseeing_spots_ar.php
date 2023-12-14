@@ -139,7 +139,7 @@ if ($categoryName == "0") {
 <head>
     <meta charset="UTF-8">
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -148,7 +148,7 @@ if ($categoryName == "0") {
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
 
 
@@ -242,7 +242,7 @@ if ($categoryName == "0") {
             }
 
             .search_form {
-                font-size: 2vw;
+                font-size: 13px;
             }
         }
     </style>
@@ -274,7 +274,7 @@ if ($categoryName == "0") {
                     alert("現在位置が取得できませんでした");
                     break;
                 case 3: //TIMEOUT
-                    alert("タイムアウトになりました");
+                    alert("申し訳ございませんが、タイムアウトになりました。再読み込みするか、少し間を置いてご利用ください。");
                     break;
                 default:
                     alert("その他のエラー(エラーコード:" + error.code + ")");
@@ -748,7 +748,7 @@ if ($categoryName == "0") {
             for (var i = 0; i < array.length; i++) {
                 const target = document.getElementById(`planebox${i+1}`);
                 //const material = `shader:html;target: #namebox${i+1};`
-                const material = `src: ./markers/ar_icon${i+1}.png;`
+                const material = `src: ./skins/ar_icon${i+1}.png;`
                 target.setAttribute('geometry', "primitive: sphere");
                 target.setAttribute('scale', "3 3 3");
                 target.removeAttribute('material');

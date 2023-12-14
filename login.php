@@ -16,7 +16,7 @@ if (!empty($_GET["register"])) {
 if (!empty($_POST["login"])) {
     //IDのチェック
     if (empty($_POST["user_name"])) {
-        $errormessage = "ユーザーネームかメールアドレスが入力されていません";
+        $errormessage = "ユーザネームかメールアドレスが入力されていません";
     } else if (empty($_POST["pass"])) {
         $errormessage = "パスワードが入力されていません";
     }
@@ -53,7 +53,7 @@ if (!empty($_POST["login"])) {
                     $errormessage = "パスワードが間違っています";
                 }
             } else if (empty($result1)) {
-                $errormessage = "ユーザーネームかメールアドレスが間違っています";
+                $errormessage = "ユーザネームかメールアドレスが間違っています";
             }
         } catch (PDOException $e) {
             $errormessage = "データベースエラー";
@@ -72,7 +72,7 @@ if (!empty($_POST["login"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -81,7 +81,7 @@ if (!empty($_POST["login"])) {
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
 
     <title>ログイン</title>
@@ -91,11 +91,11 @@ if (!empty($_POST["login"])) {
 
         #loginbox {
             width: 70%;
-            height: 50%;
+            height: 60%;
             margin: auto;
             border: 1px solid #aaa;
             text-align: center;
-            font-size: 1.1vw;
+            font-size: 20px;
         }
 
         #loginbox table {
@@ -113,17 +113,10 @@ if (!empty($_POST["login"])) {
         }
 
         @media screen and (max-width: 768px) {
-            h2 {
-                font-size: 19px;
-            }
-
-            h3 {
-                font-size: 17px;
-            }
 
             #loginbox {
                 width: 90%;
-                font-size: 2.3vw;
+                font-size: 20px;
             }
         }
     </style>
@@ -133,11 +126,11 @@ if (!empty($_POST["login"])) {
     <div class="container-fluid">
         <main class="row justify-content-center">
             <div id="loginbox"><br><br><br>
-                <h2>横浜みなとみらいフードツーリズム計画作成支援システム</h2>
-                <p>
+                <h2>横浜みなとみらいフードツーリズム計画作成支援システム</h2><br>
+                <p class="text-break">
                     こちらは横浜みなとみらい近隣でのフードツーリズムを支援するシステムです。<br>
                     本システムは、PC・スマートフォン・タブレット端末でご利用可能です。<br>
-                    ※位置情報の取得、ARを利用した機能がありますのでブラウザ「Chrome」でのご利用を推奨しております。<br><br>
+                    ※位置情報の取得、ARを利用した機能がありますのでhttps通信の<b>ブラウザ「Chrome」</b>でのご利用を推奨しております。<br><br>
                     利用には<a href="signup.php">利用者登録</a>が必要となります。<br>
                     利用方法につきましては、ログイン後に使い方をご覧になるか、<a href="https://drive.google.com/file/d/1mlQpnjmVcnnn_Qqt2BwjwZzFUHGAplDD/view?usp=sharing" target="blank">こちら</a>のマニュアルからご覧ください<br>
                 </p>
@@ -146,9 +139,9 @@ if (!empty($_POST["login"])) {
                 <form id="loginform" name="loginform" action="" method="POST" autocomplete="off">
                     <table>
                         <tr>
-                            <th><label for="user_name">ユーザーネーム</label></th>
+                            <th><label for="user_name">ユーザネーム</label></th>
                             <td>
-                                <input type="text" id="user_name" name="user_name" placeholder="ユーザーネームを入力" value="" required>
+                                <input type="text" id="user_name" name="user_name" placeholder="ユーザネームを入力" value="" required>
                             </td>
                         </tr>
 

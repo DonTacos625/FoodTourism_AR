@@ -166,6 +166,9 @@ $side_display_plan = [
     ["d_g", $side_d_g_spots],
     ["goal", $side_goal_station_name]
 ];
+//総滞在時間
+$total_minute = $side_lunch_time + $side_dinner_time + array_sum($s_l_times) + array_sum($l_d_times) + array_sum($d_g_times);
+//var_dump($total_minute);
 
 //keikakuは目的地の配列
 //keikakuの配列作成
@@ -190,7 +193,7 @@ $keikaku[] = $goal_info;
 <head>
     <meta charset="utf-8" />
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -199,7 +202,7 @@ $keikaku[] = $goal_info;
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>観光計画</title>
@@ -802,9 +805,9 @@ $keikaku[] = $goal_info;
             $length = "総歩行距離：" + km + " km";
             //alert($length);
             var time = ($totalLength / 4.8);
-            var hour = Math.trunc(time);
-            var mini = 60 * decimalPart(time, 1);
-            $time = "総歩行時間：" + hour + "時間" + mini + "分";
+            var hour = Math.floor((time * 60) / 60);
+            var mini = Math.floor((time * 60) % 60);
+            $time = `総歩行時間：${hour}時間${mini}分`
 
             var user_weight = <?php echo json_encode($frameresult["user_weight"]); ?>;
             if (user_weight > 0) {
@@ -815,9 +818,12 @@ $keikaku[] = $goal_info;
             }
             //alert($time);
             //frameの関数
+            var total_minute = 60 * time + <?php echo json_encode($total_minute); ?>;
+            var total_time = `総所要時間：${Math.floor(total_minute / 60)}時間${ Math.floor(total_minute % 60) }分`;
             update_frame($length, "length_km");
             update_frame($time, "time_h_m");
             update_frame($kcal, "cal_k");
+            update_frame(total_time, "total_time");
         }
 
         var plan_id = <?php echo json_encode($plan_id); ?>;
@@ -863,7 +869,7 @@ $keikaku[] = $goal_info;
                         },
                         success: function(response) {
                             alert(response);
-                            window.location.href = "user_plans.php";
+                            window.location.href = "user_plans.php?from_current=0";
                         }
                     });
                 });
@@ -900,14 +906,14 @@ $keikaku[] = $goal_info;
 
             <?php if ($side_s_l_spots[0][2] != "設定されていません") { ?>
                 <div class="sortable">
-                    昼食前に訪れる観光スポット<br>
+                    昼食前に訪問する観光スポット<br>
                     <ul>
                         <?php $side_count = 0; ?>
                         <?php foreach ($side_s_l_spots as $date) { ?>
                             <?php $side_count += 1; ?>
                             <li class="card">
                                 <div class="card-body p-2">
-                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $side_count . ".png"; ?> alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
+                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $side_count . ".png"; ?> alt="昼食前に訪問する観光スポットのアイコン" title="昼食前に訪問する観光スポット">
                                     <div><?php echo $date[2] ?></div>
                                     <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
                                 </div>
@@ -935,14 +941,14 @@ $keikaku[] = $goal_info;
 
             <?php if ($side_l_d_spots[0][2] != "設定されていません") { ?>
                 <div class="sortable">
-                    昼食後に訪れる観光スポット<br>
+                    昼食後に訪問する観光スポット<br>
                     <ul>
                         <?php $side_count = 0; ?>
                         <?php foreach ($side_l_d_spots as $date) { ?>
                             <?php $side_count += 1; ?>
                             <li class="card">
                                 <div class="card-body p-2">
-                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $side_count . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
+                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $side_count . ".png"; ?> alt="昼食後に訪問する観光スポットのアイコン" title="昼食後に訪問する観光スポット">
                                     <div><?php echo $date[2] ?></div>
                                     <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
                                 </div>
@@ -970,14 +976,14 @@ $keikaku[] = $goal_info;
 
             <?php if ($side_d_g_spots[0][2] != "設定されていません") { ?>
                 <div class="sortable">
-                    夕食後に訪れる観光スポット<br>
+                    夕食後に訪問する観光スポット<br>
                     <ul>
                         <?php $side_count = 0; ?>
                         <?php foreach ($side_d_g_spots as $date) { ?>
                             <?php $side_count += 1; ?>
                             <li class="card">
                                 <div class="card-body p-2">
-                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $side_count . ".png"; ?> alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
+                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $side_count . ".png"; ?> alt="夕食後に訪問する観光スポットのアイコン" title="夕食後に訪問する観光スポット">
                                     <div><?php echo $date[2] ?></div>
                                     <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
                                 </div>
@@ -1022,14 +1028,14 @@ $keikaku[] = $goal_info;
                 </div>
                 <?php if ($side_s_l_spots[0][2] != "設定されていません") { ?>
                     <div class="sortable">
-                        昼食前に訪れる観光スポット<br>
+                        昼食前に訪問する観光スポット<br>
                         <ul>
                             <?php $side_count = 0; ?>
                             <?php foreach ($side_s_l_spots as $date) { ?>
                                 <?php $side_count += 1; ?>
                                 <li class="card">
                                     <div class="card-body p-2">
-                                        <img width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $side_count . ".png"; ?> alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
+                                        <img width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $side_count . ".png"; ?> alt="昼食前に訪問する観光スポットのアイコン" title="昼食前に訪問する観光スポット">
                                         <div><?php echo $date[2] ?></div>
                                         <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
                                     </div>
@@ -1055,14 +1061,14 @@ $keikaku[] = $goal_info;
                 <?php } ?>
                 <?php if ($side_l_d_spots[0][2] != "設定されていません") { ?>
                     <div class="sortable">
-                        昼食後に訪れる観光スポット<br>
+                        昼食後に訪問する観光スポット<br>
                         <ul>
                             <?php $side_count = 0; ?>
                             <?php foreach ($side_l_d_spots as $date) { ?>
                                 <?php $side_count += 1; ?>
                                 <li class="card">
                                     <div class="card-body p-2">
-                                        <img width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $side_count . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
+                                        <img width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $side_count . ".png"; ?> alt="昼食後に訪問する観光スポットのアイコン" title="昼食後に訪問する観光スポット">
                                         <div><?php echo $date[2] ?></div>
                                         <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
                                     </div>
@@ -1088,14 +1094,14 @@ $keikaku[] = $goal_info;
                 <?php } ?>
                 <?php if ($side_d_g_spots[0][2] != "設定されていません") { ?>
                     <div class="sortable">
-                        夕食後に訪れる観光スポット<br>
+                        夕食後に訪問する観光スポット<br>
                         <ul>
                             <?php $side_count = 0; ?>
                             <?php foreach ($side_d_g_spots as $date) { ?>
                                 <?php $side_count += 1; ?>
                                 <li class="card">
                                     <div class="card-body p-2">
-                                        <img width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $side_count . ".png"; ?> alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
+                                        <img width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $side_count . ".png"; ?> alt="夕食後に訪問する観光スポットのアイコン" title="夕食後に訪問する観光スポット">
                                         <div><?php echo $date[2] ?></div>
                                         <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
                                     </div>
@@ -1138,6 +1144,9 @@ $keikaku[] = $goal_info;
                 </b>
                 <b>
                     <div id="time_h_m">総歩行時間：0時間0分</div>
+                </b>
+                <b>
+                    <div id="total_time">総所要時間：0時間0分</div>
                 </b><br>
                 <b>
                     <div>

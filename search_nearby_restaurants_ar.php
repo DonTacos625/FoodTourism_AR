@@ -259,7 +259,7 @@ function set_selected($session_name, $value)
 <head>
     <meta charset="UTF-8">
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -268,7 +268,7 @@ function set_selected($session_name, $value)
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
 
 
@@ -363,7 +363,7 @@ function set_selected($session_name, $value)
             }
 
             .search_form {
-                font-size: 2vw;
+                font-size: 14px;
             }
         }
     </style>
@@ -395,13 +395,14 @@ function set_selected($session_name, $value)
                     alert("現在位置が取得できませんでした");
                     break;
                 case 3: //TIMEOUT
-                    alert("タイムアウトになりました");
+                    alert("申し訳ございませんが、タイムアウトになりました。再読み込みするか、少し間を置いてご利用ください。");
                     break;
                 default:
                     alert("その他のエラー(エラーコード:" + error.code + ")");
                     break;
             }
         };
+
         function test2(position) {
             current_latitude = position.coords.latitude;
             current_longitude = position.coords.longitude;
@@ -571,6 +572,7 @@ function set_selected($session_name, $value)
             const sort_conditions = <?php echo json_encode($sort_conditions); ?>;
             nearby_restaurants = (geom) => {
                 test();
+                //alert("s");
                 let graphic = new Graphic({
                     geometry: {
                         type: "point",
@@ -875,6 +877,7 @@ function set_selected($session_name, $value)
     function make_image_table(array) {
         $results_image_form = document.getElementById("result_image_table");
         $results_image_form.innerHTML = "";
+
         $results_image_form.className = 'tables';
         for (var i = 0; i < array.length; i++) {
             const a_id = array[i][0];
@@ -897,7 +900,7 @@ function set_selected($session_name, $value)
             for (var i = 0; i < array.length; i++) {
                 const target = document.getElementById(`planebox${i+1}`);
                 //const material = `shader:html;target: #namebox${i+1};`
-                const material = `src: ./markers/ar_icon${i+1}.png;`
+                const material = `src: ./skins/ar_icon${i+1}.png;`
                 target.setAttribute('geometry', "primitive: sphere");
                 target.setAttribute('scale', "3 3 3");
                 target.removeAttribute('material');
@@ -934,6 +937,28 @@ function set_selected($session_name, $value)
     function make_ar_object(array) {
         $AR_form = document.getElementById("ar_scene");
 
+        /*
+        var ar_objects = document.querySelectorAll(".ar_object");
+        ar_objects.forEach(ar_object => {
+            ar_object.remove();
+        });
+        */
+        /*
+        let d_nested = document.getElementById("nested");
+        let $AR_form = d.removeChild(d_nested);
+        */
+        /*
+         while ($AR_form.firstChild) {
+             if($AR_form.firstChild.id != "ar_camera"){
+                 $AR_form.removeChild($AR_form.firstChild);
+             }
+         }*/
+
+        //$AR_form.innerHTML = "";
+        //const newCamera = document.createElement("a-entity");
+        //newCamera.setAttribute('gps-new-camera', "gpsMinDistance: 5");
+        //$AR_form.appendChild(newCamera);
+
         for (var i = 0; i < array.length; i++) {
             const a_id = array[i][0];
             const a_lattitude = array[i][1];
@@ -949,6 +974,7 @@ function set_selected($session_name, $value)
             //entityの作成
             const newEntity = document.createElement("a-entity");
             newEntity.className = 'ar_object';
+            newEntity.id = `ar_object${i+1}`;
             newEntity.setAttribute('look-at', "[gps-new-camera]");
             newEntity.setAttribute('gps-new-entity-place', {
                 latitude: a_lattitude,
@@ -978,6 +1004,10 @@ function set_selected($session_name, $value)
         }
     }
 
+    //再読み込み
+    function display_results() {
+        nearby_restaurants();
+    }
 </script>
 
 <body>
@@ -989,12 +1019,13 @@ function set_selected($session_name, $value)
     <div id="result_image_table"></div>
 
     <a-scene id="ar_scene" device-orientation-permission-ui="enabled: false" vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true' cursor='rayOrigin: mouse'>
-        <a-camera gps-new-camera='gpsMinDistance: 5'></a-camera>
+        <a-camera id="ar_camera" gps-new-camera='gpsMinDistance: 5'></a-camera>
     </a-scene>
     <div id="header_bar" class="justify-content-center">
         <div id="ar_count">検索結果は0件中0件を表示しています</div>
     </div>
     <div id="bottom_bar">
+        <!-- <button class="btn btn-primary w-15" onclick="display_results()" type=button>再読み込み</button> -->
         <button class="btn btn-primary w-15" onclick="location.reload()" type=button>再読み込み</button>
         <select class="btn btn-primary w-15" size="1" onchange="change_display(value)">
             <option value="default"> 通常表示 </option>
@@ -1041,7 +1072,7 @@ function set_selected($session_name, $value)
                         <option value="10" <?php set_selected("restaurants_around_count", "10"); ?>> 10 </option>
                     </select><br>
 
-                    WIFI：
+                    Wi-Fi：
                     <input type="radio" id="wifi" name="wifi" value="0" <?php set_checked("wifi", "0"); ?>>指定なし
                     <input type="radio" id="wifi" name="wifi" value="あり" <?php set_checked("wifi", "あり"); ?>>あり
                     <input type="radio" id="wifi" name="wifi" value="なし" <?php set_checked("wifi", "なし"); ?>>なし<br>
@@ -1151,7 +1182,9 @@ function set_selected($session_name, $value)
 
             <div id="result_modal_table"></div>
         </main>
-
+        <div id="viewbox">
+            <div id="viewDiv"></div>
+        </div>
         <footer>
             <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
         </footer>

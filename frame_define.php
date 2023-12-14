@@ -359,8 +359,29 @@ function display_frame($name_row, $time)
                 }
             }
         };
-        
+
+        function browser_indicater() {
+            var userAgent = window.navigator.userAgent.toLowerCase();
+            if (userAgent.indexOf('msie') != -1 ||
+                userAgent.indexOf('trident') != -1) {
+                alert('Internet Explorerをお使いのようですが、こちらの機能はGoogle Chromeでのみご利用できます。申し訳ございません。');
+            } else if (userAgent.indexOf('edge') != -1) {
+                alert('Edgeをお使いのようですが、こちらの機能はGoogle Chromeでのみご利用できます。申し訳ございません。');
+            } else if (userAgent.indexOf('chrome') != -1) {
+                //alert('Google Chromeをお使いのようですので、こちらの機能はご利用いただけます');
+            } else if (userAgent.indexOf('safari') != -1) {
+                alert('Safariをお使いのようですが、こちらの機能はGoogle Chromeでのみご利用できます。申し訳ございません。');
+            } else if (userAgent.indexOf('firefox') != -1) {
+                alert('FireFoxをお使いのようですが、こちらの機能はGoogle Chromeでのみご利用できます。申し訳ございません。');
+            } else if (userAgent.indexOf('opera') != -1) {
+                alert('Operaをお使いのようですが、こちらの機能はGoogle Chromeでのみご利用できます。申し訳ございません。');
+            } else {
+                alert('ブラウザを特定できませんでした');
+            }
+        }
+
         const MY_API_KEY = "AAPKfe5fdd5be2744698a188fcc0c7b7b1d742vtC5TsStg94fpwkldrfNo3SJn2jl_VuCOEEdcBiwR7dKOKxejIP_3EDj9IPSPg";
+        browser_indicater();
     </script>
 
 </body>

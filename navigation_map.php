@@ -36,7 +36,7 @@ try {
 <head>
     <meta charset="utf-8" />
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -45,17 +45,14 @@ try {
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>ナビゲーション(地図上表示)</title>
     <style>
-
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
-        @media screen and (max-width:768px) {
-
-        }
+        @media screen and (max-width:768px) {}
     </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.25/esri/themes/light/main.css" />
@@ -84,7 +81,7 @@ try {
                     alert("現在位置が取得できませんでした");
                     break;
                 case 3: //TIMEOUT
-                    alert("タイムアウトになりました");
+                    alert("申し訳ございませんが、タイムアウトになりました。再読み込みするか、少し間を置いてご利用ください。");
                     break;
                 default:
                     alert("その他のエラー(エラーコード:" + error.code + ")");
@@ -113,7 +110,10 @@ try {
             "esri/rest/support/RouteParameters",
             "esri/rest/support/FeatureSet",
             "esri/symbols/PictureMarkerSymbol",
-            "esri/symbols/CIMSymbol"
+            "esri/symbols/CIMSymbol",
+            "esri/geometry/SpatialReference",
+            "esri/geometry/Polyline",
+            "esri/geometry/Point"
         ], function(
             Map,
             MapView,
@@ -128,7 +128,10 @@ try {
             RouteParameters,
             FeatureSet,
             PictureMarkerSymbol,
-            CIMSymbol
+            CIMSymbol,
+            SpatialReference,
+            Polyline,
+            Point
         ) {
 
             // Point the URL to a valid routing service
@@ -196,7 +199,6 @@ try {
                 }],
                 actions: [detailAction]
             };
-
 
             const station_template = {
                 title: "{Name}",
@@ -299,6 +301,8 @@ try {
 
             //ルート表示のレイヤー
             const routeLayer = new GraphicsLayer();
+            //途中地点のレイヤー
+            const getLayer = new GraphicsLayer();
 
             // Setup the route parameters
             const routeParams = new RouteParameters({
@@ -323,7 +327,6 @@ try {
                 directionsLengthUnits: "kilometers"
             });
             routeParams.returnDirections = true;
-
             // Define the symbology used to display the stops
             const CheckSymbol = {
                 type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
@@ -334,14 +337,12 @@ try {
                     width: 4
                 }
             };
-
             // Define the symbology used to display the route
             const routeSymbol = {
                 type: "simple-line", // autocasts as SimpleLineSymbol()
                 color: [0, 0, 255, 0.5],
                 width: 3
             };
-
             const routeArrowSymbol = new CIMSymbol({
                 data: {
                     type: "CIMSymbolReference",
@@ -431,7 +432,7 @@ try {
             }
             const map = new Map({
                 basemap: "streets",
-                layers: [$goalLayer, routeLayer]
+                layers: [$goalLayer, routeLayer, getLayer]
             });
 
             //frameの変数
@@ -486,9 +487,11 @@ try {
                 form.submit();
             };
 
+            //目的地までのルートを表示
             function display_route(plan) {
                 //前回の経路を、グラフィックスレイヤーから削除
                 routeLayer.removeAll();
+                getLayer.removeAll();
                 routeParams.stops.features.splice(0);
                 //開始駅と終了駅が同じの場合のフラグを設定
                 var start_point = plan[0];
@@ -556,23 +559,43 @@ try {
                         routeParams.stops.features.push(stop);
                     }
                 }
-                //alert(routeParams.stops.features.length);
                 if (routeParams.stops.features.length >= 2) {
                     route.solve(routeUrl, routeParams).then(showRoute);
                 }
             }
-            //display_route(keikaku);
-
-            // ルート表示用のレイヤーにデータを追加
+            //ルート表示の計算＋中間点の表示
             function showRoute(data) {
                 const routeResult = data.routeResults[0].route;
                 routeResult.symbol = routeArrowSymbol;
                 routeLayer.add(routeResult);
-                //$route_result_data = routeResult.geometry;
                 //総距離
                 $totalLength = data.routeResults[0].directions.totalLength;
                 doc();
-                //alert($totalLength);
+
+                $middle_points = [];
+                $metersLength = $totalLength.toPrecision(3) * 1000;
+                $distance = 200;
+                while ($metersLength > $distance) {
+                    const point_get = getPointAlongLine(routeResult.geometry, $distance, 0);
+                    const poinr_get_Symbol = {
+                        type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+                        style: "square",
+                        size: 15,
+                        outline: {
+                            // autocasts as new SimpleLineSymbol()
+                            width: 4
+                        }
+                    };
+                    const get_stop = new Graphic({
+                        geometry: point_get,
+                        symbol: poinr_get_Symbol
+                    });
+                    $middle_points.push([get_stop.geometry.latitude, get_stop.geometry.longitude]);
+                    $distance += 200;
+                    //地図上に中間地点を表示
+                    //getLayer.add(get_stop);
+                }
+                //alert($middle_points);
             }
             //アイコンは表示できるが向いている方向が分からなくなる
             /*
@@ -621,17 +644,16 @@ try {
                 track.start();
             });
 
-            /*
+            //二点間の距離を導出
             function distanceBetweenPoints(x1, y1, x2, y2) {
                 return Math.sqrt(Math.pow(x2 - x1, 2) + (Math.pow(y2 - y1, 2)));
             }
-
+            //ルート上の等間隔の点を定義
             function getPointAlongLine(polyline, distance, pathIndex) {
                 if (!pathIndex)
                     pathIndex = 0;
                 if (!distance)
                     distance = 0;
-                alert("d");
                 if ((pathIndex >= 0) && (pathIndex < polyline.paths.length)) {
                     var path = polyline.paths[pathIndex];
                     var x1, x2, x3, y1, y2, y3;
@@ -645,9 +667,9 @@ try {
                         for (var i = 1; i < path.length; i++) {
                             x1 = path[i - 1][0];
                             y1 = path[i - 1][1];
-                            x2 = path[0];
-                            y2 = path[1];
-                            pathDistance = this._distanceBetweenPoints(x1, y1, x2, y2);
+                            x2 = path[i][0];
+                            y2 = path[i][1];
+                            pathDistance = distanceBetweenPoints(x1, y1, x2, y2);
                             travelledDistance += pathDistance;
                             if (travelledDistance === distance)
                                 return polyline.getPoint(pathIndex, i);
@@ -663,8 +685,6 @@ try {
                 }
                 return null;
             }
-            getPointAlongLine(resultLayer, 10, 1);
-            */
 
         });
 
@@ -678,9 +698,9 @@ try {
             $length = "目的地までの歩行距離：" + km + " km";
             //alert($length);
             var time = ($totalLength / 4.8);
-            var hour = Math.trunc(time);
-            var mini = 60 * decimalPart(time, 1);
-            $time = "総歩行時間：" + hour + "時間" + mini + "分";
+            var hour = Math.floor((time * 60) / 60);
+            var mini = Math.floor((time * 60) % 60);
+            $time = `総歩行時間：${hour}時間${mini}分`
             //alert(mini);
             //frameの関数
             update_frame($length, "length_km");
@@ -715,8 +735,8 @@ try {
                 <font color="#ff0000"><?php echo htmlspecialchars($message, ENT_QUOTES); ?></font>
             </div>
             <h3 class="px-0">目的地までの経路</h3>
-            <a id="view_result" name="view_result" href=<?php echo "navigation_ar.php?navi_spot_id={$navi_spot_id}&navi_spot_type={$navi_spot_type}"?>>ARで結果を表示</a><br>
-
+            <a id="view_result" name="view_result" href=<?php echo "navigation_ar.php?navi_spot_id={$navi_spot_id}&navi_spot_type={$navi_spot_type}" ?>>ARで結果を表示</a><br>
+            <!-- <a id="view_result" name="view_result" onclick=<?php //echo "location.replace('navigation_ar.php?navi_spot_id={$navi_spot_id}&navi_spot_type={$navi_spot_type}')" ?>>ARで結果を表示</a><br> -->
             <div class="icon_explain">
                 <b>
                     <div id="length_km">目的地までの歩行距離：0.00 km</div>

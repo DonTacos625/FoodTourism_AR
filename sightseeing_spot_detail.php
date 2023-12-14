@@ -100,7 +100,7 @@ $keikaku[] = $goal_station_info;
 <head>
     <meta charset="utf-8" />
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -109,108 +109,11 @@ $keikaku[] = $goal_station_info;
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="css/detailbox.css?<?php echo date('YmdHis'); ?>">
     <title>観光スポット詳細</title>
-    <style>
-        #detailbox {
-            position: relative;
-            float: left;
-            margin-left: 5px;
-        }
-
-        #detailbox h3 {
-            border-left: 5px solid #000080;
-            margin: 0px;
-        }
-
-        #detailbox #imgbox #viewbox {
-            position: relative;
-            float: left;
-            width: 75vw;
-            height: 40vw;
-            margin-bottom: 15px;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #detailbox #imgbox #viewbox #viewDiv {
-            position: relative;
-            padding: 0;
-            margin: 0;
-            height: 100%;
-            width: 100%;
-        }
-
-        #detailbox #infobox {
-            float: left;
-            width: 75vw;
-            margin-left: 5px;
-        }
-
-        .clearfix:after {
-            display: block;
-            clear: both;
-            height: 0px;
-            visibility: hidden;
-            content: ".";
-        }
-
-        #detailbox #infobox table {
-            width: 100%;
-            border: solid 3px #FFFFFF;
-        }
-
-        #detailbox #infobox table th {
-            white-space: nowrap;
-            background: #EEEEEE;
-        }
-
-        #detailbox #infobox table td {
-            background: #EEEEEE;
-            padding: 3px;
-        }
-
-        #detailbox #infobox table td ul {
-            margin: 0px;
-        }
-
-        #detailbox #infobox table td ul li {
-            display: inline-block;
-        }
-
-        @media screen and (min-width:769px) and (max-width:1366px) {}
-
-        @media screen and (max-width:768px) {
-
-            #detailbox {
-                width: auto;
-                margin: 0px;
-                float: none;
-            }
-
-            #detailbox #imgbox #viewbox {
-                position: relative;
-                float: left;
-                width: 95%;
-                height: 50vh;
-                margin-bottom: 15px;
-                justify-content: center;
-                align-items: center;
-            }
-
-            #detailbox #infobox {
-                width: 95%;
-                float: none;
-            }
-
-            #detailbox #infobox table {
-                font-size: 13px;
-            }
-
-        }
-    </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
     <script src="https://js.arcgis.com/4.21/"></script>
@@ -607,14 +510,15 @@ $keikaku[] = $goal_station_info;
                                 alert("各時間帯に登録できるスポットは3つまでです");
                             } else {
                                 if (mode == "1") {
-                                    alert("「" + response[0] + "」を昼食前に訪れる観光スポットに設定しました");
+                                    alert("「" + response[0] + "」を昼食前に訪問する観光スポットに設定しました");
                                 } else if (mode == "2") {
-                                    alert("「" + response[0] + "」を昼食後に訪れる観光スポットに設定しました");
+                                    alert("「" + response[0] + "」を昼食後に訪問する観光スポットに設定しました");
                                 } else {
-                                    alert("「" + response[0] + "」を夕食前に訪れる観光スポットに設定しました");
+                                    alert("「" + response[0] + "」を夕食前に訪問する観光スポットに設定しました");
                                 }
                             }
-                            window.location.href = "sightseeing_spots_selection_map.php";
+                            //window.location.href = "sightseeing_spots_selection_map.php";
+                            window.history.back();
                         }
                     });
                 });
@@ -631,11 +535,8 @@ $keikaku[] = $goal_station_info;
                 <h3 class="px-0">観光スポットの詳細情報</h3>
 
                 <div id="box" class="clearfix">
-
-                    <div id="imgbox">
-                        <div id="viewbox">
-                            <div id="viewDiv"></div>
-                        </div>
+                    <div id="viewbox">
+                        <div id="viewDiv"></div>
                     </div>
 
                     <div id="infobox">
@@ -651,12 +552,10 @@ $keikaku[] = $goal_station_info;
                                     <th>名称</th>
                                     <td><?php echo $result["name"]; ?></td>
                                 </tr>
-
                                 <tr>
                                     <th>カテゴリー</th>
                                     <td><?php echo $result["category"]; ?></td>
                                 </tr>
-
                                 <tr>
                                     <th>ホームページURL</th>
                                     <td>
@@ -667,18 +566,19 @@ $keikaku[] = $goal_station_info;
                                         ?>
                                     </td>
                                 </tr>
-
                                 <tr>
                                     <th>観光計画に組み込みますか？</th>
                                     <td>
+                                        <img class="pin_s_l" width="18" height="18" src="./icons/pop_icon_s_l1.png" alt="昼食前に訪問する観光スポットのアイコン" title="昼食前に訪問する観光スポット">
                                         <input type="radio" id="s_l_d_g" name="s_l_d_g" value="1">昼食の前
+                                        <img class="pin_l_d" width="18" height="18" src="./icons/pop_icon_l_d1.png" alt="昼食後に訪問する観光スポットのアイコン" title="昼食後に訪問する観光スポット">
                                         <input type="radio" id="s_l_d_g" name="s_l_d_g" value="2">昼食の後
+                                        <img class="pin_d_g" width="18" height="18" src="./icons/pop_icon_d_g1.png" alt="夕食後に訪問する観光スポットのアイコン" title="夕食後に訪問する観光スポット">
                                         <input type="radio" id="s_l_d_g" name="s_l_d_g" value="3">夕食の後<br>
-                                        <input type="number" value="30" id="sightseeing_time" name="sightseeing_time">分
-                                        <button type="button" value=<?php echo $spot_id; ?> onclick="post_sightseeing_spot(value)">設定する</button>
+                                        滞在時間：<input type="number" value="30" id="sightseeing_time" name="sightseeing_time">分
+                                        <button type="button" class="btn btn-secondary" value=<?php echo $spot_id; ?> onclick="post_sightseeing_spot(value)">設定する</button>
                                     </td>
                                 </tr>
-
                             </table>
                             <li><a href="#" onclick="window.history.back(); return false;">戻る</a></li>
                     </div>

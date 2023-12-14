@@ -47,7 +47,6 @@ try {
     $stmt1->bindParam(":id", $station_id, PDO::PARAM_INT);
     $stmt1->execute();
     $result1 = $stmt1->fetch(PDO::FETCH_ASSOC);
-
 } catch (PDOException $e) {
     //デバッグ用
     echo $e->getMessage();
@@ -60,7 +59,7 @@ try {
 <head>
     <meta charset="utf-8" />
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -69,111 +68,11 @@ try {
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="css/detailbox.css?<?php echo date('YmdHis'); ?>">
     <title>駅詳細</title>
-    <style>
-        #detailbox {
-            position: relative;
-            float: left;
-            margin-left: 5px;
-        }
-
-        #detailbox h3 {
-            border-left: 5px solid #000080;
-            margin: 0px;
-        }
-
-        #detailbox #imgbox #viewbox {
-            position: relative;
-            float: left;
-            width: 75vw;
-            height: 40vw;
-            margin-bottom: 15px;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #detailbox #imgbox #viewbox #viewDiv {
-            position: relative;
-            padding: 0;
-            margin: 0;
-            height: 100%;
-            width: 100%;
-        }
-
-        #detailbox #infobox {
-            float: left;
-            width: 75vw;
-            margin-left: 5px;
-        }
-
-        .clearfix:after {
-            display: block;
-            clear: both;
-            height: 0px;
-            visibility: hidden;
-            content: ".";
-        }
-
-        #detailbox #infobox table {
-            width: 100%;
-            border: solid 3px #FFFFFF;
-        }
-
-        #detailbox #infobox table th {
-            text-align: left;
-            white-space: nowrap;
-            background: #EEEEEE;
-        }
-
-        #detailbox #infobox table td {
-            background: #EEEEEE;
-            padding: 3px;
-        }
-
-        #detailbox #infobox table td ul {
-            margin: 0px;
-        }
-
-        #detailbox #infobox table td ul li {
-            display: inline-block;
-        }
-
-        @media screen and (min-width:769px) and (max-width:1366px) {
-
-        }
-
-        @media screen and (max-width:768px) {
-
-            #detailbox {
-                width: auto;
-                margin: 0px;
-                float: none;
-            }
-
-            #detailbox #imgbox #viewbox {
-                position: relative;
-                float: left;
-                width: 95%;
-                height: 50vh;
-                margin-bottom: 15px;
-                justify-content: center;
-                align-items: center;
-            }
-
-            #detailbox #infobox {
-                width: 95%;
-                float: none;
-            }
-
-            #detailbox #infobox table {
-                font-size: 13px;
-            }
-
-        }
-    </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
     <script src="https://js.arcgis.com/4.21/"></script>
@@ -273,8 +172,8 @@ try {
                         label: "緯度",
                         visible: true
                     }]
-                }]
-                ,actions: [detailAction_restaurant]
+                }],
+                actions: [detailAction_restaurant]
             };
             const station_template = {
                 title: "{Name}",
@@ -293,8 +192,8 @@ try {
                         label: "緯度",
                         visible: true
                     }]
-                }]
-                ,actions: [detailAction_station]
+                }],
+                actions: [detailAction_station]
             };
             const spots_template = {
                 title: "{Name}",
@@ -398,7 +297,7 @@ try {
             });
 
             //中心地点にマーカーを
-            function make_center_maker(pic,Layer,X,Y) {
+            function make_center_maker(pic, Layer, X, Y) {
                 const point = {
                     type: "point",
                     x: X,
@@ -415,7 +314,7 @@ try {
                 });
                 Layer.add(stop);
             }
-            make_center_maker("./markers/red_pin.png",center_pointLayer,result1["x"], result1["y"])
+            make_center_maker("./markers/red_pin.png", center_pointLayer, result1["x"], result1["y"])
 
             //phpの経路情報をjavascript用に変換           
             var foods_plan = <?php echo json_encode($foods_plan); ?>;
@@ -476,14 +375,14 @@ try {
         function post_station(station_id) {
             var mode = 0;
             var radios = document.getElementsByName("start_or_goal");
-            for(var i=0; i<radios.length; i++){
+            for (var i = 0; i < radios.length; i++) {
                 if (radios[i].checked) {
-                //選択されたラジオボタンのvalue値を取得する
-                mode = radios[i].value;
-                break;
+                    //選択されたラジオボタンのvalue値を取得する
+                    mode = radios[i].value;
+                    break;
                 }
             }
-            if(mode == "0"){
+            if (mode == "0") {
                 alert("開始駅か終了駅を選択してください");
             } else {
                 var time = document.getElementById("station_time").value;
@@ -508,13 +407,13 @@ try {
                             } else {
                                 alert("「" + response[0] + "」を終了駅に設定しました");
                             }
-                            window.location.href = "set_station.php";
+                            //window.location.href = "set_station.php";
+                            window.history.back();
                         }
                     });
                 });
             };
         };
-
     </script>
 
 </head>
@@ -523,12 +422,11 @@ try {
     <div class="container-fluid">
         <main>
             <div id="detailbox">
-                <h3 class="px-0" >駅の詳細情報</h3>
+                <h3 class="px-0">駅の詳細情報</h3>
                 <div id="box" class="clearfix">
-                    <div id="imgbox">
-                        <div id="viewbox">
-                            <div id="viewDiv"></div>
-                        </div>
+
+                    <div id="viewbox">
+                        <div id="viewDiv"></div>
                     </div>
 
                     <div id="infobox">
@@ -537,17 +435,19 @@ try {
                                 <th>駅名</th>
                                 <td><?php echo $result1["name"]; ?></td>
                             </tr>
-
+                            <!--
                             <tr>
                                 <th>緯度</th>
-                                <td><?php echo $result1["y"]; ?></td>
+                                <td><?php //echo $result1["y"]; 
+                                    ?></td>
                             </tr>
 
                             <tr>
                                 <th>経度</th>
-                                <td><?php echo $result1["x"]; ?></td>
+                                <td><?php //echo $result1["x"]; 
+                                    ?></td>
                             </tr>
-
+                            -->
                             <tr>
                                 <th>ホームページURL</th>
                                 <td>
@@ -561,10 +461,12 @@ try {
                             <tr>
                                 <th>観光計画に組み込みますか？</th>
                                 <td>
-                                    <input type="radio" id="start_or_goal" name="start_or_goal" value="1">開始駅
+                                    <img id="pin" width="20" height="20" src="./icons/pop_start.png" alt="開始駅のアイコン" title="開始駅">
+                                    <input type="radio" id="start_or_goal" name="start_or_goal" value="1">開始駅　
+                                    <img id="pin" width="20" height="20" src="./icons/pop_goal.png" alt="終了駅のアイコン" title="終了駅">
                                     <input type="radio" id="start_or_goal" name="start_or_goal" value="2">終了駅<br>
                                     <input type="time" id="station_time" name="station_time" value="10:00" required hidden>
-                                    <button type="button" value=<?php echo $result1["id"]; ?> onclick="post_station(value)">設定する</button>
+                                    <button type="button" class="btn btn-secondary" value=<?php echo $result1["id"]; ?> onclick="post_station(value)">設定する</button>
                                 </td>
                             </tr>
                         </table>

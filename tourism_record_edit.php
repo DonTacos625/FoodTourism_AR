@@ -190,7 +190,7 @@ $keikaku[] = $goal_info;
 <head>
     <meta charset="utf-8" />
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -199,7 +199,7 @@ $keikaku[] = $goal_info;
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>観光記録の作成</title>
@@ -886,9 +886,9 @@ $keikaku[] = $goal_info;
             $length = "総歩行距離：" + km + " km";
             //alert($length);
             var time = ($totalLength / 4.8);
-            var hour = Math.trunc(time);
-            var mini = 60 * decimalPart(time, 1);
-            $time = "総歩行時間：" + hour + "時間" + mini + "分";
+            var hour = Math.floor((time * 60) / 60);
+            var mini = Math.floor((time * 60) % 60);
+            $time = `総歩行時間：${hour}時間${mini}分`
 
             var user_weight = <?php echo json_encode($frameresult["user_weight"]); ?>;
             if (user_weight > 0) {
@@ -959,13 +959,13 @@ $keikaku[] = $goal_info;
 
             <?php if ($side_s_l_spots[0][2] != "設定されていません") { ?>
                 <div class="sortable">
-                    昼食前に訪れる観光スポット<br>
+                    昼食前に訪問する観光スポット<br>
                     <ul>
                         <?php $side_count = 0; ?>
                         <?php foreach ($side_s_l_spots as $date) { ?>
                             <?php $side_count += 1; ?>
                             <li>
-                                <img width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $side_count . ".png"; ?> alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
+                                <img width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $side_count . ".png"; ?> alt="昼食前に訪問する観光スポットのアイコン" title="昼食前に訪問する観光スポット">
                                 <div><?php echo $date[2] ?></div>
                                 <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
                                 <button type="button" class="btn btn-light btn-outline-dark" value="<?php echo $date[0]; ?>" onclick="spot_navigation(value,'3')">ここに行く</button>
@@ -992,13 +992,13 @@ $keikaku[] = $goal_info;
 
             <?php if ($side_l_d_spots[0][2] != "設定されていません") { ?>
                 <div class="sortable">
-                    昼食後に訪れる観光スポット<br>
+                    昼食後に訪問する観光スポット<br>
                     <ul>
                         <?php $side_count = 0; ?>
                         <?php foreach ($side_l_d_spots as $date) { ?>
                             <?php $side_count += 1; ?>
                             <li>
-                                <img width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $side_count . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
+                                <img width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $side_count . ".png"; ?> alt="昼食後に訪問する観光スポットのアイコン" title="昼食後に訪問する観光スポット">
                                 <div><?php echo $date[2] ?></div>
                                 <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
                                 <button type="button" class="btn btn-light btn-outline-dark" value="<?php echo $date[0]; ?>" onclick="spot_navigation(value,'3')">ここに行く</button>
@@ -1025,13 +1025,13 @@ $keikaku[] = $goal_info;
 
             <?php if ($side_d_g_spots[0][2] != "設定されていません") { ?>
                 <div class="sortable">
-                    夕食後に訪れる観光スポット<br>
+                    夕食後に訪問する観光スポット<br>
                     <ul>
                         <?php $side_count = 0; ?>
                         <?php foreach ($side_d_g_spots as $date) { ?>
                             <?php $side_count += 1; ?>
                             <li>
-                                <img width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $side_count . ".png"; ?> alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
+                                <img width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $side_count . ".png"; ?> alt="夕食後に訪問する観光スポットのアイコン" title="夕食後に訪問する観光スポット">
                                 <div><?php echo $date[2] ?></div>
                                 <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
                                 <button type="button" class="btn btn-light btn-outline-dark" value="<?php echo $date[0]; ?>" onclick="spot_navigation(value,'3')">ここに行く</button>
@@ -1073,13 +1073,13 @@ $keikaku[] = $goal_info;
 
                 <?php if ($side_s_l_spots[0][2] != "設定されていません") { ?>
                     <div class="sortable">
-                        昼食前に訪れる観光スポット<br>
+                        昼食前に訪問する観光スポット<br>
                         <ul>
                             <?php $side_count = 0; ?>
                             <?php foreach ($side_s_l_spots as $date) { ?>
                                 <?php $side_count += 1; ?>
                                 <li>
-                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $side_count . ".png"; ?> alt="昼食前に訪れる観光スポットのアイコン" title="昼食前に訪れる観光スポット">
+                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_s_l" . $side_count . ".png"; ?> alt="昼食前に訪問する観光スポットのアイコン" title="昼食前に訪問する観光スポット">
                                     <div><?php echo $date[2] ?></div>
                                     <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
                                     <button type="button" class="btn btn-light btn-outline-dark" value="<?php echo $date[0]; ?>" onclick="spot_navigation(value,'3')">ここに行く</button>
@@ -1106,13 +1106,13 @@ $keikaku[] = $goal_info;
 
                 <?php if ($side_l_d_spots[0][2] != "設定されていません") { ?>
                     <div class="sortable">
-                        昼食後に訪れる観光スポット<br>
+                        昼食後に訪問する観光スポット<br>
                         <ul>
                             <?php $side_count = 0; ?>
                             <?php foreach ($side_l_d_spots as $date) { ?>
                                 <?php $side_count += 1; ?>
                                 <li>
-                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $side_count . ".png"; ?> alt="昼食後に訪れる観光スポットのアイコン" title="昼食後に訪れる観光スポット">
+                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_l_d" . $side_count . ".png"; ?> alt="昼食後に訪問する観光スポットのアイコン" title="昼食後に訪問する観光スポット">
                                     <div><?php echo $date[2] ?></div>
                                     <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
                                     <button type="button" class="btn btn-light btn-outline-dark" value="<?php echo $date[0]; ?>" onclick="spot_navigation(value,'3')">ここに行く</button>
@@ -1139,13 +1139,13 @@ $keikaku[] = $goal_info;
 
                 <?php if ($side_d_g_spots[0][2] != "設定されていません") { ?>
                     <div class="sortable">
-                        夕食後に訪れる観光スポット<br>
+                        夕食後に訪問する観光スポット<br>
                         <ul>
                             <?php $side_count = 0; ?>
                             <?php foreach ($side_d_g_spots as $date) { ?>
                                 <?php $side_count += 1; ?>
                                 <li>
-                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $side_count . ".png"; ?> alt="夕食後に訪れる観光スポットのアイコン" title="夕食後に訪れる観光スポット">
+                                    <img width="20" height="20" src=<?php echo "./icons/pop_icon_d_g" . $side_count . ".png"; ?> alt="夕食後に訪問する観光スポットのアイコン" title="夕食後に訪問する観光スポット">
                                     <div><?php echo $date[2] ?></div>
                                     <input disabled class="time" type="number" value="<?php echo $date[1]; ?>">分
                                     <button type="button" class="btn btn-light btn-outline-dark" value="<?php echo $date[0]; ?>" onclick="spot_navigation(value,'3')">ここに行く</button>

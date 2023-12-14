@@ -24,7 +24,7 @@ $count = 0
 <head>
     <meta charset="UTF-8">
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -33,10 +33,10 @@ $count = 0
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <title>他のユーザーが作成した観光計画</title>
+    <title>他のユーザが作成した観光計画</title>
     <style>
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
@@ -108,7 +108,7 @@ $count = 0
 <body>
     <div class="container-fluid">
         <main class="row">
-            <h3 class="px-0" id="search_start">他のユーザーが作成した観光計画</h3>
+            <h3 class="px-0" id="search_start">他のユーザが作成した観光計画</h3>
 
             <div class="flex_test-box">
                 <?php foreach ($stmt as $row) : ?>
@@ -121,7 +121,7 @@ $count = 0
                                                             echo "images/minatomirai/restaurants/" . $row["dinner"] . ".jpg";
                                                         } ?> alt="">
                         <div class="card-text">
-                            <div class="plan_text">作成したユーザー：<br><?php echo htmlspecialchars($row["user_name"], ENT_QUOTES); ?></div><br>
+                            <div class="plan_text">作成したユーザ：<br><?php echo htmlspecialchars($row["user_name"], ENT_QUOTES); ?></div><br>
                             <div class="plan_text">メモ：<br><?php echo htmlspecialchars($row["memo"], ENT_QUOTES); ?></div>
                         </div>
                         <br><a href="users_plan_detail.php?plan_id=<?php echo $row["id"]; ?>">詳細ページに移動する</a>

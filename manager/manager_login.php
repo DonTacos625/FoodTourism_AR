@@ -15,7 +15,7 @@ if (!empty($_GET["register"])) {
 if (!empty($_POST["login"])) {
     //IDのチェック
     if (empty($_POST["user_name"])) {
-        $errormessage = "ユーザーネームかメールアドレスが入力されていません";
+        $errormessage = "ユーザネームかメールアドレスが入力されていません";
     } else if (empty($_POST["pass"])) {
         $errormessage = "パスワードが入力されていません";
     }
@@ -51,7 +51,7 @@ if (!empty($_POST["login"])) {
                     $errormessage = "パスワードが間違っています";
                 }
             } else if (empty($result1)) {
-                $errormessage = "ユーザーネームかメールアドレスが間違っています";
+                $errormessage = "ユーザネームかメールアドレスが間違っています";
             }
         } catch (PDOException $e) {
             $errormessage = "データベースエラー";
@@ -70,7 +70,7 @@ if (!empty($_POST["login"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -79,7 +79,7 @@ if (!empty($_POST["login"])) {
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
 
     <title>管理者画面</title>

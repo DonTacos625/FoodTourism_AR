@@ -262,7 +262,7 @@ $count = 0;
 <head>
     <meta charset="UTF-8">
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -271,7 +271,7 @@ $count = 0;
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <title>飲食店の検索・決定（一覧表示）</title>
@@ -381,7 +381,7 @@ $count = 0;
 
 <body>
     <div class="container-fluid">
-        <maisn class="row">
+        <main class="row">
             <div id="detailbox">
                 <h3 class="px-0" id="search_start">飲食店の検索・決定</h3>
                 <div>
@@ -395,7 +395,7 @@ $count = 0;
                 <a id="view_result" name="view_result" href="search_map.php">地図上で結果を表示</a><br>
                 <div class="search_form">
                     <form action="search.php" method="post">
-                        WIFI：
+                        Wi-Fi：
                         <input type="radio" id="wifi" name="wifi" value="0" <?php set_checked("wifi", "0"); ?>>指定なし
                         <input type="radio" id="wifi" name="wifi" value="あり" <?php set_checked("wifi", "あり"); ?>>あり
                         <input type="radio" id="wifi" name="wifi" value="なし" <?php set_checked("wifi", "なし"); ?>>なし<br>

@@ -70,14 +70,14 @@ if (isset($_POST["user_weight"])) {
 if (!empty($_POST["signup"])) {
     //ID・Pass文字列チェック
     if (!preg_match('/\A[a-z\d]{4,10}+\z/i', $_POST["user_name"])) {
-        $errormessage = 'ユーザーネームが不適切です';
+        $errormessage = 'ユーザネームが不適切です';
     }
     if (!preg_match('/\A(?=.*?[a-z])(?=.*?\d)[a-z\d]{6,15}+\z/i', $_POST["pass"])) {
         $errormessage = 'パスワードが不適切です';
     }
     //ID・Pass空チェック
     if (empty($_POST["user_name"])) {
-        $errormessage = "ユーザーIDが未入力です";
+        $errormessage = "ユーザIDが未入力です";
     } else if (empty($_POST["pass"])) {
         $errormessage = 'パスワードが未入力です';
     } else if (empty($_POST["pass2"])) {
@@ -126,7 +126,7 @@ if (!empty($_POST["signup"])) {
                 $passhash = password_hash($pass, PASSWORD_DEFAULT);
 
                 //ID,Pass書き込み
-                //ユーザー情報書き込み
+                //ユーザ情報書き込み
                 $stmt3 = $pdo->prepare("INSERT INTO userinfo(user_name, pass, gender, age, user_weight, survey) VALUES(:user_name, :pass, :gender, :age, :user_weight, :survey)");
                 $stmt3->bindParam(":user_name", $user_name, PDO::PARAM_STR);
                 $stmt3->bindParam(":pass", $passhash, PDO::PARAM_STR);
@@ -164,7 +164,7 @@ if (!empty($_POST["signup"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -173,7 +173,7 @@ if (!empty($_POST["signup"])) {
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
 
     <title>新規登録</title>
@@ -207,13 +207,6 @@ if (!empty($_POST["signup"])) {
         }
 
         @media screen and (max-width: 768px) {
-            h2 {
-                font-size: 19px;
-            }
-
-            h3 {
-                font-size: 17px;
-            }
 
             #signupbox {
                 width: auto;
@@ -232,11 +225,11 @@ if (!empty($_POST["signup"])) {
                 <form id="signupform" name="signupForm" action="" method="POST" autocomplete="off">
                     <table class="signup_table mb-4">
                         <tr>
-                            <th rowspan="2" scope="rowgroup"><label for="user_name">ユーザーネーム</label></th>
+                            <th rowspan="2" scope="rowgroup"><label for="user_name">ユーザネーム</label></th>
                             <td scope="row"><small>半角英数字4~10文字<font color="#ff0000">*</font></small></td>
                         </tr>
                         <tr>
-                            <td scope="row"><input type="text" id="user_name" name="user_name" placeholder="ユーザーネームを入力" value="<?php echo htmlspecialchars($user_name_f, ENT_QUOTES); ?>" required></td>
+                            <td scope="row"><input type="text" id="user_name" name="user_name" placeholder="ユーザネームを入力" value="<?php echo htmlspecialchars($user_name_f, ENT_QUOTES); ?>" required></td>
                         </tr>
 
                         <tr>

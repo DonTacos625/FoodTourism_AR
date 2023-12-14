@@ -11,7 +11,7 @@ require "frame_rightmenu.php";
 <head>
     <meta charset="UTF-8">
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -20,7 +20,7 @@ require "frame_rightmenu.php";
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
 
     <title>ホーム</title>
@@ -75,7 +75,7 @@ require "frame_rightmenu.php";
                 <h2>ホーム</h2>
 
                 <h2>
-                    <font color=#000080>&emsp;試験運用中</font>
+                    <font color=#000080>&emsp;本運用中</font>
                 </h2>
 
                 <h3>目的</h3>
@@ -94,6 +94,8 @@ require "frame_rightmenu.php";
 
                 <h3>更新履歴</h3>
                 <p>
+                    2023/12/20 本運用開始<br>
+                    2023/12/14 試験運用終了<br>
                     2023/12/7 試験運用開始
                 </p><br>
 
@@ -109,6 +111,17 @@ require "frame_rightmenu.php";
 
                 </p><br>
 
+                対象地域チェンジャー<br>
+                <div id="changer" class="d-flex">
+                    <select name="forbidden" size="1" onchange="change_area(value)">
+                        <option value="0"> スポットを選択してください </option>
+                        <option value="1"> みなとみらい </option>
+                        <option value="2"> 蓮根 </option>
+                        <option value="3"> 調布 </option>
+                    </select><br>
+                    <div class="ml-3">　現在の対象地域：<?php echo htmlspecialchars($area_message, ENT_QUOTES); ?></div>
+                </div><br>
+
                 <h3>連絡先</h3>
                 <p>
                     不具合等ございましたら、下記のメールアドレスまでご連絡下さい。<br>
@@ -118,7 +131,7 @@ require "frame_rightmenu.php";
                 <div>
         </main>
         <footer>
-            <p>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</p>
+            <div>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</div>
         </footer>
     </div>
 </body>

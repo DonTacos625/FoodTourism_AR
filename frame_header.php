@@ -79,6 +79,7 @@
             <h1>横浜みなとみらいフードツーリズム支援システム</h1>
         </div>
     </div>
+    <!--
     対象地域チェンジャー<br>
     <div id="changer" class="d-flex">
         <select name="forbidden" size="1" onchange="change_area(value)">
@@ -87,8 +88,9 @@
             <option value="2"> 蓮根 </option>
             <option value="3"> 調布 </option>
         </select><br>
-        <div class="ml-3">　現在の対象地域：<?php echo htmlspecialchars($area_message, ENT_QUOTES); ?></div>
+        <div class="ml-3">　現在の対象地域：<?php //echo htmlspecialchars($area_message, ENT_QUOTES); ?></div>
     </div>
+    -->
 </body>
 <!--
 <footer id="footer" class="fixed-bottom d-flex justify-content-end">

@@ -55,7 +55,6 @@
             update.innerHTML = data;
             //console.log(update.innerHTML);
         }
-
         //観光計画からスポットを削除
         function hidden_spot(name) {
             var name_tag = document.getElementById(name);
@@ -89,7 +88,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="set_station.php">開始・終了駅の設定</a></li>
-                            <li><a class="dropdown-item" href="search.php">飲食店の検索・決定</a></li>
+                            <li><a class="dropdown-item" href="search_map.php">飲食店の検索・決定</a></li>
                             <li><a class="dropdown-item" href="sightseeing_spots_selection_map.php">観光スポット選択</a></li>
                             <li><a class="dropdown-item" href="plan_edit.php">観光計画を保存</a></li>
                         </ul>
@@ -109,7 +108,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="all_spots_view.php">スポット一覧</a></li>
-                            <li><a class="dropdown-item" href="users_plans.php">他のユーザーが作成した観光計画</a></li>
+                            <li><a class="dropdown-item" href="users_plans.php">他のユーザが作成した観光計画</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">

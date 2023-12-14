@@ -40,7 +40,7 @@ try {
 <head>
     <meta charset="utf-8" />
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -49,7 +49,7 @@ try {
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
 
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
@@ -110,6 +110,7 @@ try {
         var pointpic = "";
         var current_latitude = 0;
         var current_longitude = 0;
+        $first_load = 0;
 
         function test() {
             var options = {
@@ -128,7 +129,7 @@ try {
                     alert("現在位置が取得できませんでした");
                     break;
                 case 3: //TIMEOUT
-                    alert("タイムアウトになりました");
+                    alert("申し訳ございませんが、タイムアウトになりました。再読み込みするか、少し間を置いてご利用ください。");
                     break;
                 default:
                     alert("その他のエラー(エラーコード:" + error.code + ")");
@@ -157,7 +158,10 @@ try {
             "esri/rest/support/RouteParameters",
             "esri/rest/support/FeatureSet",
             "esri/symbols/PictureMarkerSymbol",
-            "esri/symbols/CIMSymbol"
+            "esri/symbols/CIMSymbol",
+            "esri/geometry/SpatialReference",
+            "esri/geometry/Polyline",
+            "esri/geometry/Point"
         ], function(
             Map,
             MapView,
@@ -172,7 +176,10 @@ try {
             RouteParameters,
             FeatureSet,
             PictureMarkerSymbol,
-            CIMSymbol
+            CIMSymbol,
+            SpatialReference,
+            Polyline,
+            Point
         ) {
 
             // Point the URL to a valid routing service
@@ -333,6 +340,8 @@ try {
 
             //ルート表示のレイヤー
             const routeLayer = new GraphicsLayer();
+            //途中地点のレイヤー
+            const getLayer = new GraphicsLayer();
 
             // Setup the route parameters
             const routeParams = new RouteParameters({
@@ -462,7 +471,7 @@ try {
             }
             const map = new Map({
                 basemap: "streets",
-                layers: [$goalLayer, routeLayer]
+                layers: [$goalLayer, routeLayer, getLayer]
             });
 
             //frameの変数
@@ -483,6 +492,7 @@ try {
             function display_route(plan) {
                 //前回の経路を、グラフィックスレイヤーから削除
                 routeLayer.removeAll();
+                getLayer.removeAll();
                 routeParams.stops.features.splice(0);
                 //開始駅と終了駅が同じの場合のフラグを設定
                 var start_point = plan[0];
@@ -556,7 +566,6 @@ try {
                 }
 
             }
-            //display_route(keikaku);
 
             // ルート表示用のレイヤーにデータを追加
             function showRoute(data) {
@@ -572,6 +581,34 @@ try {
                 }
                 if ($totalLength <= 0.1) {
                     alert("目的地周辺に到着しました！");
+                }
+                if ($first_load == 0) {
+                    $middle_points = [];
+                    $metersLength = $totalLength.toPrecision(3) * 1000;
+                    $distance = 200;
+                    while ($metersLength > $distance) {
+                        //alert();
+                        const point_get = getPointAlongLine(routeResult.geometry, $distance, 0);
+                        const poinr_get_Symbol = {
+                            type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+                            style: "square",
+                            size: 15,
+                            outline: {
+                                // autocasts as new SimpleLineSymbol()
+                                width: 4
+                            }
+                        };
+                        const get_stop = new Graphic({
+                            geometry: point_get,
+                            symbol: poinr_get_Symbol
+                        });
+                        $middle_points.push([get_stop.geometry.latitude, get_stop.geometry.longitude]);
+                        $distance += 200;
+                        getLayer.add(get_stop);
+                    }
+                    var middle_array = $middle_points;
+                    make_middle_ar_object(middle_array);
+                    $first_load = 1;
                 }
             }
 
@@ -598,17 +635,16 @@ try {
                 track.start();
             });
 
-            /*
+            //二点間の距離を導出
             function distanceBetweenPoints(x1, y1, x2, y2) {
                 return Math.sqrt(Math.pow(x2 - x1, 2) + (Math.pow(y2 - y1, 2)));
             }
-
+            //ルート上の等間隔の点を定義
             function getPointAlongLine(polyline, distance, pathIndex) {
                 if (!pathIndex)
                     pathIndex = 0;
                 if (!distance)
                     distance = 0;
-                alert("d");
                 if ((pathIndex >= 0) && (pathIndex < polyline.paths.length)) {
                     var path = polyline.paths[pathIndex];
                     var x1, x2, x3, y1, y2, y3;
@@ -622,9 +658,9 @@ try {
                         for (var i = 1; i < path.length; i++) {
                             x1 = path[i - 1][0];
                             y1 = path[i - 1][1];
-                            x2 = path[0];
-                            y2 = path[1];
-                            pathDistance = this._distanceBetweenPoints(x1, y1, x2, y2);
+                            x2 = path[i][0];
+                            y2 = path[i][1];
+                            pathDistance = distanceBetweenPoints(x1, y1, x2, y2);
                             travelledDistance += pathDistance;
                             if (travelledDistance === distance)
                                 return polyline.getPoint(pathIndex, i);
@@ -640,13 +676,9 @@ try {
                 }
                 return null;
             }
-            getPointAlongLine(resultLayer, 10, 1);
-            */
 
         });
 
-        var to_id = <?php echo json_encode($navi_spot_id); ?>;
-        //area_name = 
         function make_ar_object(array) {
             $AR_form = document.getElementById("ar_scene");
             for (var i = 0; i < array.length; i++) {
@@ -654,14 +686,6 @@ try {
                 const a_latitude = array[i][1];
                 const a_longitude = array[i][0];
                 const a_name = array[i][2];
-                /*
-                const a_genre = array[i][4][0];
-                const a_genre_sub = array[i][4][1];
-                const a_open_time = array[i][5];
-                const a_close_time = array[i][6];
-                const a_lunch_budget = array[i][7];
-                const a_dinner_budget = array[i][8];
-                */
 
                 //entityの作成
                 const newEntity = document.createElement("a-entity");
@@ -679,14 +703,6 @@ try {
                     alert($totalLength);
                 }
 
-                /*
-                newEntity.setAttribute('material', 'color: blue');
-                newEntity.setAttribute('geometry', 'primitive: box');
-                */
-
-                //球を追加
-                //const newSphere = document.createElement("a-sphere");
-                //newSphere.setAttribute('radius', '1.25');
                 const newSphere = document.createElement("a-cone");
                 newSphere.setAttribute('height', '-2');
                 const animation = `
@@ -697,31 +713,50 @@ try {
                             loop:-1
                             easing:linear;`
                 newSphere.setAttribute('animation', animation);
-                //newSphere.setAttribute('src', `images/${area_name}/restaurants/${to_id}.jpg`);
-                newSphere.setAttribute('src', `./markers/navigation_pin_skin.png`);
-                newSphere.setAttribute('color', 'color="#EF2D5E"');
+                newSphere.setAttribute('src', `./skins/navigation_pin_skin.png`);
+                //newSphere.setAttribute('color', 'color="#EF2D5E"');
                 newEntity.appendChild(newSphere);
 
-                /*
-                //planeの作成
-                const newPlane = document.createElement("a-plane");
-                newPlane.id = `planebox${i+1}`;
-                newPlane.setAttribute('look-at', "[gps-new-camera]");
-                if (i % 2 == 0) {
-                    newPlane.setAttribute('position', "0 -5 0");
-                } else if (i % 3 == 0) {
-                    newPlane.setAttribute('position', "0 5 0");
-                } else {
-                    newPlane.setAttribute('position', "0 0 0");
-                }
-                //newPlane.setAttribute('position', "0 0 0");
-                newPlane.setAttribute('width', "16");
-                newPlane.setAttribute('height', "10");
-                const material = `shader:html;target: #infobox${i+1};`
-                newPlane.setAttribute('material', material);
+                $AR_form.appendChild(newEntity);
+            }
+        }
 
-                newEntity.appendChild(newPlane);
+        function make_middle_ar_object(array) {
+            $AR_form = document.getElementById("ar_scene");
+            for (var i = 0; i < array.length; i++) {
+                const a_latitude = array[i][0];
+                const a_longitude = array[i][1];
+
+                //entityの作成
+                const newEntity = document.createElement("a-entity");
+                newEntity.className = 'ar_object';
+                newEntity.setAttribute('look-at', "[gps-new-camera]");
+                newEntity.setAttribute('gps-new-entity-place', {
+                    latitude: a_latitude,
+                    longitude: a_longitude
+                });
+                newEntity.setAttribute('scale', "5 5 5");
+
+                newEntity.onclick = () => {
+                    alert($totalLength);
+                }
+
+                //球を追加
+                const newSphere = document.createElement("a-sphere");
+                newSphere.setAttribute('radius', '1');
+                /*
+                const animation = `
+                            property:rotation;
+                            dur:10000;
+                            from:0 0 0;
+                            to:0 360 0;
+                            loop:-1
+                            easing:linear;`
+                newSphere.setAttribute('animation', animation);
                 */
+                newSphere.setAttribute('src', `./skins/ar_middle${i+1}.png`);
+                newEntity.appendChild(newSphere);
+
                 $AR_form.appendChild(newEntity);
             }
         }
@@ -758,7 +793,6 @@ try {
         var area_name = <?php echo json_encode($area_name); ?>;
         var modal_array = [<?php echo json_encode($navi_goal_detail); ?>];
         var modal_type = <?php echo json_encode($navi_spot_type); ?>;
-        //alert(modal_type);
         //モーダルウィンドウを作成する
         function make_modal_table(array, type) {
             $result_modal_form = document.getElementById("result_modal_table");
@@ -874,7 +908,6 @@ try {
 
         }
 
-
         var array = [<?php echo json_encode($navi_goal_info); ?>];
 
         function decimalPart(num, decDigits) {
@@ -883,20 +916,14 @@ try {
         }
 
         function doc() {
-            var km = $totalLength.toPrecision(3) * 1000;
-            $length = km + " M";
+            var m = $totalLength.toPrecision(3) * 1000;
+            $length = m + " M";
             //alert($length);
             var time = ($totalLength / 4.8);
-            var hour = Math.trunc(time);
-            var mini = 60 * decimalPart(time, 1);
-            $time = "総歩行時間：" + hour + "時間" + mini + "分";
-            //alert($time);
-            /*
-            //frameの関数
-            update_frame($length, "length_km");
-            update_frame($time, "time_h_m");
-            */
-            //alert($length);
+            var hour = Math.floor((time * 60) / 60);
+            var mini = Math.floor((time * 60) % 60);
+            $time = `総歩行時間：${hour}時間${mini}分`
+
             change_distance($length);
         }
         //店のナビゲーションページに飛ぶときに送信するデータ
@@ -954,8 +981,9 @@ try {
         ar_distance.textContent = value;
     }
     make_ar_object(array);
+    //make_middle_ar_object(middle_array);
     make_ar_distance(array);
-    make_modal_table(modal_array, modal_type)
+    make_modal_table(modal_array, modal_type);
 </script>
 
 </html>

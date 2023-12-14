@@ -336,7 +336,7 @@ if (
 <head>
     <meta charset="UTF-8">
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-214561408-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJ8NH8EYSR"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -345,7 +345,7 @@ if (
         }
         gtag('js', new Date());
 
-        gtag('config', 'UA-214561408-1');
+        gtag('config', 'G-WJ8NH8EYSR');
     </script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>飲食店の検索・決定（地図上表示）</title>
@@ -355,7 +355,7 @@ if (
         @media screen and (max-width:768px) {
 
             .search_form {
-                font-size: 12px;
+                font-size: 14px;
             }
 
         }
@@ -761,7 +761,7 @@ if (
             <a id="view_result" name="view_result" href="search.php">一覧で結果を表示</a><br>
             <div class="search_form">
                 <form action="search_map.php" method="post">
-                    WIFI：
+                    Wi-Fi：
                     <input type="radio" id="wifi" name="wifi" value="0" <?php set_checked("wifi", "0"); ?>>指定なし
                     <input type="radio" id="wifi" name="wifi" value="あり" <?php set_checked("wifi", "あり"); ?>>あり
                     <input type="radio" id="wifi" name="wifi" value="なし" <?php set_checked("wifi", "なし"); ?>>なし<br>
