@@ -544,7 +544,7 @@ $keikaku[] = $goal_station_info;
                             <table>
                                 <tr>
                                     <th>
-                                        <div id="imgbox"><img src=<?php echo "images/$area_name/sightseeing_spots/" . $result["id"] . ".jpg" ?> alt=""></div>
+                                        <div id="imgbox"><img src=<?php echo "images/$area_name/sightseeing_spots/" . $result["id"] . ".jpg" ?> onError="this.onerror=null;this.src='images/no_image.jpg';" alt=""></div>
                                     </th>
                                     <td></td>
                                 </tr>

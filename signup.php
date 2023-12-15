@@ -206,10 +206,15 @@ if (!empty($_POST["signup"])) {
             width: 15px;
         }
 
+        @media screen and (min-width:769px) and (max-width:1366px) {
+
+        }
+
         @media screen and (max-width: 768px) {
 
             #signupbox {
                 width: auto;
+                font-size: 2.5vw;
             }
         }
     </style>

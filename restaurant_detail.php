@@ -450,7 +450,7 @@ try {
                         <table>
                             <tr>
                                 <th>
-                                    <div id="imgbox"><img src=<?php echo "images/$area_name/restaurants/" . $result1["id"] . ".jpg" ?> alt=""></div>
+                                    <div id="imgbox"><img src=<?php echo "images/$area_name/restaurants/" . $result1["id"] . ".jpg" ?> onError="this.onerror=null;this.src='images/no_image.jpg';" alt=""></div>
                                 </th>
                                 <td></td>
                             </tr>
