@@ -5,12 +5,6 @@ require "frame_header.php";
 require "frame_menu.php";
 require "frame_rightmenu.php";
 
-$from_current = $_GET["from_current"];
-$message = "";
-if ($from_current == 1) {
-    $message = "使用する観光計画を選択してください";
-}
-
 try {
 
     $maker_id = $_SESSION["user_id"];
@@ -111,10 +105,10 @@ $count = 0
 <body>
     <div class="container-fluid">
         <main class="row">
-            <h3 class="px-0" id="search_start">保存した観光計画</h3>
+            <h3 class="px-0" id="search_start">観光をナビゲーション</h3>
             <div>
                 <font color="#ff0000">
-                    <h4><?php echo htmlspecialchars($message, ENT_QUOTES); ?><h4>
+                    <h4>使用する観光計画を選択してください<h4>
                 </font>
             </div>
             <div class="flex_test-box">
@@ -131,7 +125,7 @@ $count = 0
                             <div class="plan_text">作成したユーザ：<br><?php echo htmlspecialchars($row["user_name"], ENT_QUOTES); ?></div><br>
                             <div class="plan_text">メモ：<br><?php echo htmlspecialchars($row["memo"], ENT_QUOTES); ?></div><br>
                         </div>
-                        <a href="user_plan_detail.php?plan_id=<?php echo $row["id"]; ?>">編集ページに移動する</a>
+                        <a href="tourism_navigation.php?plan_id=<?php echo $row["id"]; ?>">ナビゲーションに移動する</a>
                     </div>
                 <?php endforeach; ?>
                 <?php

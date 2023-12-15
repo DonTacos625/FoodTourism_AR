@@ -1,0 +1,61 @@
+        body {
+            background: #ffffff;
+            font-family: sans-serif;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 130vh;
+        }
+
+        .move_box {
+            position: relative;
+            width: 75vw;
+            float: left;
+        }
+
+        .prev_page {
+            float: left;
+        }
+
+        .next_page {
+            float: right;
+        }
+
+        footer {
+            margin-top: auto;
+
+            /* 背景色などは割愛します */
+        }
+
+        footer>p {
+            display: none;
+        }
+        
+        @media screen and (min-width:769px) and (max-width:1366px) {
+            .container {
+                min-height: 110vh;
+            }
+        }
+
+        @media screen and (max-width:768px) {
+            .container {
+                display: flex;
+                flex-direction: column;
+                min-height: 130vh;
+            }
+
+            .move_box {
+                width: 100%;
+            }
+
+            .prev_page {
+                font-size: 13px;
+            }
+    
+            .next_page {
+                font-size: 13px;
+            }
+
+        }

@@ -245,23 +245,6 @@ if (!isset($_SESSION["goal_station_id"])) {
     $goal_station_name = $frameresult4["name"];
 }
 
-
-function display_frame($name_row, $time)
-{
-    $count = 0;
-    foreach ($name_row as $spot_name) {
-        $count += 1;
-        $frame_spot_name = " " . $count . ":" . $spot_name[0] . " ";
-        print "
-    <div id=\"frame_spot_name\">$frame_spot_name</div>
-    <button class=\"btn2\" type=\"button\" id=\"removebtn\" value=$spot_name[1] onclick=\"remove_spot($time, value)\" title=\"このスポットを削除します\">×</button>
-    <button type=\"button\" id=\"swapupbtn\" value=$spot_name[1] onclick=\"swap_spots($time, value, 'up')\" title=\"このスポットを一つ上に移動します\">↑</button>
-    <button type=\"button\" id=\"swapdownbtn\" value=$spot_name[1] onclick=\"swap_spots($time, value, 'down')\" title=\"このスポットを一つ下に移動します\">↓</button><br>
-    ";
-    };
-};
-
-
 ?>
 
 <!doctype html>
@@ -285,7 +268,7 @@ function display_frame($name_row, $time)
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="css/copyright.css">
+    <link rel="stylesheet" type="text/css" href="css/copyright.css?<?php echo date('YmdHis'); ?>">
     <link rel="stylesheet" type="text/css" href="css/background.css?<?php echo date('YmdHis'); ?>">
     <link rel="stylesheet" type="text/css" href="css/viewbox.css?<?php echo date('YmdHis'); ?>">
     <link rel="stylesheet" type="text/css" href="css/stepbar.css?<?php echo date('YmdHis'); ?>">

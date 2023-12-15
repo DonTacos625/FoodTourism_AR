@@ -163,6 +163,7 @@ $keikaku[] = $goal_info;
 
             #editbox {
                 width: 100%;
+                font-size: 2.5vw;
             }
         }
     </style>

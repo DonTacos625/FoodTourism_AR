@@ -589,7 +589,7 @@ try {
                     while ($metersLength > $distance) {
                         //alert();
                         const point_get = getPointAlongLine(routeResult.geometry, $distance, 0);
-                        const poinr_get_Symbol = {
+                        const point_get_Symbol = {
                             type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
                             style: "square",
                             size: 15,
@@ -600,7 +600,7 @@ try {
                         };
                         const get_stop = new Graphic({
                             geometry: point_get,
-                            symbol: poinr_get_Symbol
+                            symbol: point_get_Symbol
                         });
                         $middle_points.push([get_stop.geometry.latitude, get_stop.geometry.longitude]);
                         $distance += 200;
@@ -703,7 +703,7 @@ try {
                     alert($totalLength);
                 }
 
-                const newSphere = document.createElement("a-cone");
+                const newSphere = document.createElement("a-sphere");
                 newSphere.setAttribute('height', '-2');
                 const animation = `
                             property:rotation;
@@ -742,7 +742,7 @@ try {
                 }
 
                 //球を追加
-                const newSphere = document.createElement("a-sphere");
+                const newSphere = document.createElement("a-cone");
                 newSphere.setAttribute('radius', '1');
                 /*
                 const animation = `
@@ -966,10 +966,29 @@ try {
                     <option value="image"> 写真だけ表示 </option>
                 </select>
                 <button id="result_list_btn" data-bs-toggle="modal" data-bs-target="#modal_box1" type=button>目的地の情報</button>
+                <button data-bs-toggle="modal" data-bs-target="#explain_modal" type=button>使用方法</button>
                 <button id="change" type=button onclick="navigation_map()">戻る</button>
             </div>
         </main>
         <div id="result_modal_table"></div>
+
+        <div class="modal fade" id="explain_modal" tabindex="-1" aria-labelledby="explain_modal_Label" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="explain_modal_Label">ナビゲーション機能の説明</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        あああ
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </body>
 <script>
@@ -981,7 +1000,6 @@ try {
         ar_distance.textContent = value;
     }
     make_ar_object(array);
-    //make_middle_ar_object(middle_array);
     make_ar_distance(array);
     make_modal_table(modal_array, modal_type);
 </script>

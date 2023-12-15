@@ -220,9 +220,42 @@ $keikaku[] = $goal_info;
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>スポット一覧</title>
     <style>
+        .esri-layer-list__list {
+            background-color: #b8174d;
+        }
+
+
+        /*
+        .esri-ui-top-right>.esri-widget--panel {
+            background-color: #b8174d;
+            font-size: 10px;
+            width: 50%;
+            height: 50%;
+        }
+        */
+
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
-        @media screen and (max-width:768px) {}
+        @media screen and (max-width:768px) {
+            .esri-layer-list {
+                width: 20%;
+            }
+
+            .esri-view-height-xsmall .esri-expand .esri-widget--panel,
+            .esri-view-height-xsmall .esri-expand .esri-widget--panel-height-only,
+            .esri-view-height-xsmall .esri-ui-corner .esri-component.esri-widget--panel,
+            .esri-view-height-xsmall .esri-ui-corner .esri-component.esri-widget--panel-height-only {
+                width: 100px;
+                /*height: 20px;*/
+                font-size: 1.5vw;
+            }
+
+            /*
+            .esri-layer-list__list {
+                font-size: 2.2vw;
+            }
+            */
+        }
     </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
@@ -262,7 +295,8 @@ $keikaku[] = $goal_info;
         ) {
 
             // Point the URL to a valid routing service
-            const routeUrl = "https://utility.arcgis.com/usrsvcs/servers/4550df58672c4bc6b17607b947177b56/rest/services/World/Route/NAServer/Route_World";
+            const routeUrl =
+                "https://utility.arcgis.com/usrsvcs/servers/4550df58672c4bc6b17607b947177b56/rest/services/World/Route/NAServer/Route_World";
             //popup
             var detailAction_station = {
                 title: "詳細",
@@ -332,8 +366,8 @@ $keikaku[] = $goal_info;
                         label: "緯度",
                         visible: true
                     }]
-                }]
-                ,actions: [detailAction_restaurant]
+                }],
+                actions: [detailAction_restaurant]
             };
             const station_template = {
                 title: "{Name}",
@@ -352,8 +386,8 @@ $keikaku[] = $goal_info;
                         label: "緯度",
                         visible: true
                     }]
-                }]
-                ,actions: [detailAction_station]
+                }],
+                actions: [detailAction_station]
             };
             const spots_template = {
                 title: "{Name}",
@@ -442,7 +476,7 @@ $keikaku[] = $goal_info;
                 }
             };
 
-            //spotLayer
+            //spotsLayer
             var foodLayer = new FeatureLayer({
                 url: <?php echo json_encode($map_restaurants); ?>,
                 id: "foodLayer",
@@ -450,6 +484,8 @@ $keikaku[] = $goal_info;
                 //definitionExpression: food_feature_sql,
                 labelingInfo: [labelClass]
             });
+            foodLayer.title = "飲食店";
+            foodLayer.icon = "clock-forward";
 
             var stationLayer = new FeatureLayer({
                 url: <?php echo json_encode($map_stations); ?>,
@@ -458,6 +494,7 @@ $keikaku[] = $goal_info;
                 //definitionExpression: station_feature_sql,
                 labelingInfo: [labelClass]
             });
+            stationLayer.title = "駅";
 
             var spotsLayer = new FeatureLayer({
                 url: <?php echo json_encode($map_sightseeing_spots); ?>,
@@ -466,9 +503,11 @@ $keikaku[] = $goal_info;
                 //definitionExpression: spots_feature_sql,
                 labelingInfo: [labelClass]
             });
+            spotsLayer.title = "観光スポット";
 
             //ルート表示のレイヤー
             const routeLayer = new GraphicsLayer();
+            routeLayer.title = "現在作成中の観光計画の経路";
 
             // Setup the route parameters
             const routeParams = new RouteParameters({

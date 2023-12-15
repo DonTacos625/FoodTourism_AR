@@ -132,6 +132,7 @@ require "frame_rightmenu.php";
         </main>
         <footer>
             <div>Copyright(c) 2023 山本佳世子研究室 All Rights Reserved.</div>
+            <div>Powered by <a href="http://webservice.recruit.co.jp/">ホットペッパーグルメ Webサービス</a></div>
         </footer>
     </div>
 </body>

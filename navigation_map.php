@@ -577,7 +577,7 @@ try {
                 $distance = 200;
                 while ($metersLength > $distance) {
                     const point_get = getPointAlongLine(routeResult.geometry, $distance, 0);
-                    const poinr_get_Symbol = {
+                    const point_get_Symbol = {
                         type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
                         style: "square",
                         size: 15,
@@ -588,7 +588,7 @@ try {
                     };
                     const get_stop = new Graphic({
                         geometry: point_get,
-                        symbol: poinr_get_Symbol
+                        symbol: point_get_Symbol
                     });
                     $middle_points.push([get_stop.geometry.latitude, get_stop.geometry.longitude]);
                     $distance += 200;

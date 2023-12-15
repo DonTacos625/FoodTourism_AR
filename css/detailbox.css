@@ -24,7 +24,7 @@
 
 #infobox {
     float: left;
-    width: 75vw;
+    width: 100vw;
     margin-left: 5px;
 }
 
@@ -34,7 +34,7 @@
 }
 
 #infobox table tr {
-    border: solid 1px #0e0b0b;
+    border: solid 1px #0e0b0c;
 }
 
 #infobox table th {
@@ -72,7 +72,7 @@
     #detailbox #viewbox {
         position: relative;
         float: left;
-        width: 95%;
+        width: 100%;
         height: 50vh;
         margin-bottom: 15px;
         justify-content: center;
@@ -80,12 +80,12 @@
     }
 
     #infobox {
-        width: 95%;
+        width: 100%;
         float: none;
     }
 
     #infobox table {
-        font-size: 13px;
+        font-size: 1.8vw;
     }
 
 }

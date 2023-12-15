@@ -219,14 +219,12 @@ $keikaku[] = $goal_info;
             border-right: 3px solid #0099FF;
             z-index: 2;
         }
-
         #rightbox h2 {
             /*background: #0099FF;
             color: #FFFFFF;*/
             margin-right: 5px;
             border-left: 5px solid #000080;
         }
-
         #rightbox p {
             margin-left: 10px;
         }
@@ -234,7 +232,7 @@ $keikaku[] = $goal_info;
         #viewbox {
             position: relative;
             float: left;
-            width: 100vw;
+            width: 79vw;
             height: 60vh;
             margin-left: 5px;
         }
@@ -244,7 +242,7 @@ $keikaku[] = $goal_info;
             padding: 0;
             margin: 0;
             height: 100%;
-            width: 77vw;
+            width: 100%;
         }
 
         #side_rightbox {
@@ -253,17 +251,11 @@ $keikaku[] = $goal_info;
 
         @media screen and (min-width:769px) and (max-width:1366px) {
             #rightbox h2 {
-                /*background: #0099FF;
-                color: #FFFFFF;*/
                 margin-right: 4px;
                 border-left: 4px solid #000080;
                 font-size: 17px;
             }
 
-            #viewbox {
-                width: 77vw;
-                height: 70vh;
-            }
         }
 
         @media screen and (max-width:768px) {
@@ -278,6 +270,10 @@ $keikaku[] = $goal_info;
                 float: right;
             }
 
+            .row {
+                width: 98vw;
+            }
+            
             #viewbox {
                 position: relative;
                 float: left;
@@ -287,7 +283,7 @@ $keikaku[] = $goal_info;
             }
 
             #viewbox #viewDiv {
-                width: 100vw;
+                width: 100%;
                 height: 90%;
             }
 

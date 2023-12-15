@@ -99,7 +99,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="search_nearby_restaurants_map.php">周辺スポットの検索</a></li>
-                            <li><a class="dropdown-item" href="user_plans.php?from_current=1">観光をナビゲーション</a></li>
+                            <li><a class="dropdown-item" href="tourism_select.php">観光をナビゲーション</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -116,7 +116,7 @@
                             マイページ
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="user_plans.php?from_current=0">保存した観光計画を見る</a></li>
+                            <li><a class="dropdown-item" href="user_plans.php">保存した観光計画を見る</a></li>
                             <!-- <li><a class="dropdown-item" href="user_plans.php">観光記録</a></li> -->
                             <li><a class="dropdown-item" href="my_page.php">登録情報変更</a></li>
                             <li><a class="dropdown-item" href="logout.php">ログアウト</a></li>
