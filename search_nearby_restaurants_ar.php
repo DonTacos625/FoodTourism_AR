@@ -363,7 +363,7 @@ function set_selected($session_name, $value)
             }
 
             .search_form {
-                font-size: 14px;
+                font-size: 2.5vw;
             }
         }
     </style>
@@ -1040,8 +1040,12 @@ function set_selected($session_name, $value)
         <main class="row">
             <div class="modal fade" id="search_modal" tabindex="-1" aria-labelledby="search_modal_Label" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-body">
-                        <div class="search_form">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="explain_modal_Label">ナビゲーション機能の説明</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body search_form">
                             <form action="search_nearby_restaurants_ar.php" method="post">
                                 飲食店の検索範囲：<br>
                                 <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="300" <?php set_checked("restaurants_around_distance", "300"); ?>>周囲300m
@@ -1181,12 +1185,14 @@ function set_selected($session_name, $value)
                                 <br>
                                 <input type="submit" name="submit" value="検索する">
                             </form>
-                        </div><br>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div id="result_modal_table"></div>
+                <div id="result_modal_table"></div>
         </main>
         <div id="viewbox">
             <div id="viewDiv"></div>

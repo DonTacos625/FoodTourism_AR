@@ -242,7 +242,7 @@ if ($categoryName == "0") {
             }
 
             .search_form {
-                font-size: 13px;
+                font-size: 2.5vw;
             }
         }
     </style>
@@ -855,8 +855,12 @@ if ($categoryName == "0") {
         <main class="row">
             <div class="modal fade" id="search_modal" tabindex="-1" aria-labelledby="search_modal_Label" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-body">
-                        <div class="search_form">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="explain_modal_Label">ナビゲーション機能の説明</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body search_form">
                             <form action="search_nearby_sightseeing_spots_ar.php" method="post">
                                 観光スポットの検索範囲：<br>
                                 <input type="radio" id="spots_around_distance" name="spots_around_distance" value="300" <?php set_checked("spots_around_distance", "300"); ?>>周囲300m
@@ -896,6 +900,9 @@ if ($categoryName == "0") {
 
                                 <input type="submit" name="submit" value="検索する">
                             </form>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
                         </div>
                     </div>
                 </div>

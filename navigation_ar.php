@@ -960,11 +960,7 @@ try {
                 目的地まで<h1 id="ar_distance">0M</h1>
             </div>
             <div id="bottom_bar">
-                <select id="change_display_btn" size="1" onchange="change_display(value)">
-                    <option value="default"> 通常表示 </option>
-                    <option value="small"> 店名だけ表示 </option>
-                    <option value="image"> 写真だけ表示 </option>
-                </select>
+                <button class="btn btn-primary w-15" onclick="location.reload()" type=button>再読み込み</button>
                 <button id="result_list_btn" data-bs-toggle="modal" data-bs-target="#modal_box1" type=button>目的地の情報</button>
                 <button data-bs-toggle="modal" data-bs-target="#explain_modal" type=button>使用方法</button>
                 <button id="change" type=button onclick="navigation_map()">戻る</button>
