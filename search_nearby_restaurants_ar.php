@@ -1032,153 +1032,159 @@ function set_selected($session_name, $value)
             <option value="small"> オブジェクト表示 </option>
             <option value="image"> 写真だけ表示 </option>
         </select>
-        <button class="btn btn-primary w-15" type=button popovertarget="mypopover">検索フォーム</button>
+        <button class="btn btn-primary w-15" type=button data-bs-toggle="modal" data-bs-target="#search_modal">検索フォーム</button>
         <button class="btn btn-primary w-15" type=button onclick="location.href='search_nearby_restaurants_map.php'">戻る</button>
     </div>
 
     <div class="container-fluid">
         <main class="row">
-            <div class="search_form" id="mypopover" popover>
-                <form action="search_nearby_restaurants_ar.php" method="post">
-                    飲食店の検索範囲：<br>
-                    <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="300" <?php set_checked("restaurants_around_distance", "300"); ?>>周囲300m
-                    <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="400" <?php set_checked("restaurants_around_distance", "400"); ?>>周囲400m
-                    <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="500" <?php set_checked("restaurants_around_distance", "500"); ?>>周囲500m
-                    <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="600" <?php set_checked("restaurants_around_distance", "600"); ?>>周囲600m
-                    <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="700" <?php set_checked("restaurants_around_distance", "700"); ?>>周囲700m
-                    <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="800" <?php set_checked("restaurants_around_distance", "800"); ?>>周囲800m<br>
+            <div class="modal fade" id="search_modal" tabindex="-1" aria-labelledby="search_modal_Label" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-body">
+                        <div class="search_form">
+                            <form action="search_nearby_restaurants_ar.php" method="post">
+                                飲食店の検索範囲：<br>
+                                <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="300" <?php set_checked("restaurants_around_distance", "300"); ?>>周囲300m
+                                <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="400" <?php set_checked("restaurants_around_distance", "400"); ?>>周囲400m
+                                <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="500" <?php set_checked("restaurants_around_distance", "500"); ?>>周囲500m
+                                <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="600" <?php set_checked("restaurants_around_distance", "600"); ?>>周囲600m
+                                <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="700" <?php set_checked("restaurants_around_distance", "700"); ?>>周囲700m
+                                <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="800" <?php set_checked("restaurants_around_distance", "800"); ?>>周囲800m<br>
 
-                    並び替え条件：
-                    <select size="1" id="sort_conditions" name="sort_conditions" onchange="">
-                        <option value="distance_nearest" <?php set_selected("sort_conditions", "distance_nearest"); ?>> 距離が近い順 </option>
-                        <option value="distance_farthest" <?php set_selected("sort_conditions", "distance_farthest"); ?>> 距離が遠い順 </option>
-                        <option value="lunch_minimum" <?php set_selected("sort_conditions", "lunch_minimum"); ?>> 昼の予算が低い順 </option>
-                        <option value="lunch_maximum" <?php set_selected("sort_conditions", "lunch_maximum"); ?>> 昼の予算が高い順 </option>
-                        <option value="dinner_minimum" <?php set_selected("sort_conditions", "dinner_minimum"); ?>> 夜の予算が低い順 </option>
-                        <option value="dinner_maximum" <?php set_selected("sort_conditions", "dinner_maximum"); ?>> 夜の予算が高い順 </option>
-                    </select><br>
+                                並び替え条件：
+                                <select size="1" id="sort_conditions" name="sort_conditions" onchange="">
+                                    <option value="distance_nearest" <?php set_selected("sort_conditions", "distance_nearest"); ?>> 距離が近い順 </option>
+                                    <option value="distance_farthest" <?php set_selected("sort_conditions", "distance_farthest"); ?>> 距離が遠い順 </option>
+                                    <option value="lunch_minimum" <?php set_selected("sort_conditions", "lunch_minimum"); ?>> 昼の予算が低い順 </option>
+                                    <option value="lunch_maximum" <?php set_selected("sort_conditions", "lunch_maximum"); ?>> 昼の予算が高い順 </option>
+                                    <option value="dinner_minimum" <?php set_selected("sort_conditions", "dinner_minimum"); ?>> 夜の予算が低い順 </option>
+                                    <option value="dinner_maximum" <?php set_selected("sort_conditions", "dinner_maximum"); ?>> 夜の予算が高い順 </option>
+                                </select><br>
 
-                    表示数：
-                    <select size="1" id="restaurants_around_count" name="restaurants_around_count" onchange="">
-                        <option value="1" <?php set_selected("restaurants_around_count", "1"); ?>> 1 </option>
-                        <option value="2" <?php set_selected("restaurants_around_count", "2"); ?>> 2 </option>
-                        <option value="3" <?php set_selected("restaurants_around_count", "3"); ?>> 3 </option>
-                        <option value="4" <?php set_selected("restaurants_around_count", "4"); ?>> 4 </option>
-                        <option value="5" <?php set_selected("restaurants_around_count", "5"); ?>> 5 </option>
-                        <option value="6" <?php set_selected("restaurants_around_count", "6"); ?>> 6 </option>
-                        <option value="7" <?php set_selected("restaurants_around_count", "7"); ?>> 7 </option>
-                        <option value="8" <?php set_selected("restaurants_around_count", "8"); ?>> 8 </option>
-                        <option value="9" <?php set_selected("restaurants_around_count", "9"); ?>> 9 </option>
-                        <option value="10" <?php set_selected("restaurants_around_count", "10"); ?>> 10 </option>
-                    </select><br>
+                                表示数：
+                                <select size="1" id="restaurants_around_count" name="restaurants_around_count" onchange="">
+                                    <option value="1" <?php set_selected("restaurants_around_count", "1"); ?>> 1 </option>
+                                    <option value="2" <?php set_selected("restaurants_around_count", "2"); ?>> 2 </option>
+                                    <option value="3" <?php set_selected("restaurants_around_count", "3"); ?>> 3 </option>
+                                    <option value="4" <?php set_selected("restaurants_around_count", "4"); ?>> 4 </option>
+                                    <option value="5" <?php set_selected("restaurants_around_count", "5"); ?>> 5 </option>
+                                    <option value="6" <?php set_selected("restaurants_around_count", "6"); ?>> 6 </option>
+                                    <option value="7" <?php set_selected("restaurants_around_count", "7"); ?>> 7 </option>
+                                    <option value="8" <?php set_selected("restaurants_around_count", "8"); ?>> 8 </option>
+                                    <option value="9" <?php set_selected("restaurants_around_count", "9"); ?>> 9 </option>
+                                    <option value="10" <?php set_selected("restaurants_around_count", "10"); ?>> 10 </option>
+                                </select><br>
 
-                    Wi-Fi：
-                    <input type="radio" id="wifi" name="wifi" value="0" <?php set_checked("wifi", "0"); ?>>指定なし
-                    <input type="radio" id="wifi" name="wifi" value="あり" <?php set_checked("wifi", "あり"); ?>>あり
-                    <input type="radio" id="wifi" name="wifi" value="なし" <?php set_checked("wifi", "なし"); ?>>なし<br>
-                    個室：
-                    <input type="radio" id="private_room" name="private_room" value="0" <?php set_checked("private_room", "0"); ?>>指定なし
-                    <input type="radio" id="private_room" name="private_room" value="あり ：" <?php set_checked("private_room", "あり ："); ?>>あり
-                    <input type="radio" id="private_room" name="private_room" value="なし ：" <?php set_checked("private_room", "なし ："); ?>>なし<br>
-                    カード決済：
-                    <input type="radio" id="credit_card" name="credit_card" value="0" <?php set_checked("credit_card", "0"); ?>>指定なし
-                    <input type="radio" id="credit_card" name="credit_card" value="利用可" <?php set_checked("credit_card", "利用可"); ?>>利用可
-                    <input type="radio" id="credit_card" name="credit_card" value="利用不可" <?php set_checked("credit_card", "利用不可"); ?>>利用不可<br>
-                    禁煙席：
-                    <input type="radio" id="non_smoking" name="non_smoking" value="0" <?php set_checked("non_smoking", "0"); ?>>指定なし
-                    <input type="radio" id="non_smoking" name="non_smoking" value="全面禁煙" <?php set_checked("non_smoking", "全面禁煙"); ?>>全面禁煙
-                    <input type="radio" id="non_smoking" name="non_smoking" value="一部禁煙" <?php set_checked("non_smoking", "一部禁煙"); ?>>一部禁煙
-                    <input type="radio" id="non_smoking" name="non_smoking" value="禁煙席なし" <?php set_checked("non_smoking", "禁煙席なし"); ?>>禁煙席なし<br>
-                    ランチメニュー：
-                    <input type="radio" id="lunch" name="lunch" value="0" <?php set_checked("lunch", "0"); ?>>指定なし
-                    <input type="radio" id="lunch" name="lunch" value="あり" <?php set_checked("lunch", "あり"); ?>>あり
-                    <input type="radio" id="lunch" name="lunch" value="なし" <?php set_checked("lunch", "なし"); ?>>なし<br>
-                    総席数：
-                    <input type="number" value="<?php echo $capacity; ?>" id="capacity" name="capacity">～<br>
-                    昼食の予算：
-                    <select size="1" id="lunch_min" name="lunch_min" onchange="right_range(name)">
-                        <option value="0" <?php set_selected("lunch_min", "0"); ?>> 指定なし </option>
-                        <option value="501" <?php set_selected("lunch_min", "501"); ?>> 501円 </option>
-                        <option value="1001" <?php set_selected("lunch_min", "1001"); ?>> 1001円 </option>
-                        <option value="1501" <?php set_selected("lunch_min", "1501"); ?>> 1501円 </option>
-                        <option value="2001" <?php set_selected("lunch_min", "2001"); ?>> 2001円 </option>
-                        <option value="3001" <?php set_selected("lunch_min", "3001"); ?>> 3001円 </option>
-                        <option value="4001" <?php set_selected("lunch_min", "4001"); ?>> 4001円 </option>
-                        <option value="5001" <?php set_selected("lunch_min", "5001"); ?>> 5001円 </option>
-                        <option value="7001" <?php set_selected("lunch_min", "7001"); ?>> 7001円 </option>
-                        <option value="10001" <?php set_selected("lunch_min", "10001"); ?>> 10001円 </option>
-                        <option value="15001" <?php set_selected("lunch_min", "15001"); ?>> 15001円 </option>
-                        <option value="20001" <?php set_selected("lunch_min", "20001"); ?>> 20001円 </option>
-                        <option value="30001" <?php set_selected("lunch_min", "30001"); ?>> 30001円 </option>
-                    </select>
-                    ～
-                    <select size="1" id="lunch_max" name="lunch_max" onchange="right_range(name)">
-                        <option value="999999" <?php set_selected("lunch_max", "999999"); ?>> 指定なし </option>
-                        <option value="501" <?php set_selected("lunch_max", "501"); ?>> 501円 </option>
-                        <option value="1001" <?php set_selected("lunch_max", "1001"); ?>> 1001円 </option>
-                        <option value="1501" <?php set_selected("lunch_max", "1501"); ?>> 1501円 </option>
-                        <option value="2001" <?php set_selected("lunch_max", "2001"); ?>> 2001円 </option>
-                        <option value="3001" <?php set_selected("lunch_max", "3001"); ?>> 3001円 </option>
-                        <option value="4001" <?php set_selected("lunch_max", "4001"); ?>> 4001円 </option>
-                        <option value="5001" <?php set_selected("lunch_max", "5001"); ?>> 5001円 </option>
-                        <option value="7001" <?php set_selected("lunch_max", "7001"); ?>> 7001円 </option>
-                        <option value="10001" <?php set_selected("lunch_max", "10001"); ?>> 10001円 </option>
-                        <option value="15001" <?php set_selected("lunch_max", "15001"); ?>> 15001円 </option>
-                        <option value="20001" <?php set_selected("lunch_max", "20001"); ?>> 20001円 </option>
-                        <option value="30001" <?php set_selected("lunch_max", "30001"); ?>> 30001円 </option>
-                    </select><br>
-                    夕食の予算：
-                    <select size="1" id="dinner_min" name="dinner_min" onchange="right_range(name)">
-                        <option value="0" <?php set_selected("dinner_min", "0"); ?>> 指定なし </option>
-                        <option value="501" <?php set_selected("dinner_min", "501"); ?>> 501円 </option>
-                        <option value="1001" <?php set_selected("dinner_min", "1001"); ?>> 1001円 </option>
-                        <option value="1501" <?php set_selected("dinner_min", "1501"); ?>> 1501円 </option>
-                        <option value="2001" <?php set_selected("dinner_min", "2001"); ?>> 2001円 </option>
-                        <option value="3001" <?php set_selected("dinner_min", "3001"); ?>> 3001円 </option>
-                        <option value="4001" <?php set_selected("dinner_min", "4001"); ?>> 4001円 </option>
-                        <option value="5001" <?php set_selected("dinner_min", "5001"); ?>> 5001円 </option>
-                        <option value="7001" <?php set_selected("dinner_min", "7001"); ?>> 7001円 </option>
-                        <option value="10001" <?php set_selected("dinner_min", "10001"); ?>> 10001円 </option>
-                        <option value="15001" <?php set_selected("dinner_min", "15001"); ?>> 15001円 </option>
-                        <option value="20001" <?php set_selected("dinner_min", "20001"); ?>> 20001円 </option>
-                        <option value="30001" <?php set_selected("dinner_min", "30001"); ?>> 30001円 </option>
-                    </select>
-                    ～
-                    <select size="1" id="dinner_max" name="dinner_max" onchange="right_range(name)">
-                        <option value="999999" <?php set_selected("dinner_max", "999999"); ?>> 指定なし </option>
-                        <option value="501" <?php set_selected("dinner_max", "501"); ?>> 501円 </option>
-                        <option value="1001" <?php set_selected("dinner_max", "1001"); ?>> 1001円 </option>
-                        <option value="1501" <?php set_selected("dinner_max", "1501"); ?>> 1501円 </option>
-                        <option value="2001" <?php set_selected("dinner_max", "2001"); ?>> 2001円 </option>
-                        <option value="3001" <?php set_selected("dinner_max", "3001"); ?>> 3001円 </option>
-                        <option value="4001" <?php set_selected("dinner_max", "4001"); ?>> 4001円 </option>
-                        <option value="5001" <?php set_selected("dinner_max", "5001"); ?>> 5001円 </option>
-                        <option value="7001" <?php set_selected("dinner_max", "7001"); ?>> 7001円 </option>
-                        <option value="10001" <?php set_selected("dinner_max", "10001"); ?>> 10001円 </option>
-                        <option value="15001" <?php set_selected("dinner_max", "15001"); ?>> 15001円 </option>
-                        <option value="20001" <?php set_selected("dinner_max", "20001"); ?>> 20001円 </option>
-                        <option value="30001" <?php set_selected("dinner_max", "30001"); ?>> 30001円 </option>
-                    </select><br>
-                    検索の設定：
-                    <input type="radio" id="search_genre" name="search_genre" value="0" <?php set_checked("search_genre", "0"); ?>>ジャンルで検索
-                    <input type="radio" id="search_genre" name="search_genre" value="1" <?php set_checked("search_genre", "1"); ?>>店名で検索<br>
-                    検索ワード：
-                    <input type="text" value="<?php echo $search_word; ?>" id="search_name" name="search_name">
-                    <select name="genre_example" size="1" onchange="input_search_name(value)">
-                        <option value=""> ワードを入力するか以下から選択してください </option>
-                        <option value="中華"> 中華 </option>
-                        <option value="和食"> 和食 </option>
-                        <option value="洋食"> 洋食 </option>
-                        <option value="イタリアン"> イタリアン </option>
-                        <option value="フレンチ"> フレンチ </option>
-                        <option value="居酒屋"> 居酒屋 </option>
-                        <option value="バイキング"> バイキング </option>
-                        <option value="カフェ"> カフェ </option>
-                    </select>
-                    <br>
-                    <input type="submit" name="submit" value="検索する">
-                </form>
-            </div><br>
+                                Wi-Fi：
+                                <input type="radio" id="wifi" name="wifi" value="0" <?php set_checked("wifi", "0"); ?>>指定なし
+                                <input type="radio" id="wifi" name="wifi" value="あり" <?php set_checked("wifi", "あり"); ?>>あり
+                                <input type="radio" id="wifi" name="wifi" value="なし" <?php set_checked("wifi", "なし"); ?>>なし<br>
+                                個室：
+                                <input type="radio" id="private_room" name="private_room" value="0" <?php set_checked("private_room", "0"); ?>>指定なし
+                                <input type="radio" id="private_room" name="private_room" value="あり ：" <?php set_checked("private_room", "あり ："); ?>>あり
+                                <input type="radio" id="private_room" name="private_room" value="なし ：" <?php set_checked("private_room", "なし ："); ?>>なし<br>
+                                カード決済：
+                                <input type="radio" id="credit_card" name="credit_card" value="0" <?php set_checked("credit_card", "0"); ?>>指定なし
+                                <input type="radio" id="credit_card" name="credit_card" value="利用可" <?php set_checked("credit_card", "利用可"); ?>>利用可
+                                <input type="radio" id="credit_card" name="credit_card" value="利用不可" <?php set_checked("credit_card", "利用不可"); ?>>利用不可<br>
+                                禁煙席：
+                                <input type="radio" id="non_smoking" name="non_smoking" value="0" <?php set_checked("non_smoking", "0"); ?>>指定なし
+                                <input type="radio" id="non_smoking" name="non_smoking" value="全面禁煙" <?php set_checked("non_smoking", "全面禁煙"); ?>>全面禁煙
+                                <input type="radio" id="non_smoking" name="non_smoking" value="一部禁煙" <?php set_checked("non_smoking", "一部禁煙"); ?>>一部禁煙
+                                <input type="radio" id="non_smoking" name="non_smoking" value="禁煙席なし" <?php set_checked("non_smoking", "禁煙席なし"); ?>>禁煙席なし<br>
+                                ランチメニュー：
+                                <input type="radio" id="lunch" name="lunch" value="0" <?php set_checked("lunch", "0"); ?>>指定なし
+                                <input type="radio" id="lunch" name="lunch" value="あり" <?php set_checked("lunch", "あり"); ?>>あり
+                                <input type="radio" id="lunch" name="lunch" value="なし" <?php set_checked("lunch", "なし"); ?>>なし<br>
+                                総席数：
+                                <input type="number" value="<?php echo $capacity; ?>" id="capacity" name="capacity">～<br>
+                                昼食の予算：
+                                <select size="1" id="lunch_min" name="lunch_min" onchange="right_range(name)">
+                                    <option value="0" <?php set_selected("lunch_min", "0"); ?>> 指定なし </option>
+                                    <option value="501" <?php set_selected("lunch_min", "501"); ?>> 501円 </option>
+                                    <option value="1001" <?php set_selected("lunch_min", "1001"); ?>> 1001円 </option>
+                                    <option value="1501" <?php set_selected("lunch_min", "1501"); ?>> 1501円 </option>
+                                    <option value="2001" <?php set_selected("lunch_min", "2001"); ?>> 2001円 </option>
+                                    <option value="3001" <?php set_selected("lunch_min", "3001"); ?>> 3001円 </option>
+                                    <option value="4001" <?php set_selected("lunch_min", "4001"); ?>> 4001円 </option>
+                                    <option value="5001" <?php set_selected("lunch_min", "5001"); ?>> 5001円 </option>
+                                    <option value="7001" <?php set_selected("lunch_min", "7001"); ?>> 7001円 </option>
+                                    <option value="10001" <?php set_selected("lunch_min", "10001"); ?>> 10001円 </option>
+                                    <option value="15001" <?php set_selected("lunch_min", "15001"); ?>> 15001円 </option>
+                                    <option value="20001" <?php set_selected("lunch_min", "20001"); ?>> 20001円 </option>
+                                    <option value="30001" <?php set_selected("lunch_min", "30001"); ?>> 30001円 </option>
+                                </select>
+                                ～
+                                <select size="1" id="lunch_max" name="lunch_max" onchange="right_range(name)">
+                                    <option value="999999" <?php set_selected("lunch_max", "999999"); ?>> 指定なし </option>
+                                    <option value="501" <?php set_selected("lunch_max", "501"); ?>> 501円 </option>
+                                    <option value="1001" <?php set_selected("lunch_max", "1001"); ?>> 1001円 </option>
+                                    <option value="1501" <?php set_selected("lunch_max", "1501"); ?>> 1501円 </option>
+                                    <option value="2001" <?php set_selected("lunch_max", "2001"); ?>> 2001円 </option>
+                                    <option value="3001" <?php set_selected("lunch_max", "3001"); ?>> 3001円 </option>
+                                    <option value="4001" <?php set_selected("lunch_max", "4001"); ?>> 4001円 </option>
+                                    <option value="5001" <?php set_selected("lunch_max", "5001"); ?>> 5001円 </option>
+                                    <option value="7001" <?php set_selected("lunch_max", "7001"); ?>> 7001円 </option>
+                                    <option value="10001" <?php set_selected("lunch_max", "10001"); ?>> 10001円 </option>
+                                    <option value="15001" <?php set_selected("lunch_max", "15001"); ?>> 15001円 </option>
+                                    <option value="20001" <?php set_selected("lunch_max", "20001"); ?>> 20001円 </option>
+                                    <option value="30001" <?php set_selected("lunch_max", "30001"); ?>> 30001円 </option>
+                                </select><br>
+                                夕食の予算：
+                                <select size="1" id="dinner_min" name="dinner_min" onchange="right_range(name)">
+                                    <option value="0" <?php set_selected("dinner_min", "0"); ?>> 指定なし </option>
+                                    <option value="501" <?php set_selected("dinner_min", "501"); ?>> 501円 </option>
+                                    <option value="1001" <?php set_selected("dinner_min", "1001"); ?>> 1001円 </option>
+                                    <option value="1501" <?php set_selected("dinner_min", "1501"); ?>> 1501円 </option>
+                                    <option value="2001" <?php set_selected("dinner_min", "2001"); ?>> 2001円 </option>
+                                    <option value="3001" <?php set_selected("dinner_min", "3001"); ?>> 3001円 </option>
+                                    <option value="4001" <?php set_selected("dinner_min", "4001"); ?>> 4001円 </option>
+                                    <option value="5001" <?php set_selected("dinner_min", "5001"); ?>> 5001円 </option>
+                                    <option value="7001" <?php set_selected("dinner_min", "7001"); ?>> 7001円 </option>
+                                    <option value="10001" <?php set_selected("dinner_min", "10001"); ?>> 10001円 </option>
+                                    <option value="15001" <?php set_selected("dinner_min", "15001"); ?>> 15001円 </option>
+                                    <option value="20001" <?php set_selected("dinner_min", "20001"); ?>> 20001円 </option>
+                                    <option value="30001" <?php set_selected("dinner_min", "30001"); ?>> 30001円 </option>
+                                </select>
+                                ～
+                                <select size="1" id="dinner_max" name="dinner_max" onchange="right_range(name)">
+                                    <option value="999999" <?php set_selected("dinner_max", "999999"); ?>> 指定なし </option>
+                                    <option value="501" <?php set_selected("dinner_max", "501"); ?>> 501円 </option>
+                                    <option value="1001" <?php set_selected("dinner_max", "1001"); ?>> 1001円 </option>
+                                    <option value="1501" <?php set_selected("dinner_max", "1501"); ?>> 1501円 </option>
+                                    <option value="2001" <?php set_selected("dinner_max", "2001"); ?>> 2001円 </option>
+                                    <option value="3001" <?php set_selected("dinner_max", "3001"); ?>> 3001円 </option>
+                                    <option value="4001" <?php set_selected("dinner_max", "4001"); ?>> 4001円 </option>
+                                    <option value="5001" <?php set_selected("dinner_max", "5001"); ?>> 5001円 </option>
+                                    <option value="7001" <?php set_selected("dinner_max", "7001"); ?>> 7001円 </option>
+                                    <option value="10001" <?php set_selected("dinner_max", "10001"); ?>> 10001円 </option>
+                                    <option value="15001" <?php set_selected("dinner_max", "15001"); ?>> 15001円 </option>
+                                    <option value="20001" <?php set_selected("dinner_max", "20001"); ?>> 20001円 </option>
+                                    <option value="30001" <?php set_selected("dinner_max", "30001"); ?>> 30001円 </option>
+                                </select><br>
+                                検索の設定：
+                                <input type="radio" id="search_genre" name="search_genre" value="0" <?php set_checked("search_genre", "0"); ?>>ジャンルで検索
+                                <input type="radio" id="search_genre" name="search_genre" value="1" <?php set_checked("search_genre", "1"); ?>>店名で検索<br>
+                                検索ワード：
+                                <input type="text" value="<?php echo $search_word; ?>" id="search_name" name="search_name">
+                                <select name="genre_example" size="1" onchange="input_search_name(value)">
+                                    <option value=""> ワードを入力するか以下から選択してください </option>
+                                    <option value="中華"> 中華 </option>
+                                    <option value="和食"> 和食 </option>
+                                    <option value="洋食"> 洋食 </option>
+                                    <option value="イタリアン"> イタリアン </option>
+                                    <option value="フレンチ"> フレンチ </option>
+                                    <option value="居酒屋"> 居酒屋 </option>
+                                    <option value="バイキング"> バイキング </option>
+                                    <option value="カフェ"> カフェ </option>
+                                </select>
+                                <br>
+                                <input type="submit" name="submit" value="検索する">
+                            </form>
+                        </div><br>
+                    </div>
+                </div>
+            </div>
 
             <div id="result_modal_table"></div>
         </main>

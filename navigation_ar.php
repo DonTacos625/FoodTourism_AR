@@ -703,7 +703,7 @@ try {
                     alert($totalLength);
                 }
 
-                const newSphere = document.createElement("a-sphere");
+                const newSphere = document.createElement("a-cone");
                 newSphere.setAttribute('height', '-2');
                 const animation = `
                             property:rotation;
@@ -742,7 +742,7 @@ try {
                 }
 
                 //球を追加
-                const newSphere = document.createElement("a-cone");
+                const newSphere = document.createElement("a-sphere");
                 newSphere.setAttribute('radius', '1');
                 /*
                 const animation = `
