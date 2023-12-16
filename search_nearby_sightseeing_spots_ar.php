@@ -860,7 +860,7 @@ if ($categoryName == "0") {
                             <h1 class="modal-title fs-5" id="search_modal_Label">検索フォーム</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body search_form">
+                        <div class="modal-body">
                             <form action="search_nearby_sightseeing_spots_ar.php" method="post">
                                 観光スポットの検索範囲：<br>
                                 <input type="radio" id="spots_around_distance" name="spots_around_distance" value="300" <?php set_checked("spots_around_distance", "300"); ?>>周囲300m

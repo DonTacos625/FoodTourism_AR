@@ -948,43 +948,42 @@ try {
 </head>
 
 <body>
+    <div id="viewbox">
+        <div id="viewDiv"></div>
+    </div>
+    <a-scene id="ar_scene" device-orientation-permission-ui="enabled: false" vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true' cursor='rayOrigin: mouse'>
+        <a-camera gps-new-camera='gpsMinDistance: 5'></a-camera>
+    </a-scene>
+    <div id="header_bar" class="justify-content-center">
+        目的地まで<h1 id="ar_distance">0M</h1>
+    </div>
+    <div id="bottom_bar">
+        <button class="btn btn-primary w-15" onclick="location.reload()" type=button>再読み込み</button>
+        <button id="result_list_btn" data-bs-toggle="modal" data-bs-target="#modal_box1" type=button>目的地の情報</button>
+        <button data-bs-toggle="modal" data-bs-target="#explain_modal" type=button>使用方法</button>
+        <button id="change" type=button onclick="navigation_map()">戻る</button>
+    </div>
+    
     <div class="container-fluid">
-        <div id="viewbox">
-            <div id="viewDiv"></div>
-        </div>
         <main class="row">
-            <a-scene id="ar_scene" device-orientation-permission-ui="enabled: false" vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true' cursor='rayOrigin: mouse'>
-                <a-camera gps-new-camera='gpsMinDistance: 5'></a-camera>
-            </a-scene>
-            <div id="header_bar" class="justify-content-center">
-                目的地まで<h1 id="ar_distance">0M</h1>
-            </div>
-            <div id="bottom_bar">
-                <button class="btn btn-primary w-15" onclick="location.reload()" type=button>再読み込み</button>
-                <button id="result_list_btn" data-bs-toggle="modal" data-bs-target="#modal_box1" type=button>目的地の情報</button>
-                <button data-bs-toggle="modal" data-bs-target="#explain_modal" type=button>使用方法</button>
-                <button id="change" type=button onclick="navigation_map()">戻る</button>
-            </div>
-        </main>
-        <div id="result_modal_table"></div>
-
-        <div class="modal fade" id="explain_modal" tabindex="-1" aria-labelledby="explain_modal_Label" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="explain_modal_Label">ナビゲーション機能の説明</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        あああ
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <div class="modal fade" id="explain_modal" tabindex="-1" aria-labelledby="explain_modal_Label" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="explain_modal_Label">ナビゲーション機能の説明</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            あああ
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
+            <div id="result_modal_table"></div>
+        </main>
     </div>
 </body>
 <script>

@@ -1045,7 +1045,7 @@ function set_selected($session_name, $value)
                             <h1 class="modal-title fs-5" id="search_modal_Label">検索フォーム</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body search_form">
+                        <div class="modal-body">
                             <form action="search_nearby_restaurants_ar.php" method="post">
                                 飲食店の検索範囲：<br>
                                 <input type="radio" id="restaurants_around_distance" name="restaurants_around_distance" value="300" <?php set_checked("restaurants_around_distance", "300"); ?>>周囲300m
