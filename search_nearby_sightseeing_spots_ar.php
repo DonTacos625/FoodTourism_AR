@@ -857,7 +857,7 @@ if ($categoryName == "0") {
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="explain_modal_Label">ナビゲーション機能の説明</h1>
+                            <h1 class="modal-title fs-5" id="search_modal_Label">検索フォーム</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body search_form">
