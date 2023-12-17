@@ -246,7 +246,6 @@ $keikaku[] = $goal_info;
             .esri-view-height-xsmall .esri-ui-corner .esri-component.esri-widget--panel,
             .esri-view-height-xsmall .esri-ui-corner .esri-component.esri-widget--panel-height-only {
                 width: 100px;
-                height: 20px;
                 font-size: 1.5vw;
             }
 
