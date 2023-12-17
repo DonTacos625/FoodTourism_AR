@@ -517,8 +517,8 @@ $keikaku[] = $goal_station_info;
                                     alert("「" + response[0] + "」を夕食前に訪問する観光スポットに設定しました");
                                 }
                             }
-                            //window.location.href = "sightseeing_spots_selection_map.php";
-                            window.history.back();
+                            window.location.href = "sightseeing_spots_selection_map.php";
+                            //window.history.back();
                         }
                     });
                 });
@@ -580,7 +580,8 @@ $keikaku[] = $goal_station_info;
                                     </td>
                                 </tr>
                             </table>
-                            <li><a href="#" onclick="window.history.back(); return false;">戻る</a></li>
+                            <!-- <li><a href="#" onclick="window.history.back(); return false;">戻る</a></li> -->
+                            <li><a href="sightseeing_spots_selection_map.php">戻る</a></li>
                     </div>
                 </div>
             </div>

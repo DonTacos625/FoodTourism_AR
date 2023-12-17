@@ -406,8 +406,8 @@ try {
                             } else {
                                 alert("「" + response[0] + "」を夕食に設定しました");
                             }
-                            //window.location.href = "search.php";
-                            window.history.back();
+                            window.location.href = "search_map.php";
+                            //window.history.back();
                         }
                     });
                 });
@@ -536,7 +536,8 @@ try {
                                 </td>
                             </tr>
                         </table>
-                        <li><a href="#" onclick="window.history.back(); return false;">戻る</a></li>
+                        <!-- <li><a href="#" onclick="window.history.back(); return false;">戻る</a></li> -->
+                        <li><a href="search_map.php">戻る</a></li>
                     </div><br>
                 </div>
             </div>

@@ -446,7 +446,7 @@ $count = 0;
                 <div class="card bg-light mb-3" style="width: 80rem;" id="infobox" value=<?php echo $row["id"]; ?>>
                     <div class="row g-0">
                         <div class="col-md-5">
-                            <img class="img-fluid rounded-start" src=<?php echo "images/$area_name/restaurants/" . $row["id"] . ".jpg" ?> alt="">
+                            <img class="img-fluid rounded-start" src=<?php echo "images/$area_name/restaurants/" . $row["id"] . ".jpg" ?> onError="this.onerror=null;this.src='images/no_image.jpg';" alt="">
                         </div>
                         <div class="search_result col-md-12">
                             <table class="table card-body">

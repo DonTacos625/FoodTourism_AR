@@ -912,7 +912,7 @@ $keikaku[] = $goal_info;
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <img class="modal_img" src="images/${area_name}/restaurants/${a_id}.jpg" alt="">
+                                <img class="modal_img" src="images/${area_name}/restaurants/${a_id}.jpg" onError="this.onerror=null;this.src='images/no_image.jpg';" alt="">
                                 <table class="table text-wrap">
                                     <tr>
                                         <th>ジャンル</th>
@@ -969,7 +969,7 @@ $keikaku[] = $goal_info;
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <img class="modal_img" src="images/${area_name}/sightseeing_spots/${a_id}.jpg" alt="">
+                                <img class="modal_img" src="images/${area_name}/sightseeing_spots/${a_id}.jpg" onError="this.onerror=null;this.src='images/no_image.jpg';" alt="">
                                 <table class="table text-wrap">
                                     <tr>
                                         <th>カテゴリー</th>
@@ -1044,7 +1044,7 @@ $keikaku[] = $goal_info;
     <div id="header_bar" class="justify-content-center">
         目的地まで<h1 class="fw-bold" id="ar_distance">0M</h1>
     </div>
-    
+
     <div id="bottom_bar">
         <button class="btn btn-primary w-15" onclick="location.reload()" type=button><i class="bi bi-arrow-clockwise"></i><!--再読み込み--></button>
         <button id="result_list_btn" data-bs-toggle="modal" data-bs-target="#modal_box1" type=button>目的地の情報</button>

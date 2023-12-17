@@ -116,10 +116,10 @@ $count = 0
                     <div class="card" style="width: 18rem;" value=<?php echo $row["id"]; ?>>
                         <h4 class="card-header"><?php echo htmlspecialchars($row["plan_name"], ENT_QUOTES); ?></h4><br>
                         <img class="card-img-top" src=<?php if ($row["lunch"] != -1) {
-                                                            echo "images/minatomirai/restaurants/" . $row["lunch"] . ".jpg";
+                                                            echo "images/$area_name/restaurants/" . $row["lunch"] . ".jpg";
                                                         } else {
-                                                            echo "images/minatomirai/restaurants/" . $row["dinner"] . ".jpg";
-                                                        } ?> alt="">
+                                                            echo "images/$area_name/restaurants/" . $row["dinner"] . ".jpg";
+                                                        } ?> onError="this.onerror=null;this.src='images/no_image.jpg';" alt="">
                         <div class="card-text">
                             <div class="plan_text">作成したユーザ：<br><?php echo htmlspecialchars($row["user_name"], ENT_QUOTES); ?></div><br>
                             <div class="plan_text">メモ：<br><?php echo htmlspecialchars($row["memo"], ENT_QUOTES); ?></div>

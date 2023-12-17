@@ -6,7 +6,8 @@ try {
 
     //SESSION変数初期値設定
     if (!isset($_SESSION["search_spots_category"])) {
-        $_SESSION["search_spots_category"] = "0";
+        $_SESSION["search_spots_category"] = ["名所・史跡", "ショッピング", "芸術・博物館", "テーマパーク・公園", "その他"];
+        //$_POST['categorys'] = $_SESSION["search_spots_category"];
     }
     if (!isset($_SESSION["spots_around_distance"])) {
         $_SESSION["spots_around_distance"] = "500";
@@ -18,13 +19,21 @@ try {
         $_SESSION["spots_sort_conditions"] = "distance_nearest";
     }
 
-    //提出されたデータ
-    if (isset($_POST["category"])) {
-        $categoryName = $_POST["category"];
-        $_SESSION["search_spots_category"] = $categoryName;
+    //$_POST["categorys"]がセットされないことが初期以外にもあるため別の処理
+    if (isset($_POST["categorys"])) {
+        $checkboxs = $_POST['categorys'];
+        $_SESSION["search_spots_category"] = $checkboxs;
     } else {
-        $categoryName = $_SESSION["search_spots_category"];
+        if (isset($_POST["spots_around_distance"])) {
+            //categorysのチェックボックスが空の時
+            $checkboxs = [];
+            $_SESSION["search_spots_category"] = $checkboxs;
+        } else {
+            //リダイレクト時の処理
+            $checkboxs = $_SESSION["search_spots_category"];
+        }
     }
+
     if (isset($_POST["spots_around_distance"])) {
         $spots_around_distance = $_POST["spots_around_distance"];
         $_SESSION["spots_around_distance"] = $spots_around_distance;
@@ -45,20 +54,14 @@ try {
     }
 
     $keywordCondition = [];
-    //posts = [["データベースのカラム名", "検索条件"]]
-    $posts = [["category", $categoryName]];
-
-    //値が0じゃないデータを　keywordCondition　に格納
-    foreach ($posts as $post) {
-        if (!($post[1] == "0")) {
-            $column = $post[0];
-            if ($post[0] == "capacity") {
-                $keywordCondition[] =  " $column >= $post[1] ";
-            } else {
-                $keyword = $post[1];
-                $keywordCondition[] =  " $column LIKE '%" . $keyword . "%' ";
-            }
+    //チェックボックスのカテゴリーをOR文に
+    if (count($checkboxs)) {
+        foreach ($checkboxs as $check) {
+            $checkCondition[] =  " category LIKE '%" . $check . "%' ";
         }
+        $keywordCondition[] = implode(' OR ', $checkCondition);
+    } else {
+        $keywordCondition[] =  " id <= -1 ";
     }
     $keywordCondition[] =  " id >= 0 ";
 
@@ -96,6 +99,7 @@ $keikaku[] = $dinner_info;
 $keikaku[] = $goal_info;
 //var_dump($keikaku);
 */
+/*
 //検索結果を配列に格納
 $count = 0;
 foreach ($stmt as $shop_id) {
@@ -103,6 +107,7 @@ foreach ($stmt as $shop_id) {
     $count += 1;
 }
 //var_dump($food_shop_id);
+*/
 
 
 //検索条件の保存のため
@@ -124,10 +129,28 @@ function set_selected($session_name, $value)
         print "";
     }
 }
+function set_checkboxs($session_name, $value)
+{
+    if (in_array($value, $_SESSION[$session_name])) {
+        //値がセッション変数の配列に入っていればチェックされてる判定として返す
+        print "checked=\"checked\"";
+    } else {
+        print "";
+    }
+}
 
+function set_checkAll($session_name, $length)
+{
+    if (count($_SESSION[$session_name]) == $length) {
+        //すべてのチェックボックスがチェックされていればチェックされてる判定として返す
+        print "checked=\"checked\"";
+    } else {
+        print "";
+    }
+}
 //検索結果を配列に格納
 $count = 0;
-$count = $stmt -> rowCount();
+$count = $stmt->rowCount();
 
 ?>
 
@@ -246,6 +269,9 @@ $count = $stmt -> rowCount();
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
     <script src="https://js.arcgis.com/4.21/"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+    <script src="script/checkAll.js"></script>
 
     <script>
         var pointpic = "";
@@ -640,7 +666,7 @@ $count = $stmt -> rowCount();
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <img class="modal_img" src="images/${area_name}/sightseeing_spots/${a_id}.jpg" alt="">
+                        <img class="modal_img" src="images/${area_name}/sightseeing_spots/${a_id}.jpg" onError="this.onerror=null;this.src='images/no_image.jpg';" alt="">
                         <table class="table text-wrap">
                             <tr>
                                 <th>カテゴリー</th>
@@ -724,6 +750,7 @@ $count = $stmt -> rowCount();
             const newImg = document.createElement("img");
             const src = `images/${area_name}/sightseeing_spots/${a_id}.jpg`;
             newImg.setAttribute('src', src);
+            newImg.setAttribute('onError', "this.onerror=null;this.src='images/no_image.jpg';");
             newImgDiv.appendChild(newImg);
 
             newImgDiv.className = 'target_image';
@@ -881,12 +908,14 @@ $count = $stmt -> rowCount();
                                 </select><br>
 
                                 観光スポットのカテゴリー：<br>
-                                <input type="radio" id="category" name="category" value="0" <?php set_checked("search_spots_category", "0"); ?>>指定なし
-                                <input type="radio" id="category" name="category" value="名所・史跡" <?php set_checked("search_spots_category", "名所・史跡"); ?>>名所・史跡
-                                <input type="radio" id="category" name="category" value="ショッピング" <?php set_checked("search_spots_category", "ショッピング"); ?>>ショッピング
-                                <input type="radio" id="category" name="category" value="芸術・博物館" <?php set_checked("search_spots_category", "芸術・博物館"); ?>>芸術・博物館
-                                <input type="radio" id="category" name="category" value="テーマパーク・公園" <?php set_checked("search_spots_category", "テーマパーク・公園"); ?>>テーマパーク・公園
-                                <input type="radio" id="category" name="category" value="その他" <?php set_checked("search_spots_category", "その他"); ?>>その他<br>
+                                <div>
+                                    <input type="checkbox" id="checkAll" <?php set_checkAll("search_spots_category", 5); ?>>全てチェック
+                                    <input type="checkbox" id="checkbox2" name="categorys[]" value="名所・史跡" <?php set_checkboxs("search_spots_category", "名所・史跡"); ?>>名所・史跡
+                                    <input type="checkbox" id="checkbox3" name="categorys[]" value="ショッピング" <?php set_checkboxs("search_spots_category", "ショッピング"); ?>>ショッピング
+                                    <input type="checkbox" id="checkbox4" name="categorys[]" value="芸術・博物館" <?php set_checkboxs("search_spots_category", "芸術・博物館"); ?>>芸術・博物館
+                                    <input type="checkbox" id="checkbox5" name="categorys[]" value="テーマパーク・公園" <?php set_checkboxs("search_spots_category", "テーマパーク・公園"); ?>>テーマパーク・公園
+                                    <input type="checkbox" id="checkbox6" name="categorys[]" value="その他" <?php set_checkboxs("search_spots_category", "その他"); ?>>その他
+                                </div>
 
                                 <input type="submit" name="submit" value="検索する">
                             </form>

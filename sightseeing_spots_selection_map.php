@@ -67,6 +67,16 @@ $spots_id = array_merge($s_l_ids, $l_d_ids, $d_g_ids);
 //$_SESSION["l_d_spots"] = [[1,30,"name1"],[1,30,"name2"]];
 //$_SESSION["d_g_spots"] = [[1,30,"name1"],[1,30,"name2"]];
 
+
+//SESSION変数初期値設定
+if (!isset($_SESSION["search_spots_category"])) {
+    $_SESSION["search_spots_category"] = ["名所・史跡", "ショッピング", "芸術・博物館", "テーマパーク・公園", "その他"];
+}
+if (!isset($_SESSION["search_spots_distance"])) {
+    $_SESSION["search_spots_distance"] = "100";
+}
+$search_distance = $_SESSION["search_spots_distance"];
+
 //DB接続
 try {
     if (!isset($_SESSION["start_station_id"])) {
@@ -148,6 +158,53 @@ try {
             $d_g_spots[] = [$result7["x"], $result7["y"], $spot_count];
         }
     }
+
+    //提出されたデータ
+    //$_POST["categorys"]がセットされないことが初期以外にもあるため別の処理
+    if (isset($_POST["categorys"])) {
+        $checkboxs = $_POST['categorys'];
+        $_SESSION["search_spots_category"] = $checkboxs;
+    } else {
+        if (isset($_POST["search_spots_distance"])) {
+            //categorysのチェックボックスが空の時
+            $checkboxs = [];
+            $_SESSION["search_spots_category"] = $checkboxs;
+        } else {
+            //リダイレクト時の処理
+            $checkboxs = $_SESSION["search_spots_category"];
+        }
+    }
+
+    $keywordCondition = [];
+    //チェックボックスのカテゴリーをOR文に
+    if (count($checkboxs)) {
+        foreach ($checkboxs as $check) {
+            $checkCondition[] =  " category LIKE '%" . $check . "%' ";
+        }
+        $keywordCondition[] = implode(' OR ', $checkCondition);
+    } else {
+        $keywordCondition[] =  " id <= -1 ";
+    }
+    $keywordCondition[] =  " id >= 0 ";
+
+    //var_dump($keywordCondition);
+    // ここで、 
+    // [ 'product_name LIKE "%hoge%"', 
+    //   'product_name LIKE "%fuga%"', 
+    //   'product_name LIKE "%piyo%"' ]
+    // という配列ができあがっている。
+
+    // これをANDでつなげて、文字列にする
+    $keywordCondition = implode(' AND ', $keywordCondition);
+    //$keywordCondition = $keywordCondition . " ORDER BY id DESC LIMIT 3";
+    //$keywordCondition = $keywordCondition . " OR (id = $lunch_shop_id OR id = $dinner_shop_id) ";
+    //var_dump($keywordCondition);
+
+    //sql文にする
+    $sql = 'SELECT * FROM ' . $database_sightseeing_spots . ' WHERE ' . $keywordCondition . ' ';
+    //var_dump($sql);
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
 } catch (PDOException $e) {
 }
 
@@ -167,23 +224,6 @@ foreach ($d_g_spots as $d_g_add) {
 }
 $keikaku[] = $goal_info;
 
-//var_dump($start_info);
-//var_dump($_SESSION["s_l_spots"]);
-//var_dump($s_l_ids);
-//var_dump($s_l_spots);
-//var_dump($l_d_spots);
-
-
-//検索条件の復元
-if (!isset($_SESSION["search_spots_distance"])) {
-    $_SESSION["search_spots_distance"] = "100";
-}
-$search_distance = $_SESSION["search_spots_distance"];
-
-if (!isset($_SESSION["search_spots_category"])) {
-    $_SESSION["search_spots_category"] = "0";
-}
-$categoryName = $_SESSION["search_spots_category"];
 
 //提出されたデータ
 if (isset($_POST["search_spots_distance"])) {
@@ -191,12 +231,6 @@ if (isset($_POST["search_spots_distance"])) {
     $_SESSION["search_spots_distance"] = $search_distance;
 } else {
     $search_distance = $_SESSION["search_spots_distance"];
-}
-if (isset($_POST["search_spots_category"])) {
-    $categoryName = $_POST["search_spots_category"];
-    $_SESSION["search_spots_category"] = $categoryName;
-} else {
-    $categoryName = $_SESSION["search_spots_category"];
 }
 
 //検索条件の保存のため
@@ -210,6 +244,25 @@ function set_checked($session_name, $value)
     }
 }
 
+function set_checkboxs($session_name, $value)
+{
+    if (in_array($value, $_SESSION[$session_name])) {
+        //値がセッション変数の配列に入っていればチェックされてる判定として返す
+        print "checked=\"checked\"";
+    } else {
+        print "";
+    }
+}
+
+function set_checkAll($session_name, $length)
+{
+    if (count($_SESSION[$session_name]) == $length) {
+        //すべてのチェックボックスがチェックされていればチェックされてる判定として返す
+        print "checked=\"checked\"";
+    } else {
+        print "";
+    }
+}
 ?>
 
 <html>
@@ -253,6 +306,8 @@ function set_checked($session_name, $value)
     <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
     <script src="https://js.arcgis.com/4.21/"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+    <script src="script/checkAll.js"></script>
 
     <script>
         var pointpic = "";
@@ -492,9 +547,13 @@ function set_checked($session_name, $value)
                 definitionExpression: spots_feature_sql
             });
 
+            var spots_search_sql = "";
+            spots_search_sql = <?php echo json_encode($keywordCondition); ?>;
+
             var spotLayer = new FeatureLayer({
                 url: <?php echo json_encode($map_sightseeing_spots); ?>,
-                id: "spotLayer"
+                id: "spotLayer",
+                definitionExpression: spots_search_sql
             });
 
             //ルート表示のレイヤー
@@ -768,16 +827,19 @@ function set_checked($session_name, $value)
             $results_form = document.getElementById("result_table");
             //初期検索範囲と初期カテゴリー
             $search_distance = <?php echo json_encode($search_distance); ?>;
-            $categoryName = <?php echo json_encode($categoryName); ?>;
+            //$categoryName = <?php //echo json_encode($categoryName); 
+                                ?>;
             //ルート形状沿いの観光地検索
             queryAroundSpot = (geom) => {
                 let query = spotLayer.createQuery();
                 query.geometry = geom;
                 query.outFields = ["*"];
+                /*
                 //カテゴリーでの検索
                 if ($categoryName != "0") {
                     query.where = "category = '" + $categoryName + "'";
                 }
+                */
                 query.distance = $search_distance;
                 query.units = "meters";
                 //観光スポットに対する検索の実行
@@ -842,11 +904,13 @@ function set_checked($session_name, $value)
             //queryAroundSpot($route_result_data);
         }
 
+        /*
         //表示する観光スポットのカテゴリーを変える
         function change_category(category_name) {
             $categoryName = category_name;
             //queryAroundSpot($route_result_data);
         }
+        */
 
         //観光経路表示を更新する
         function kousin() {
@@ -918,12 +982,14 @@ function set_checked($session_name, $value)
                     <input type="radio" id="search_spots_distance" name="search_spots_distance" value="600" onclick="change_distance(value) ; keep_radio(value, '1')" <?php set_checked("search_spots_distance", "600"); ?>>周囲600m<br>
 
                     観光スポットのカテゴリー：<br>
-                    <input type="radio" id="search_spots_category" name="search_spots_category" value="0" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "0"); ?>>指定なし
-                    <input type="radio" id="search_spots_category" name="search_spots_category" value="名所・史跡" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "名所・史跡"); ?>>名所・史跡
-                    <input type="radio" id="search_spots_category" name="search_spots_category" value="ショッピング" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "ショッピング"); ?>>ショッピング
-                    <input type="radio" id="search_spots_category" name="search_spots_category" value="芸術・博物館" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "芸術・博物館"); ?>>芸術・博物館
-                    <input type="radio" id="search_spots_category" name="search_spots_category" value="テーマパーク・公園" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "テーマパーク・公園"); ?>>テーマパーク・公園
-                    <input type="radio" id="search_spots_category" name="search_spots_category" value="その他" onclick="change_category(value) ; keep_radio(value, '2')" <?php set_checked("search_spots_category", "その他"); ?>>その他<br>
+                    <div>
+                        <input type="checkbox" id="checkAll" <?php set_checkAll("search_spots_category", 5); ?>>全てチェック
+                        <input type="checkbox" id="checkbox2" name="categorys[]" value="名所・史跡" <?php set_checkboxs("search_spots_category", "名所・史跡"); ?>>名所・史跡
+                        <input type="checkbox" id="checkbox3" name="categorys[]" value="ショッピング" <?php set_checkboxs("search_spots_category", "ショッピング"); ?>>ショッピング
+                        <input type="checkbox" id="checkbox4" name="categorys[]" value="芸術・博物館" <?php set_checkboxs("search_spots_category", "芸術・博物館"); ?>>芸術・博物館
+                        <input type="checkbox" id="checkbox5" name="categorys[]" value="テーマパーク・公園" <?php set_checkboxs("search_spots_category", "テーマパーク・公園"); ?>>テーマパーク・公園
+                        <input type="checkbox" id="checkbox6" name="categorys[]" value="その他" <?php set_checkboxs("search_spots_category", "その他"); ?>>その他
+                    </div>
 
                     <input type="submit" name="submit" value="検索する">
                 </form>

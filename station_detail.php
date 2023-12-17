@@ -407,8 +407,8 @@ try {
                             } else {
                                 alert("「" + response[0] + "」を終了駅に設定しました");
                             }
-                            //window.location.href = "set_station.php";
-                            window.history.back();
+                            window.location.href = "set_station.php";
+                            //window.history.back();
                         }
                     });
                 });
@@ -470,7 +470,8 @@ try {
                                 </td>
                             </tr>
                         </table>
-                        <li><a href="#" onclick="window.history.back(); return false;">戻る</a></li>
+                        <!-- <li><a href="#" onclick="window.history.back(); return false;">戻る</a></li> -->
+                        <li><a href="set_station.php">戻る</a></li>
                     </div><br>
                 </div>
             </div>

@@ -100,7 +100,7 @@ require "frame_rightmenu.php";
                     <font color=#000080>&emsp;本運用中</font>
                 </h2>
 
-                <h3 class="px-0" >アンケートのご協力をお願いいたします。</h3>
+                <h3 class="px-0">アンケートのご協力をお願いいたします。</h3>
                 <p>
                     本システムの利用後、ご利用いただいた機能に応じて以下のアンケートへのご回答をよろしくお願いいたします。<br>
                     <!--
@@ -109,15 +109,15 @@ require "frame_rightmenu.php";
                     -->
 
                     (1)「観光計画作成」機能に関するアンケート<br>
-                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link" target="blank">https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link</a><br><br>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScVj6saWaQCF1t1RTBdVTmtD-ursZt-nKPl_WWUHb2rJv5MXQ/viewform?usp=sf_link" target="blank">https://docs.google.com/forms/d/e/1FAIpQLScVj6saWaQCF1t1RTBdVTmtD-ursZt-nKPl_WWUHb2rJv5MXQ/viewform?usp=sf_link</a><br><br>
                     (2)「現地での観光支援」機能に関するアンケート<br>
-                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link" target="blank">https://docs.google.com/forms/d/e/1FAIpQLScQcIeHdLfLpeNjIDbjEBCPtureGZi007aUUhgwqXhQffXR_A/viewform?usp=sf_link</a>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSde9Q0OGMhy9ooYVERz0eucCu1s-uxz5cDOrKekqNGCXOP6Kw/viewform?usp=sf_link" target="blank">https://docs.google.com/forms/d/e/1FAIpQLSde9Q0OGMhy9ooYVERz0eucCu1s-uxz5cDOrKekqNGCXOP6Kw/viewform?usp=sf_link</a>
 
                     <!--<font color=#000080><big>アンケートの回答を締め切りました。ご回答くださった方々、誠にありがとうございました。</big></font>-->
 
                 </p><br>
 
-                <h3 class="px-0" >連絡先</h3>
+                <h3 class="px-0">連絡先</h3>
                 <p>
                     不具合等ございましたら、下記のメールアドレスまでご連絡下さい。<br>
                     作成者:平野<br>
