@@ -131,17 +131,17 @@ if (!empty($_POST["editopt"])) {
             margin: 0px;
         }
 
-        #editbox {
+        .editbox {
             float: left;
             width: 500px;
             margin-left: 5px;
         }
 
-        #editbox h2 {
+        .editbox h2 {
             margin: 0px;
         }
 
-        #editbox th {
+        .editbox th {
             width: 100px;
             background: #0099FF;
             color: #fff;
@@ -151,7 +151,7 @@ if (!empty($_POST["editopt"])) {
             border-left: 5px solid #000080;
         }
 
-        #editbox td {
+        .editbox td {
             text-align: left;
         }
 
@@ -167,12 +167,12 @@ if (!empty($_POST["editopt"])) {
                 font-size: 19px;
             }
 
-            #editbox {
+            .editbox {
                 width: auto;
                 margin: 0px;
             }
 
-            #editbox th {
+            .editbox th {
                 font-size: 15px;
             }
         }
@@ -182,9 +182,9 @@ if (!empty($_POST["editopt"])) {
 <body>
     <div class="container-fluid">
         <main class="row">
-            <div id="editbox">
+            <div class="editbox">
                 <h2>パスワード変更</h2>
-                <form id="editform" name="editform" action="" method="POST">
+                <form class="editform" name="editform" action="" method="POST">
                     <table>
                         <tr>
                             <th rowspan="2" scope="rowgroup"><label for="pass">旧パスワード</label></th>
@@ -228,13 +228,13 @@ if (!empty($_POST["editopt"])) {
                 </div>
             </div>
 
-            <div id="editbox">
+            <div class="editbox">
                 <h2>登録情報変更</h2>
-                <form id="editform" name="editform" action="" method="POST">
+                <form class="editform" name="editform" action="" method="POST">
                 <table>
                         <tr>
                             <th rowspan="2" scope="rowgroup"><label for="user_weight">体重</label></th>
-                            <td scope="row"><small>体重を入力してください</small></td>
+                            <td scope="row"><small>体重を入力してください<br>(消費カロリーの計算に使用します)</small></td>
                         </tr>
                         <tr>
                             <td scope="row"><input type="number" id="user_weight" name="user_weight" placeholder="体重を入力" value="<?php echo $now_weight; ?>">kg</td>

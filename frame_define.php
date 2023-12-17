@@ -265,13 +265,14 @@ if (!isset($_SESSION["goal_station_id"])) {
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://getbootstrap.jp/docs/5.3/assets/css/docs.css" rel="stylesheet">
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
 
     <link rel="stylesheet" type="text/css" href="css/copyright.css?<?php echo date('YmdHis'); ?>">
     <link rel="stylesheet" type="text/css" href="css/background.css?<?php echo date('YmdHis'); ?>">
     <link rel="stylesheet" type="text/css" href="css/viewbox.css?<?php echo date('YmdHis'); ?>">
     <link rel="stylesheet" type="text/css" href="css/stepbar.css?<?php echo date('YmdHis'); ?>">
+
 
 </head>
 

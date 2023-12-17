@@ -72,6 +72,7 @@ require "frame_rightmenu.php";
         <main class="row">
             <div id="explainbox">
                 <h2 id="index">当サイトの使い方</h2>
+                画像付きのマニュアルは<a href="https://drive.google.com/file/d/1r7a-p5nmR4ws5O6M-80ljNtVzPAdzxWQ/view?usp=drive_link" target="blank">こちら</a><br>
                 <ul>
                     <li>ページの見方</li>
                     <ul>

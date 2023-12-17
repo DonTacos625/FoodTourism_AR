@@ -125,12 +125,9 @@ function set_selected($session_name, $value)
     }
 }
 
-//検索条件が初期の場合
-$all_foodLayer_Flag = 0;
-if ($categoryName == "0") {
-    $all_foodLayer_Flag = 1;
-}
-//var_dump($all_foodLayer_Flag);
+//検索結果を配列に格納
+$count = 0;
+$count = $stmt -> rowCount();
 
 ?>
 
@@ -295,32 +292,24 @@ if ($categoryName == "0") {
             "esri/layers/WebTileLayer",
             "esri/layers/FeatureLayer",
             "esri/widgets/Locate",
-            "esri/widgets/Track",
             "esri/Graphic",
             "esri/layers/GraphicsLayer",
             "esri/rest/support/Query",
-            "esri/rest/support/TopFeaturesQuery",
-            "esri/rest/support/RouteParameters",
             "esri/rest/support/FeatureSet",
             "esri/symbols/PictureMarkerSymbol",
-            "esri/symbols/CIMSymbol",
-            "esri/widgets/LayerList"
+            "esri/symbols/CIMSymbol"
         ], function(
             Map,
             MapView,
             WebTileLayer,
             FeatureLayer,
             Locate,
-            Track,
             Graphic,
             GraphicsLayer,
             Query,
-            TopFeaturesQuery,
-            RouteParameters,
             FeatureSet,
             PictureMarkerSymbol,
-            CIMSymbol,
-            LayerList
+            CIMSymbol
         ) {
 
             // Point the URL to a valid routing service
@@ -665,6 +654,7 @@ if ($categoryName == "0") {
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+                        <a class="btn btn-primary" href="navigation_map.php?navi_spot_id=${a_id}&navi_spot_type=3">ナビゲーション</a>
                         <a class="btn btn-primary" href="sightseeing_spot_detail.php?spot_id=${a_id}">詳細ページへ</a>
                     </div>
                 </div>
@@ -841,14 +831,14 @@ if ($categoryName == "0") {
         <div id="ar_count">検索結果は0件中0件を表示しています</div>
     </div>
     <div id="bottom_bar">
-        <button class="btn btn-primary w-15" onclick="location.reload()" type=button>再読み込み</button>
+        <button class="btn btn-primary w-15" onclick="location.reload()" type=button><i class="bi bi-arrow-clockwise"></i><!--再読み込み--></button>
         <select class="btn btn-primary w-15" size="1" onchange="change_display(value)">
             <option value="default"> 通常表示 </option>
             <option value="small"> オブジェクト表示 </option>
             <option value="image"> 写真だけ表示 </option>
         </select>
-        <button class="btn btn-primary w-15" type=button data-bs-toggle="modal" data-bs-target="#search_modal">検索フォーム</button>
-        <button class="btn btn-primary w-15" type=button onclick="location.href='search_nearby_sightseeing_spots_map.php'">戻る</button>
+        <button class="btn btn-primary w-15" type=button data-bs-toggle="modal" data-bs-target="#search_modal"><i class="bi bi-search"></i><!--検索フォーム--></button>
+        <button class="btn btn-primary w-15" type=button onclick="location.href='search_nearby_sightseeing_spots_map.php'"><i class="bi bi-backspace-fill"></i><!--戻る--></button>
     </div>
 
     <div class="container-fluid">

@@ -2,36 +2,197 @@
 
 require "frame_define.php";
 
-$navi_spot_id = $_GET["navi_spot_id"];
-$navi_spot_type = $_GET["navi_spot_type"];
+$plan_id = $_GET["plan_id"];
+
+function set_checked($session_name, $value)
+{
+    if ($value == $_SESSION[$session_name]) {
+        //値がセッション変数と等しいとチェックされてる判定として返す
+        print "checked=\"checked\"";
+    } else {
+        print "";
+    }
+}
 
 $message = "";
+
 //DB接続
 try {
-    if ($navi_spot_type == 1) {
-        $database = $database_stations;
-    } else if ($navi_spot_type == 2) {
-        $database = $database_restaurants;
-    } else if ($navi_spot_type == 3) {
-        $database = $database_sightseeing_spots;
-    }
-    $stmt1 = $pdo->prepare("SELECT * FROM $database WHERE id = :id");
-    $stmt1->bindParam(":id", $navi_spot_id);
-    $stmt1->execute();
-    $result1 = $stmt1->fetch(PDO::FETCH_ASSOC);
-    $navi_goal_info = [$result1["x"], $result1["y"], "goal"];
+    $stmt = $pdo->prepare("SELECT * FROM userplan WHERE id = :id");
+    $stmt->bindParam(":id", $plan_id);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($navi_spot_type == 1) {
-        $navi_goal_detail = [$result1["id"], $result1["y"], $result1["x"]];
-    } else if ($navi_spot_type == 2) {
-        $navi_goal_detail = [$result1["id"], $result1["y"], $result1["x"], $result1["name"], [$result1["genre"], $result1["genre_sub"]], $result1["open_time"], $result1["close_time"], $result1["lunch_budget"], $result1["dinner_budget"]];
-    } else if ($navi_spot_type == 3) {
-        $navi_goal_detail = [$result1["id"], $result1["y"], $result1["x"], $result1["name"], $result1["category"], $result1["urls"]];
+    $s_l_ids = explode(",", $result["s_l"]);
+    $s_l_times = explode(",", $result["s_l_times"]);
+    $l_d_ids = explode(",", $result["l_d"]);
+    $l_d_times = explode(",", $result["l_d_times"]);
+    $d_g_ids = explode(",", $result["d_g"]);
+    $d_g_times = explode(",", $result["d_g_times"]);
+
+    //stations_id設定
+    if ($result["plan_start"] == -1) {
+        $start_station_id = 0;
+        $start_info = [0, 0, "start"];
+    } else {
+        $start_station_id = $result["plan_start"];
+        $stmt1 = $pdo->prepare("SELECT * FROM $database_stations WHERE id = :id");
+        $stmt1->bindParam(":id", $start_station_id);
+        $stmt1->execute();
+        $result1 = $stmt1->fetch(PDO::FETCH_ASSOC);
+        $start_info = [$result1["x"], $result1["y"], "start"];
+        $side_start_station_name = $result1["name"]; //
+    }
+    if ($result["plan_goal"] == -1) {
+        $goal_station_id = 0;
+        $goal_info = [0, 0, "goal"];
+    } else {
+        $goal_station_id = $result["plan_goal"];
+        $stmt4 = $pdo->prepare("SELECT * FROM $database_stations WHERE id = :id");
+        $stmt4->bindParam(":id", $goal_station_id);
+        $stmt4->execute();
+        $result4 = $stmt4->fetch(PDO::FETCH_ASSOC);
+        $goal_info = [$result4["x"], $result4["y"], "goal"];
+        $side_goal_station_name = $result4["name"]; //
+    }
+    $station_id = [$start_station_id, $goal_station_id];
+
+    //food_shops_id設定
+    if ($result["lunch"] == -1) {
+        $lunch_shop_id = -1;
+        $lunch_info = [0, 0, "lunch"];
+        $side_lunch_name = "設定されていません"; //
+        $side_lunch_time = 0; //
+    } else {
+        $lunch_shop_id = $result["lunch"];
+        $stmt2 = $pdo->prepare("SELECT * FROM $database_restaurants WHERE id = :id");
+        $stmt2->bindParam(":id", $lunch_shop_id);
+        $stmt2->execute();
+        $result2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+        $lunch_info = [$result2["x"], $result2["y"], "lunch"];
+        $side_lunch_name = $result2["name"]; //
+        $side_lunch_time = $result["lunch_time"]; //
+    }
+    if ($result["dinner"] == -1) {
+        $dinner_shop_id = -1;
+        $dinner_info = [0, 0, "dinner"];
+        $side_dinner_name = "設定されていません"; //
+        $side_dinner_time = 0; //
+    } else {
+        $dinner_shop_id = $result["dinner"];
+        $stmt3 = $pdo->prepare("SELECT * FROM $database_restaurants WHERE id = :id");
+        $stmt3->bindParam(":id", $dinner_shop_id);
+        $stmt3->execute();
+        $result3 = $stmt3->fetch(PDO::FETCH_ASSOC);
+        $dinner_info = [$result3["x"], $result3["y"], "dinner"];
+        $side_dinner_name = $result3["name"]; //
+        $side_dinner_time = $result["dinner_time"]; //
+    }
+    $food_shop_id = [$lunch_shop_id, $dinner_shop_id];
+
+    //spots設定
+    $spot_count = 10;
+    if ($result["s_l"] == -1) {
+        $s_l_ids = [0]; //
+        $s_l_times = [0]; //
+        $s_l_names = ["設定されていません"]; //
+        $s_l_spots = [[0, 0, 0]];
+    } else {
+        $s_l_ids = explode(",", $result["s_l"]); //
+        $s_l_times = explode(",", $result["s_l_times"]); //
+        foreach ($s_l_ids as $s_l) {
+            $stmt5 = $pdo->prepare("SELECT * FROM $database_sightseeing_spots WHERE id = :id");
+            $stmt5->bindParam(":id", $s_l);
+            $stmt5->execute();
+            $result5 = $stmt5->fetch(PDO::FETCH_ASSOC);
+            $spot_count += 1;
+            $s_l_spots[] = [$result5["x"], $result5["y"], $spot_count];
+            $s_l_names[] = $result5["name"]; //
+            $s_l_categorys[] = $result5["category"]; //
+        }
+    }
+    $spot_count = 20;
+    if ($result["l_d"] == -1) {
+        $l_d_ids = [0]; //
+        $l_d_times = [0]; //
+        $l_d_names = ["設定されていません"]; //
+        $l_d_spots = [[0, 0, 0]];
+    } else {
+        $l_d_ids = explode(",", $result["l_d"]); //
+        $l_d_times = explode(",", $result["l_d_times"]); //
+        foreach ($l_d_ids as $l_d) {
+            $stmt6 = $pdo->prepare("SELECT * FROM $database_sightseeing_spots WHERE id = :id");
+            $stmt6->bindParam(":id", $l_d);
+            $stmt6->execute();
+            $result6 = $stmt6->fetch(PDO::FETCH_ASSOC);
+            $spot_count += 1;
+            $l_d_spots[] = [$result6["x"], $result6["y"], $spot_count];
+            $l_d_names[] = $result6["name"]; //
+            $l_d_categorys[] = $result6["category"]; //
+        }
+    }
+    $spot_count = 30;
+    if ($result["d_g"] == -1) {
+        $d_g_ids = [0]; //
+        $d_g_times = [0]; //
+        $d_g_names = ["設定されていません"]; //
+        $d_g_spots = [[0, 0, 0]];
+    } else {
+        $d_g_ids = explode(",", $result["d_g"]); //
+        $d_g_times = explode(",", $result["d_g_times"]); //
+        foreach ($d_g_ids as $d_g) {
+            $stmt7 = $pdo->prepare("SELECT * FROM $database_sightseeing_spots WHERE id = :id");
+            $stmt7->bindParam(":id", $d_g);
+            $stmt7->execute();
+            $result7 = $stmt7->fetch(PDO::FETCH_ASSOC);
+            $spot_count += 1;
+            $d_g_spots[] = [$result7["x"], $result7["y"], $spot_count];
+            $d_g_names[] = $result7["name"]; //
+            $d_g_categorys[] = $result7["category"]; //
+        }
     }
 
-    //var_dump($navi_goal_info);
+    $spots_id = array_merge($s_l_ids, $l_d_ids, $d_g_ids);
 } catch (PDOException $e) {
 }
+$side_s_l_spots = array_map(NULL, $s_l_ids, $s_l_names, $s_l_times, $s_l_categorys);
+$side_l_d_spots = array_map(NULL, $l_d_ids, $l_d_names, $l_d_times, $l_d_categorys);
+$side_d_g_spots = array_map(NULL, $d_g_ids, $d_g_names, $d_g_times, $d_g_categorys);
+$side_display_plan = [
+    ["start", $side_start_station_name],
+    ["s_l", $side_s_l_spots],
+    ["lunch", $side_lunch_name, $side_lunch_time],
+    ["l_d", $side_l_d_spots],
+    ["dinner", $side_dinner_name, $side_dinner_time],
+    ["d_g", $side_d_g_spots],
+    ["goal", $side_goal_station_name]
+];
+/*
+$ar_plan = [ ["type", lat, lng, [id, name, time]],
+             ["start", lat, lng, [id, name]], 
+             ["lunch", lat, lng, [id, name, time, genre, genre_sub, open_time, close_time, lunch_budget, dinner_budget]],
+             ["l_d_1", lat, lng, [id, name, time, category]]
+           ]
+*/
+//総滞在時間
+$total_minute = $side_lunch_time + $side_dinner_time + array_sum($s_l_times) + array_sum($l_d_times) + array_sum($d_g_times);
+//var_dump($total_minute);
+
+//keikakuは目的地の配列
+//keikakuの配列作成
+$keikaku[] = $start_info;
+foreach ($s_l_spots as $s_l_add) {
+    $keikaku[] = $s_l_add;
+}
+$keikaku[] = $lunch_info;
+foreach ($l_d_spots as $l_d_add) {
+    $keikaku[] = $l_d_add;
+}
+$keikaku[] = $dinner_info;
+foreach ($d_g_spots as $d_g_add) {
+    $keikaku[] = $d_g_add;
+}
+$keikaku[] = $goal_info;
 
 ?>
 
@@ -107,6 +268,7 @@ try {
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
     <script>
+        /*
         var pointpic = "";
         var current_latitude = 0;
         var current_longitude = 0;
@@ -548,6 +710,8 @@ try {
             }
 
         });
+        */
+
 
         function make_ar_object(array) {
             $AR_form = document.getElementById("ar_scene");
@@ -590,11 +754,29 @@ try {
             }
         }
 
-        function make_middle_ar_object(array) {
+        var plan_array = [<?php echo json_encode($side_display_plan); ?>];
+        function make_plan_ar_object(array) {
             $AR_form = document.getElementById("ar_scene");
+            //開始駅と終了駅が同じかどうか
+            var goal_point = array.slice(-1)[0];
+            var mode_change = 0;
+            if (start_point[0] == goal_point[0] && start_point[1] == goal_point[1]) {
+                mode_change = 1;
+            }
             for (var i = 0; i < array.length; i++) {
-                const a_latitude = array[i][0];
-                const a_longitude = array[i][1];
+                const a_type = array[i][0];
+                const a_latitude = array[i][1];
+                const a_longitude = array[i][2];
+
+                const a_id = array[i][3][0];
+                const a_name = array[i][3][1];
+
+                /*
+                var a_time;
+                if(a_type != "start" && a_type != "goal"){
+                    a_time = array[i][3][2];
+                }
+                */
 
                 //entityの作成
                 const newEntity = document.createElement("a-entity");
@@ -605,10 +787,6 @@ try {
                     longitude: a_longitude
                 });
                 newEntity.setAttribute('scale', "5 5 5");
-
-                newEntity.onclick = () => {
-                    alert($totalLength);
-                }
 
                 //球を追加
                 const newSphere = document.createElement("a-sphere");
@@ -623,7 +801,45 @@ try {
                             easing:linear;`
                 newSphere.setAttribute('animation', animation);
                 */
-                newSphere.setAttribute('src', `./skins/ar_middle${i+1}.png`);
+                if (a_type == "start") {
+                    if (mode_change == 1) {
+                        src = `./skins/ar_plan_start_and_goal.png`;
+                    } else {
+                        src = `./skins/ar_plan_start.png`;
+                    }
+                } else if (a_type == "lunch") {
+                    src = `./skins/ar_plan_lunch.png`;
+                } else if (a_type == "dinner") {
+                    src = `./skins/ar_plan_dinner.png`;
+                } else if (a_type == "goal") {
+                    if (mode_change == 1) {
+                        src = `./skins/ar_plan_start_and_goal.png`;
+                    } else {
+                        src = `./skins/ar_plan_goal.png`;
+                    }
+                } else if (a_type == 11) {
+                    src = `./skins/ar_plan_s_l_spot1.png`;
+                } else if (a_type == 12) {
+                    src = `./skins/ar_plan_s_l_spot2.png`;
+                } else if (a_type == 13) {
+                    src = `./skins/ar_plan_s_l_spot3.png`;
+                } else if (a_type == 21) {
+                    src = `./skins/ar_plan_l_d_spot1.png`;
+                } else if (a_type == 22) {
+                    src = `./skins/ar_plan_l_d_spot2.png`;
+                } else if (a_type == 23) {
+                    src = `./skins/ar_plan_l_d_spot3.png`;
+                } else if (a_type == 31) {
+                    src = `./skins/ar_plan_d_g_spot1.png`;
+                } else if (a_type == 32) {
+                    src = `./skins/ar_plan_d_g_spot2.png`;
+                } else if (a_type == 33) {
+                    src = `./skins/ar_plan_d_g_spot3.png`;
+                } else {
+                    src = `./skins/ar_plan_ltblue.png`;
+                }
+                newSphere.setAttribute('src', src);
+
                 newEntity.appendChild(newSphere);
 
                 $AR_form.appendChild(newEntity);
@@ -820,12 +1036,15 @@ try {
     <div id="viewbox">
         <div id="viewDiv"></div>
     </div>
+
     <a-scene id="ar_scene" device-orientation-permission-ui="enabled: false" vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true' cursor='rayOrigin: mouse'>
         <a-camera gps-new-camera='gpsMinDistance: 5'></a-camera>
     </a-scene>
+
     <div id="header_bar" class="justify-content-center">
         目的地まで<h1 class="fw-bold" id="ar_distance">0M</h1>
     </div>
+    
     <div id="bottom_bar">
         <button class="btn btn-primary w-15" onclick="location.reload()" type=button><i class="bi bi-arrow-clockwise"></i><!--再読み込み--></button>
         <button id="result_list_btn" data-bs-toggle="modal" data-bs-target="#modal_box1" type=button>目的地の情報</button>

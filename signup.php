@@ -257,7 +257,7 @@ if (!empty($_POST["signup"])) {
                     <table class="signup_table">
                         <tr>
                             <th rowspan="2" scope="rowgroup"><label for="user_weight">体重</label></th>
-                            <td scope="row"><small>体重を入力してください</small></td>
+                            <td scope="row"><small>体重を入力してください<br>(消費カロリーの計算に使用します)</small></td>
                         </tr>
                         <tr>
                             <td scope="row" class="text-nowrap"><input type="number" style="width:203.47px;" id="user_weight" name="user_weight" placeholder="体重を入力" value="<?php echo htmlspecialchars($user_weight_f, ENT_QUOTES); ?>">kg</td>

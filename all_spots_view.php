@@ -246,7 +246,7 @@ $keikaku[] = $goal_info;
             .esri-view-height-xsmall .esri-ui-corner .esri-component.esri-widget--panel,
             .esri-view-height-xsmall .esri-ui-corner .esri-component.esri-widget--panel-height-only {
                 width: 100px;
-                /*height: 20px;*/
+                height: 20px;
                 font-size: 1.5vw;
             }
 
@@ -485,7 +485,6 @@ $keikaku[] = $goal_info;
                 labelingInfo: [labelClass]
             });
             foodLayer.title = "飲食店";
-            foodLayer.icon = "clock-forward";
 
             var stationLayer = new FeatureLayer({
                 url: <?php echo json_encode($map_stations); ?>,

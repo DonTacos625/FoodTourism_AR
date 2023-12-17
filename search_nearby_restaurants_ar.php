@@ -225,11 +225,7 @@ try {
 
 //検索結果を配列に格納
 $count = 0;
-foreach ($stmt as $shop_id) {
-    $food_shop_id[] = $shop_id["id"];
-    $count += 1;
-}
-//var_dump($food_shop_id);
+$count = $stmt -> rowCount();
 
 
 //検索条件の保存のため
@@ -283,7 +279,6 @@ function set_selected($session_name, $value)
     <script src="script/aframe-html-shader.min.js"></script>
     <script src="script/html2canvas.min.js"></script>
     <link rel="stylesheet" href="css/ar_style.css?<?php echo date('YmdHis'); ?>">
-
 
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>周辺飲食店の検索（AR）</title>
@@ -416,32 +411,24 @@ function set_selected($session_name, $value)
             "esri/layers/WebTileLayer",
             "esri/layers/FeatureLayer",
             "esri/widgets/Locate",
-            "esri/widgets/Track",
             "esri/Graphic",
             "esri/layers/GraphicsLayer",
             "esri/rest/support/Query",
-            "esri/rest/support/TopFeaturesQuery",
-            "esri/rest/support/RouteParameters",
             "esri/rest/support/FeatureSet",
             "esri/symbols/PictureMarkerSymbol",
-            "esri/symbols/CIMSymbol",
-            "esri/widgets/LayerList"
+            "esri/symbols/CIMSymbol"
         ], function(
             Map,
             MapView,
             WebTileLayer,
             FeatureLayer,
             Locate,
-            Track,
             Graphic,
             GraphicsLayer,
             Query,
-            TopFeaturesQuery,
-            RouteParameters,
             FeatureSet,
             PictureMarkerSymbol,
-            CIMSymbol,
-            LayerList
+            CIMSymbol
         ) {
 
             // Point the URL to a valid routing service
@@ -712,13 +699,6 @@ function set_selected($session_name, $value)
         }
     };
 
-    function open_result_list() {
-        var overlay = document.querySelector(".overlay");
-        overlay.style.display = "block";
-        var modal = document.getElementById("result_table");
-        modal.style.display = "block";
-    }
-
     //テーブルのセルを作成
     function make_tablecell(array, column, s_num, c_num) {
         const newtr = document.createElement("tr");
@@ -818,6 +798,7 @@ function set_selected($session_name, $value)
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+                        <a class="btn btn-primary" href="navigation_map.php?navi_spot_id=${a_id}&navi_spot_type=2">ナビゲーション</a>
                         <a class="btn btn-primary" href="restaurant_detail.php?restaurant_id=${a_id}">詳細ページへ</a>
                     </div>
                 </div>
@@ -1022,18 +1003,18 @@ function set_selected($session_name, $value)
         <a-camera id="ar_camera" gps-new-camera='gpsMinDistance: 5'></a-camera>
     </a-scene>
     <div id="header_bar" class="justify-content-center">
-        <div id="ar_count">検索結果は0件中0件を表示しています</div>
+        <div id="ar_count" class="fw-bold">検索結果は0件中0件を表示しています</div>
     </div>
     <div id="bottom_bar">
         <!-- <button class="btn btn-primary w-15" onclick="display_results()" type=button>再読み込み</button> -->
-        <button class="btn btn-primary w-15" onclick="location.reload()" type=button>再読み込み</button>
-        <select class="btn btn-primary w-15" size="1" onchange="change_display(value)">
+        <button class="btn btn-primary" onclick="location.reload()" type=button><i class="bi bi-arrow-clockwise"></i><!--再読み込み--></button>
+        <select class="btn btn-primary" size="1" onchange="change_display(value)">
             <option value="default"> 通常表示 </option>
             <option value="small"> オブジェクト表示 </option>
             <option value="image"> 写真だけ表示 </option>
         </select>
-        <button class="btn btn-primary w-15" type=button data-bs-toggle="modal" data-bs-target="#search_modal">検索フォーム</button>
-        <button class="btn btn-primary w-15" type=button onclick="location.href='search_nearby_restaurants_map.php'">戻る</button>
+        <button class="btn btn-primary" type=button data-bs-toggle="modal" data-bs-target="#search_modal"><i class="bi bi-search"></i><!--検索フォーム--></button>
+        <button class="btn btn-primary" type=button onclick="location.href='search_nearby_restaurants_map.php'"><i class="bi bi-backspace-fill"></i><!--戻る--></button>
     </div>
 
     <div class="container-fluid">
