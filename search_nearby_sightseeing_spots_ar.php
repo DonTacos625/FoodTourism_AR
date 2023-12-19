@@ -666,7 +666,7 @@ $count = $stmt->rowCount();
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <img class="modal_img" src="images/${area_name}/sightseeing_spots/${a_id}.jpg" onError="this.onerror=null;this.src='images/no_image.jpg';" alt="">
+                        <img class="modal_img" style="max-width :100%; max-height :100%;" src="images/${area_name}/sightseeing_spots/${a_id}.jpg" onError="this.onerror=null;this.src='images/no_image.jpg';" alt="">
                         <table class="table text-wrap">
                             <tr>
                                 <th>カテゴリー</th>

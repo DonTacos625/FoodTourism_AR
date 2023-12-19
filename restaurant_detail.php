@@ -499,6 +499,10 @@ try {
                                         } ?>　　夜：<?php echo $result1["dinner_budget"]; ?></td>
                             </tr>
                             <tr>
+                                <th>予算備考</th>
+                                <td><?php echo nl2br($result1["budget_memo"]); ?></td>
+                            </tr>
+                            <tr>
                                 <th>総席数</th>
                                 <td><?php echo nl2br($result1["capacity"]); ?>席</td>
                             </tr>

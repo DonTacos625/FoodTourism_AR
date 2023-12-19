@@ -225,7 +225,7 @@ try {
 
 //検索結果を配列に格納
 $count = 0;
-$count = $stmt -> rowCount();
+$count = $stmt->rowCount();
 
 
 //検索条件の保存のため
@@ -399,9 +399,20 @@ function set_selected($session_name, $value)
         };
 
         function test2(position) {
+            
             current_latitude = position.coords.latitude;
             current_longitude = position.coords.longitude;
+            
             //alert(current_longitude);
+            //調布駅
+            /*
+            current_latitude = 35.65204951;
+            current_longitude = 139.5448359;
+            /*
+            //みなとみらい駅
+            current_latitude = 	35.45754618;
+            current_longitude = 139.6326894;
+            */
         }
         test();
 
@@ -712,6 +723,7 @@ function set_selected($session_name, $value)
         } else {
             word = array[s_num][c_num];
         }
+
         if (column == "予算") {
             var word2 = "";
             if (!array[s_num][c_num + 1]) {
@@ -721,18 +733,8 @@ function set_selected($session_name, $value)
             }
             newtd.innerHTML = `昼：${word} 夜：${word2}`;
         } else if (column == "ジャンル") {
-            var word3 = "";
-            var word4 = "";
-            if (!array[s_num][c_num][0]) {
-                word3 = "";
-            } else {
-                word3 = `${array[s_num][c_num][0]}`;
-            }
-            if (!array[s_num][c_num + 1][1]) {
-                word4 = "";
-            } else {
-                word4 = `、${array[s_num][c_num][1]}`;
-            }
+            var word3 = `${array[s_num][c_num][0]}`;
+            var word4 = `、${array[s_num][c_num][1]}`;
             newtd.innerHTML = `${word3}${word4}`;
         } else {
             newtd.innerHTML = word;
@@ -776,7 +778,7 @@ function set_selected($session_name, $value)
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <img class="modal_img" src="images/${area_name}/restaurants/${a_id}.jpg" onError="this.onerror=null;this.src='images/no_image.jpg';" alt="">
+                        <img class="modal_img" style="max-width :100%; max-height :100%;" src="images/${area_name}/restaurants/${a_id}.jpg" onError="this.onerror=null;this.src='images/no_image.jpg';" alt="">
                         <table class="table text-wrap">
                             <tr>
                                 <th>ジャンル</th>
