@@ -45,7 +45,7 @@ if (!empty($_POST["login"])) {
                     $_SESSION["age"] = $result1["age"];
                     $_SESSION["gender"] = $result1["gender"];
                     $_SESSION["user_weight"] = $result1["user_weight"];
-                    $_SESSION["area_id"] = 3;//蓮根
+                    $_SESSION["area_id"] = 3;//調布
 
                     //ログイン成功でホームに移動
                     header("Location: home.php");
@@ -96,7 +96,7 @@ if (!empty($_POST["login"])) {
             margin: auto;
             border: 1px solid #aaa;
             text-align: center;
-            font-size: 20px;
+            font-size: 16px;
         }
 
         #loginbox table {
@@ -104,10 +104,7 @@ if (!empty($_POST["login"])) {
         }
 
         #loginbox table th {
-            /*
             background: #0099FF;
-            */
-            background: #00ff37;
             color: #fff;
             white-space: nowrap;
             border-left: 5px solid #000080;
@@ -120,7 +117,7 @@ if (!empty($_POST["login"])) {
 
             #loginbox {
                 width: 90%;
-                font-size: 20px;
+                font-size: 2.5vw;
             }
         }
     </style>

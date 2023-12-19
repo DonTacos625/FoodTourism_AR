@@ -96,7 +96,7 @@ if (!empty($_POST["login"])) {
             margin: auto;
             border: 1px solid #aaa;
             text-align: center;
-            font-size: 20px;
+            font-size: 16px;
         }
 
         #loginbox table {
@@ -104,10 +104,7 @@ if (!empty($_POST["login"])) {
         }
 
         #loginbox table th {
-            /*
             background: #0099FF;
-            */
-            background: rgb(255, 0, 234);
             color: #fff;
             white-space: nowrap;
             border-left: 5px solid #000080;
@@ -120,7 +117,7 @@ if (!empty($_POST["login"])) {
 
             #loginbox {
                 width: 90%;
-                font-size: 20px;
+                font-size: 2.5vw;
             }
         }
     </style>
