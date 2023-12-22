@@ -344,6 +344,7 @@ if (!isset($_SESSION["goal_station_id"])) {
             }
         };
 
+        /*
         function browser_indicater() {
             var userAgent = window.navigator.userAgent.toLowerCase();
             if (userAgent.indexOf('msie') != -1 ||
@@ -363,9 +364,10 @@ if (!isset($_SESSION["goal_station_id"])) {
                 alert('ブラウザを特定できませんでした');
             }
         }
+        */
 
         const MY_API_KEY = "AAPKfe5fdd5be2744698a188fcc0c7b7b1d742vtC5TsStg94fpwkldrfNo3SJn2jl_VuCOEEdcBiwR7dKOKxejIP_3EDj9IPSPg";
-        browser_indicater();
+        //browser_indicater();
     </script>
 
 </body>
