@@ -52,7 +52,11 @@ try {
     <style>
         @media screen and (min-width:769px) and (max-width:1366px) {}
 
-        @media screen and (max-width:768px) {}
+        @media screen and (max-width:768px) {
+            .icon_explain {
+                width: 100vw;
+            }
+        }
     </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.25/esri/themes/light/main.css" />
