@@ -751,7 +751,7 @@ try {
             </div>
             <div class="icon_explain">
                 <img class="pin_list4" src="./markers/icon_explain_c_de.png" alt="現在地と目的地のアイコン" title="アイコン説明３">
-                <button type="button" class="btn btn-secondary btn-lg position-absolute end-0 m-2" onclick="display_results()">再読み込み</button><br>
+                <button type="button" class="btn btn-secondary btn-lg position-absolute end-0 m-2" onclick="location.reload()">再読み込み</button><br>
             </div>
 
             <div id="viewbox">

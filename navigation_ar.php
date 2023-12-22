@@ -652,7 +652,7 @@ try {
 
                 const newText = document.createElement("a-text");
                 newText.id = 'ar_text';
-                newText.setAttribute('value', "100 M");
+                newText.setAttribute('value', "0 M");
                 newEntity.appendChild(newText);
 
                 $AR_form.appendChild(newEntity);
@@ -824,7 +824,7 @@ try {
         <a-camera gps-new-camera='gpsMinDistance: 5'></a-camera>
     </a-scene>
     <div id="header_bar" class="justify-content-center">
-        目的地まで<h1 class="fw-bold" id="ar_distance">0M</h1>
+        目的地まで<h1 class="fw-bold" id="ar_distance">距離を計算中...</h1>
     </div>
     <div id="bottom_bar">
         <button class="btn btn-primary w-15" onclick="location.reload()" type=button><i class="bi bi-arrow-clockwise"></i><!--再読み込み--></button>
