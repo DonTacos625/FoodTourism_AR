@@ -870,7 +870,7 @@ if (
                         <option value="イタリアン"> イタリアン </option>
                         <option value="フレンチ"> フレンチ </option>
                         <option value="居酒屋"> 居酒屋 </option>
-                        <option value="バイキング"> バイキング </option>
+                        <option value="バー"> バー </option>
                         <option value="カフェ"> カフェ </option>
                     </select>
                     <br>
