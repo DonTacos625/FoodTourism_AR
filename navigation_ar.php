@@ -102,8 +102,8 @@ try {
         @media screen and (max-width:768px) {}
     </style>
 
-    <link rel="stylesheet" href="https://js.arcgis.com/4.25/esri/themes/light/main.css" />
-    <script src="https://js.arcgis.com/4.25/"></script>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.21/"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
     <script>
