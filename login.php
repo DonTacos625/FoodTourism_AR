@@ -130,7 +130,7 @@ if (!empty($_POST["login"])) {
                 <p class="text-break">
                     こちらは横浜みなとみらい近隣でのフードツーリズムを支援するシステムです。<br>
                     本システムは、PC・スマートフォン・タブレット端末でご利用可能です。<br>
-                    ※位置情報の取得、ARを利用した機能がありますのでhttps通信の<b>ブラウザ「Chrome」</b>でのご利用を推奨しております。<br><br>
+                    ※位置情報の取得、ARを利用した機能がありますので<b>位置情報の取得とカメラの使用を許可しているブラウザ</b>でのご利用を推奨しております。<br><br>
                     利用には<a href="signup.php">利用者登録</a>が必要となります。<br>
                     利用方法につきましては、ログイン後に使い方をご覧になるか、<a href="https://drive.google.com/file/d/1r7a-p5nmR4ws5O6M-80ljNtVzPAdzxWQ/view?usp=drive_link" target="blank">こちら</a>のマニュアルからご覧ください<br>
                 </p>
