@@ -108,12 +108,14 @@ require "frame_rightmenu.php";
                     <a href="https://docs.google.com/forms/d/e/1FAIpQLSfMJvh44Jx_t_EKmWqyb8eGyGfFAetVmiDxitJj3Gocse6EkQ/viewform?usp=sf_link" target="blank">https://docs.google.com/forms/d/e/1FAIpQLSfMJvh44Jx_t_EKmWqyb8eGyGfFAetVmiDxitJj3Gocse6EkQ/viewform?usp=sf_link</a><br>
                     -->
 
+                    <!--
                     (1)「観光計画作成」機能に関するアンケート<br>
                     <a href="https://docs.google.com/forms/d/e/1FAIpQLScVj6saWaQCF1t1RTBdVTmtD-ursZt-nKPl_WWUHb2rJv5MXQ/viewform?usp=sf_link" target="blank">https://docs.google.com/forms/d/e/1FAIpQLScVj6saWaQCF1t1RTBdVTmtD-ursZt-nKPl_WWUHb2rJv5MXQ/viewform?usp=sf_link</a><br><br>
                     (2)「現地での観光支援」機能に関するアンケート<br>
                     <a href="https://docs.google.com/forms/d/e/1FAIpQLSde9Q0OGMhy9ooYVERz0eucCu1s-uxz5cDOrKekqNGCXOP6Kw/viewform?usp=sf_link" target="blank">https://docs.google.com/forms/d/e/1FAIpQLSde9Q0OGMhy9ooYVERz0eucCu1s-uxz5cDOrKekqNGCXOP6Kw/viewform?usp=sf_link</a>
-
-                    <!--<font color=#000080><big>アンケートの回答を締め切りました。ご回答くださった方々、誠にありがとうございました。</big></font>-->
+                    -->
+                    
+                    <font color=#000080><big>アンケートの回答を締め切りました。ご回答くださった方々、誠にありがとうございました。</big></font>
 
                 </p><br>
 
